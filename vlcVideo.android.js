@@ -69,9 +69,9 @@ class VLCVideo extends Component {
         );
     }
 
-    _invokeEventCallback(eventName) {
+    _invokeEventCallback(eventName, event) {
         if (typeof this.props[eventName] === 'function') {
-            this.props[eventName]();
+            this.props[eventName](event.nativeEvent);
         }
     }
 
