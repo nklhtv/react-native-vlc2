@@ -132,7 +132,23 @@ VLCVideo.defaultProps = {
     keyControlEnabled: false
 };
 
-const RCTVLCVideoView = requireNativeComponent('RCTVLCVideoView', VLCVideo, {
+const RCTVLCVideoViewInterface = {
+    name: 'VLCVideo',
+    propTypes: {
+        ...View.propTypes,
+        keyControlEnabled: PropTypes.bool.isRequired,
+        onMediaChanged: PropTypes.func,
+        onBuffering: PropTypes.func,
+        onPlaying: PropTypes.func,
+        onPaused: PropTypes.func,
+        onStopped: PropTypes.func,
+        onEndReached: PropTypes.func,
+        onError: PropTypes.func,
+        onTimeChanged: PropTypes.func
+    }
+};
+
+const RCTVLCVideoView = requireNativeComponent('RCTVLCVideoView', RCTVLCVideoViewInterface, {
     nativeOnly: {
         media: true,
         keyControlEnabled: true
