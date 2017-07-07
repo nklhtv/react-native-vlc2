@@ -8,6 +8,8 @@ class VLCVideo extends Component {
     constructor(props) {
         super(props);
 
+        this._assignRoot = this._assignRoot.bind(this);
+        
         this.callbacks = {
             [RCTVLCVideoViewConstants.ON_MEDIA_CHANGED]: this._invokeEventCallback.bind(this, 'onMediaChanged'),
             [RCTVLCVideoViewConstants.ON_BUFFERING]: this._invokeEventCallback.bind(this, 'onBuffering'),
@@ -60,7 +62,7 @@ class VLCVideo extends Component {
 
         return (
             <RCTVLCVideoView 
-                ref={(root) => this._root = root}
+                ref={this._assignRoot}
                 style={this.props.style}
                 keyControlEnabled={this.state.keyControlEnabled}
                 media={media}
@@ -69,14 +71,18 @@ class VLCVideo extends Component {
         );
     }
 
-    _invokeEventCallback(eventName, event) {
-        if (typeof this.props[eventName] === 'function') {
-            this.props[eventName](event.nativeEvent);
-        }
+    _assignRoot(root) {
+        this._root = root;
     }
 
     _getViewHandle() {
         return findNodeHandle(this._root);
+    }
+
+    _invokeEventCallback(eventName, event) {
+        if (typeof this.props[eventName] === 'function') {
+            this.props[eventName](event.nativeEvent);
+        }
     }
 
     seek(time) {
