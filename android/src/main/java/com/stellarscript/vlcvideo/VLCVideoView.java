@@ -29,7 +29,7 @@ public final class VLCVideoView extends FrameLayout {
     private static final String TAG = VLCVideoView.class.getSimpleName();
     private static final String HARDWARE_ACCELERATION_ERROR_MESSAGE = "VLC encountered an error with hardware acceleration.";
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
-    private static final double MIN_TIME_INTERVAL_TO_EMIT_TIME_EVENT = 100;
+    private static final double MIN_TIME_INTERVAL_TO_EMIT_TIME_CHANGE_EVENT = 100;
 
     private int mVideoHeight;
     private int mVideoWidth;
@@ -89,7 +89,7 @@ public final class VLCVideoView extends FrameLayout {
                     break;
                 case MediaPlayer.Event.TimeChanged:
                     final double currentTime = mMediaPlayer.getTime();
-                    if (Math.abs(currentTime - mPrevTime) >= MIN_TIME_INTERVAL_TO_EMIT_TIME_EVENT || currentTime == 0) {
+                    if (Math.abs(currentTime - mPrevTime) >= MIN_TIME_INTERVAL_TO_EMIT_TIME_CHANGE_EVENT || currentTime == 0) {
                         mPrevTime = currentTime;
                         eventName = VLCVideoEvents.ON_TIME_CHANGED_EVENT;
                         event.putDouble(VLCVideoEvents.ON_TIME_CHANGED_TIME_PROP, currentTime);
@@ -260,33 +260,26 @@ public final class VLCVideoView extends FrameLayout {
             return;
         }
 
-        final IVLCVout vlcVout = mMediaPlayer.getVLCVout();
-        vlcVout.setWindowSize(parentWidth, parentHeight);
+        final IVLCVout vout = mMediaPlayer.getVLCVout();
+        vout.setWindowSize(parentWidth, parentHeight);
 
-        // compute the aspect ratio
-        double videoVisibleWidth = mVideoVisibleWidth;
-        if (mSarDen != mSarNum) {
-            videoVisibleWidth = mVideoVisibleWidth * (double)mSarNum / (double)mSarDen;
-        }
-
-        final double aspectRatio = videoVisibleWidth / mVideoVisibleHeight;
-
-        // compute the container aspect ratio
-        double parentAspectRatio = (double)parentWidth / (double)parentHeight;
+        final double videoVisibleWidth = mVideoVisibleWidth * (double)mSarNum / (double)mSarDen;
+        final double videoAspectRatio = videoVisibleWidth / mVideoVisibleHeight;
+        final double parentAspectRatio = (double)parentWidth / (double)parentHeight;
 
         int surfaceWidth, surfaceHeight;
-        if (parentAspectRatio < aspectRatio) {
+        if (parentAspectRatio < videoAspectRatio) {
             surfaceWidth = (int) Math.ceil(parentWidth * mVideoWidth / mVideoVisibleWidth);
-            surfaceHeight = (int) Math.ceil((parentWidth / aspectRatio) * mVideoHeight / mVideoVisibleHeight);
+            surfaceHeight = (int) Math.ceil((parentWidth / videoAspectRatio) * mVideoHeight / mVideoVisibleHeight);
         } else {
-            surfaceWidth = (int) Math.ceil((parentHeight * aspectRatio) * mVideoWidth / mVideoVisibleWidth);
+            surfaceWidth = (int) Math.ceil((parentHeight * videoAspectRatio) * mVideoWidth / mVideoVisibleWidth);
             surfaceHeight = (int) Math.ceil(parentHeight * mVideoHeight / mVideoVisibleHeight);
         }
 
-        ViewGroup.LayoutParams lp = mSurfaceView.getLayoutParams();
-        lp.width  = surfaceWidth;
-        lp.height = surfaceHeight;
-        mSurfaceView.setLayoutParams(lp);
+        final ViewGroup.LayoutParams surfaceLayoutParams = mSurfaceView.getLayoutParams();
+        surfaceLayoutParams.width  = surfaceWidth;
+        surfaceLayoutParams.height = surfaceHeight;
+        mSurfaceView.setLayoutParams(surfaceLayoutParams);
 
         VLCVideoView.this.measure(parentWidth, parentHeight);
         VLCVideoView.this.layout(parentLeft, parentTop, parentLeft + parentWidth, parentTop + parentHeight);
