@@ -179,9 +179,11 @@ public final class VLCVideoView extends FrameLayout {
     }
 
     @Override
-    protected void onConfigurationChanged(@NonNull final Configuration newConfig) {
-        changeSurfaceLayout();
-        super.onConfigurationChanged(newConfig);
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            changeSurfaceLayout();
+        }
     }
 
     public void loadMedia(@NonNull final String sourceUrl, final int startTime, final boolean autoplay) {
