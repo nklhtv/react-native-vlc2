@@ -14,7 +14,6 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_BUFFERING]: this._invokeEventCallback.bind(this, 'onBuffering'),
             [RCTVLCVideoViewConstants.ON_PLAYING]: this._invokeEventCallback.bind(this, 'onPlaying'),
             [RCTVLCVideoViewConstants.ON_PAUSED]: this._invokeEventCallback.bind(this, 'onPaused'),
-            [RCTVLCVideoViewConstants.ON_STOPPED]: this._invokeEventCallback.bind(this, 'onStopped'),
             [RCTVLCVideoViewConstants.ON_END_REACHED]: this._invokeEventCallback.bind(this, 'onEndReached'),
             [RCTVLCVideoViewConstants.ON_ERROR]: this._invokeEventCallback.bind(this, 'onError'),
             [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: this._invokeEventCallback.bind(this, 'onTimeChanged')
@@ -99,7 +98,6 @@ VLCVideo.propTypes = {
     onBuffering: PropTypes.func,
     onPlaying: PropTypes.func,
     onPaused: PropTypes.func,
-    onStopped: PropTypes.func,
     onEndReached: PropTypes.func,
     onError: PropTypes.func,
     onTimeChanged: PropTypes.func
@@ -121,7 +119,6 @@ const RCTVLCVideoViewInterface = {
         onBuffering: PropTypes.func,
         onPlaying: PropTypes.func,
         onPaused: PropTypes.func,
-        onStopped: PropTypes.func,
         onEndReached: PropTypes.func,
         onError: PropTypes.func,
         onTimeChanged: PropTypes.func

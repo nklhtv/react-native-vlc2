@@ -12,7 +12,6 @@ final class VLCVideoEvents {
     static final String ON_BUFFERING_EVENT = getFullEventName("onBuffering");
     static final String ON_PLAYING_EVENT = getFullEventName("onPlaying");
     static final String ON_PAUSED_EVENT = getFullEventName("onPaused");
-    static final String ON_STOPPED_EVENT = getFullEventName("onStopped");
     static final String ON_END_REACHED_EVENT = getFullEventName("onEndReached");
     static final String ON_ERROR_EVENT = getFullEventName("onError");
     static final String ON_TIME_CHANGED_EVENT = getFullEventName("onTimeChanged");

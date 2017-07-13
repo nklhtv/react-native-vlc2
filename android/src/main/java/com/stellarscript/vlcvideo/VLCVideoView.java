@@ -1,9 +1,7 @@
 package com.stellarscript.vlcvideo;
 
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.facebook.react.views.view.ReactViewGroup;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -83,9 +80,6 @@ public final class VLCVideoView extends FrameLayout {
                     break;
                 case MediaPlayer.Event.Paused:
                     eventName = VLCVideoEvents.ON_PAUSED_EVENT;
-                    break;
-                case MediaPlayer.Event.Stopped:
-                    eventName = VLCVideoEvents.ON_STOPPED_EVENT;
                     break;
                 case MediaPlayer.Event.TimeChanged:
                     final double currentTime = mMediaPlayer.getTime();

@@ -45,7 +45,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_BUFFERING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_BUFFERING_EVENT));
         events.put(VLCVideoEvents.ON_PLAYING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PLAYING_EVENT));
         events.put(VLCVideoEvents.ON_PAUSED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PAUSED_EVENT));
-        events.put(VLCVideoEvents.ON_STOPPED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_STOPPED_EVENT));
         events.put(VLCVideoEvents.ON_END_REACHED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_END_REACHED_EVENT));
         events.put(VLCVideoEvents.ON_ERROR_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_ERROR_EVENT));
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
@@ -62,7 +61,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_BUFFERING", VLCVideoEvents.ON_BUFFERING_EVENT);
         constants.put("ON_PLAYING", VLCVideoEvents.ON_PLAYING_EVENT);
         constants.put("ON_PAUSED", VLCVideoEvents.ON_PAUSED_EVENT);
-        constants.put("ON_STOPPED", VLCVideoEvents.ON_STOPPED_EVENT);
         constants.put("ON_END_REACHED", VLCVideoEvents.ON_END_REACHED_EVENT);
         constants.put("ON_ERROR", VLCVideoEvents.ON_ERROR_EVENT);
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
