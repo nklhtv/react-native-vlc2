@@ -19,6 +19,7 @@ final class VLCVideoEvents {
     static final String ON_ERROR_MESSAGE_PROP = "message";
     static final String ON_TIME_CHANGED_TIME_PROP = "time";
     static final String ON_PLAYING_DURATION_PROP = "duration";
+    static final String ON_BUFFERING_BUFFERING_PROP = "buffering";
 
     private static String getFullEventName(@NonNull final String eventName) {
         return EVENT_NAME_PREFIX.concat(eventName);

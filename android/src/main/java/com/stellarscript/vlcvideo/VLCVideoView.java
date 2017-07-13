@@ -73,11 +73,6 @@ public final class VLCVideoView extends FrameLayout {
                     eventName = VLCVideoEvents.ON_ERROR_EVENT;
                     event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, MEDIA_ERROR_MESSAGE);
                     break;
-                case MediaPlayer.Event.Buffering:
-                    if (!mMediaPlayer.isPlaying()) {
-                        eventName = VLCVideoEvents.ON_BUFFERING_EVENT;
-                    }
-                    break;
                 case MediaPlayer.Event.Paused:
                     eventName = VLCVideoEvents.ON_PAUSED_EVENT;
                     break;
@@ -93,6 +88,11 @@ public final class VLCVideoView extends FrameLayout {
                     final double duration = mMediaPlayer.getLength();
                     eventName = VLCVideoEvents.ON_PLAYING_EVENT;
                     event.putDouble(VLCVideoEvents.ON_PLAYING_DURATION_PROP, duration);
+                    break;
+                case MediaPlayer.Event.Buffering:
+                    final double buffering = mediaEvent.getBuffering();
+                    eventName = VLCVideoEvents.ON_BUFFERING_EVENT;
+                    event.putDouble(VLCVideoEvents.ON_BUFFERING_BUFFERING_PROP, buffering);
                     break;
             }
 
@@ -147,7 +147,6 @@ public final class VLCVideoView extends FrameLayout {
         final ArrayList<String> libVLCOptions = new ArrayList<>();
         libVLCOptions.add("-vvv");
         libVLCOptions.add("--http-reconnect");
-        // TODO get more options from config
         mLibVLC = new LibVLC(mThemedReactContext, libVLCOptions);
 
         mMediaPlayer = new MediaPlayer(mLibVLC);
