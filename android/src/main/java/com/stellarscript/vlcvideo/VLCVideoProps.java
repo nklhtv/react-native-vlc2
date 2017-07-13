@@ -10,6 +10,7 @@ final class VLCVideoProps {
     static final boolean MEDIA_AUTOPLAY_DEFAULT_VALUE = true;
 
     static final String KEY_CONTROL_ENABLED_PROP = "keyControlEnabled";
+    static final boolean KEY_CONTROL_ENABLED_DEFAULT_VALUE = false;
 
     static final String PLAY_COMMAND_NAME = "play";
     static final int PLAY_COMMAND_ID = 1;
