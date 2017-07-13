@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { View, UIManager, requireNativeComponent, findNodeHandle } from 'react-native';
 
-const EMPTY_SOURCE_URL = 'EMPTY_SOURCE_URL';
 const RCTVLCVideoViewConstants = UIManager.RCTVLCVideoView.Constants;
 
 class VLCVideo extends Component {
@@ -20,51 +19,26 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_ERROR]: this._invokeEventCallback.bind(this, 'onError'),
             [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: this._invokeEventCallback.bind(this, 'onTimeChanged')
         };
-
-        this.state = {
-            sourceUrl: props.sourceUrl,
-            autoplay: props.autoplay,
-            startTime: props.startTime,
-            keyControlEnabled: props.keyControlEnabled
-        };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.sourceUrl !== this.state.sourceUrl) {
-            this.setState({ sourceUrl: nextProps.sourceUrl });
-        }
-
-        if (nextProps.autoplay !== this.state.autoplay) {
-            this.setState({ autoplay: nextProps.autoplay });
-        }
-
-        if (nextProps.startTime !== this.state.startTime) {
-            this.setState({ startTime: nextProps.startTime });
-        }
-
-        if (nextProps.keyControlEnabled !== this.state.keyControlEnabled) {
-            this.setState({ keyControlEnabled: nextProps.keyControlEnabled });
-        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return nextState.sourceUrl !== this.state.sourceUrl ||
-            nextState.keyControlEnabled !== this.state.keyControlEnabled ||
+        return nextProps.sourceUrl !== this.props.sourceUrl ||
+            nextProps.keyControlEnabled !== this.props.keyControlEnabled ||
             nextProps.style !== this.props.style;
     }
     
     render() {
         const media = {
-            sourceUrl: this.state.sourceUrl,
-            autoplay: this.state.autoplay,
-            startTime: this.state.startTime
+            sourceUrl: this.props.sourceUrl,
+            autoplay: this.props.autoplay,
+            startTime: this.props.startTime
         };
 
         return (
             <RCTVLCVideoView 
                 ref={this._assignRoot}
                 style={this.props.style}
-                keyControlEnabled={this.state.keyControlEnabled}
+                keyControlEnabled={this.props.keyControlEnabled}
                 media={media}
                 {...this.callbacks}
             />
@@ -132,7 +106,6 @@ VLCVideo.propTypes = {
 };
 
 VLCVideo.defaultProps = {
-    sourceUrl: EMPTY_SOURCE_URL,
     autoplay: true,
     startTime: 0,
     keyControlEnabled: false
@@ -142,6 +115,7 @@ const RCTVLCVideoViewInterface = {
     name: 'VLCVideo',
     propTypes: {
         ...View.propTypes,
+        media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
         onMediaChanged: PropTypes.func,
         onBuffering: PropTypes.func,
