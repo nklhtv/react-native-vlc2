@@ -184,21 +184,30 @@ public final class VLCVideoView extends FrameLayout {
         super.onConfigurationChanged(newConfig);
     }
 
-    public void loadMedia(@NonNull final String sourceUrl, final double startTime, final boolean autoplay) {
+    public void loadMedia(@NonNull final String sourceUrl, final int startTime, final boolean autoplay) {
         if (sourceUrl.isEmpty()) {
             return;
         }
 
-        final Media media = new Media(mLibVLC, Uri.parse(sourceUrl));
-        media.setHWDecoderEnabled(true, false);
-        if (startTime > 0) {
-            final int startTimeInSeconds = (int) (startTime / 1000);
-            final String startTimeOption = MessageFormat.format(":start-time={0}", startTimeInSeconds);
-            media.addOption(startTimeOption);
+        final Uri newSourceUri = Uri.parse(sourceUrl);
+        final Media oldMedia = mMediaPlayer.getMedia();
+        if (oldMedia != null) {
+            final Uri oldSourceUri = oldMedia.getUri();
+            if (oldSourceUri.compareTo(newSourceUri) == 0) {
+                return;
+            }
         }
 
-        mMediaPlayer.stop();
-        mMediaPlayer.setMedia(media);
+        final Media newMedia = new Media(mLibVLC, newSourceUri);
+        newMedia.setHWDecoderEnabled(true, false);
+
+        if (startTime > 0) {
+            final int startTimeInSeconds = startTime / 1000;
+            final String startTimeOption = MessageFormat.format(":start-time={0}", startTimeInSeconds);
+            newMedia.addOption(startTimeOption);
+        }
+
+        mMediaPlayer.setMedia(newMedia);
 
         if (autoplay) {
             mMediaPlayer.play();

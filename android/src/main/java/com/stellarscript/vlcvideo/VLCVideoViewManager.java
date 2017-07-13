@@ -107,11 +107,11 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
         final String sourceUrl = media.getString(VLCVideoProps.MEDIA_SOURCE_URL_PROP);
 
-        double startTime = VLCVideoProps.MEDIA_START_TIME_DEFAULT_VALUE;
+        int startTime = VLCVideoProps.MEDIA_START_TIME_DEFAULT_VALUE;
         if (media.hasKey(VLCVideoProps.MEDIA_START_TIME_PROP) &&
                 !media.isNull(VLCVideoProps.MEDIA_START_TIME_PROP) &&
                 media.getType(VLCVideoProps.MEDIA_START_TIME_PROP) == ReadableType.Number) {
-            startTime = media.getDouble(VLCVideoProps.MEDIA_START_TIME_PROP);
+            startTime = media.getInt(VLCVideoProps.MEDIA_START_TIME_PROP);
         }
 
         boolean autoplay = VLCVideoProps.MEDIA_AUTOPLAY_DEFAULT_VALUE;
