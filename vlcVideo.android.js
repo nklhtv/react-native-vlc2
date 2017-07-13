@@ -66,7 +66,7 @@ class VLCVideo extends Component {
         UIManager.dispatchViewManagerCommand(
             this._getViewHandle(),
             UIManager.RCTVLCVideoView.Commands.seek,
-            time
+            [time]
         );
     }
 
