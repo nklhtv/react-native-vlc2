@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -23,13 +24,19 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public final class VLCVideoView extends ReactViewGroup {
+public final class VLCVideoView extends FrameLayout {
 
     private static final String TAG = VLCVideoView.class.getSimpleName();
     private static final String HARDWARE_ACCELERATION_ERROR_MESSAGE = "VLC encountered an error with hardware acceleration.";
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
     private static final double MIN_TIME_INTERVAL_TO_EMIT_TIME_EVENT = 100;
 
+    private int mVideoHeight;
+    private int mVideoWidth;
+    private int mVideoVisibleHeight;
+    private int mVideoVisibleWidth;
+    private int mSarNum;
+    private int mSarDen;
     private double mPrevTime;
     private final ThemedReactContext mThemedReactContext;
     private final RCTEventEmitter mEventEmitter;
@@ -109,44 +116,13 @@ public final class VLCVideoView extends ReactViewGroup {
                 return;
             }
 
-            final int parentWidth = VLCVideoView.this.getWidth();
-            final int parentHeight = VLCVideoView.this.getHeight();
-
-            if (parentWidth * parentHeight == 0) {
-                return;
-            }
-
-            final IVLCVout vlcVout = mMediaPlayer.getVLCVout();
-            vlcVout.setWindowSize(parentWidth, parentHeight);
-
-            // compute the aspect ratio
-            double videoVisibleWidth;
-            if (sarDen == sarNum) {
-                videoVisibleWidth = visibleWidth;
-            } else {
-                videoVisibleWidth = visibleWidth * (double)sarNum / (double)sarDen;
-            }
-
-            final double aspectRatio = videoVisibleWidth / visibleHeight;
-
-            // compute the container aspect ratio
-            double parentAspectRatio = parentWidth / parentHeight;
-
-            int surfaceWidth, surfaceHeight;
-            if (parentAspectRatio < aspectRatio) {
-                surfaceWidth = (int) Math.ceil(parentWidth * width / visibleWidth);
-                surfaceHeight = (int) Math.ceil((parentWidth / aspectRatio) * height / visibleHeight);
-            } else {
-                surfaceWidth = (int) Math.ceil((parentHeight * aspectRatio) * width / visibleWidth);
-                surfaceHeight = (int) Math.ceil(parentHeight * height / visibleHeight);
-            }
-
-            ViewGroup.LayoutParams lp = mSurfaceView.getLayoutParams();
-            lp.width  = surfaceWidth;
-            lp.height = surfaceHeight;
-            mSurfaceView.setLayoutParams(lp);
-            mSurfaceView.invalidate();
-            VLCVideoView.this.invalidate();
+            mVideoWidth = width;
+            mVideoHeight = height;
+            mVideoVisibleWidth  = visibleWidth;
+            mVideoVisibleHeight = visibleHeight;
+            mSarNum = sarNum;
+            mSarDen = sarDen;
+            VLCVideoView.this.changeSurfaceLayout();
         }
 
         @Override
@@ -204,6 +180,7 @@ public final class VLCVideoView extends ReactViewGroup {
 
     @Override
     protected void onConfigurationChanged(@NonNull final Configuration newConfig) {
+        changeSurfaceLayout();
         super.onConfigurationChanged(newConfig);
     }
 
@@ -256,6 +233,48 @@ public final class VLCVideoView extends ReactViewGroup {
         if (vout.areViewsAttached()) {
             vout.detachViews();
         }
+    }
+
+    private void changeSurfaceLayout() {
+        final int parentWidth = VLCVideoView.this.getWidth();
+        final int parentHeight = VLCVideoView.this.getHeight();
+        final int parentLeft = VLCVideoView.this.getLeft();
+        final int parentTop = VLCVideoView.this.getTop();
+
+        if (parentWidth * parentHeight == 0) {
+            return;
+        }
+
+        final IVLCVout vlcVout = mMediaPlayer.getVLCVout();
+        vlcVout.setWindowSize(parentWidth, parentHeight);
+
+        // compute the aspect ratio
+        double videoVisibleWidth = mVideoVisibleWidth;
+        if (mSarDen != mSarNum) {
+            videoVisibleWidth = mVideoVisibleWidth * (double)mSarNum / (double)mSarDen;
+        }
+
+        final double aspectRatio = videoVisibleWidth / mVideoVisibleHeight;
+
+        // compute the container aspect ratio
+        double parentAspectRatio = (double)parentWidth / (double)parentHeight;
+
+        int surfaceWidth, surfaceHeight;
+        if (parentAspectRatio < aspectRatio) {
+            surfaceWidth = (int) Math.ceil(parentWidth * mVideoWidth / mVideoVisibleWidth);
+            surfaceHeight = (int) Math.ceil((parentWidth / aspectRatio) * mVideoHeight / mVideoVisibleHeight);
+        } else {
+            surfaceWidth = (int) Math.ceil((parentHeight * aspectRatio) * mVideoWidth / mVideoVisibleWidth);
+            surfaceHeight = (int) Math.ceil(parentHeight * mVideoHeight / mVideoVisibleHeight);
+        }
+
+        ViewGroup.LayoutParams lp = mSurfaceView.getLayoutParams();
+        lp.width  = surfaceWidth;
+        lp.height = surfaceHeight;
+        mSurfaceView.setLayoutParams(lp);
+
+        VLCVideoView.this.measure(parentWidth, parentHeight);
+        VLCVideoView.this.layout(parentLeft, parentTop, parentLeft + parentWidth, parentTop + parentHeight);
     }
 
 }
