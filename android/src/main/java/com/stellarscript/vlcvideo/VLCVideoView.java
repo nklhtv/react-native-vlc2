@@ -236,6 +236,10 @@ public final class VLCVideoView extends FrameLayout {
     }
 
     private void changeSurfaceLayout() {
+        if (mVideoVisibleWidth * mVideoVisibleHeight == 0 || mVideoWidth * mVideoHeight == 0 || mSarDen == 0) {
+            return;
+        }
+
         final int parentWidth = VLCVideoView.this.getWidth();
         final int parentHeight = VLCVideoView.this.getHeight();
         final int parentLeft = VLCVideoView.this.getLeft();
