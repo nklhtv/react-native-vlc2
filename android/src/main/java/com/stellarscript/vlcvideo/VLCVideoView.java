@@ -4,13 +4,16 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
+import android.view.ViewGroup;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.facebook.react.views.view.ReactViewGroup;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -20,7 +23,7 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public final class VLCVideoView extends SurfaceView {
+public final class VLCVideoView extends ReactViewGroup {
 
     private static final String TAG = VLCVideoView.class.getSimpleName();
     private static final String HARDWARE_ACCELERATION_ERROR_MESSAGE = "VLC encountered an error with hardware acceleration.";
@@ -32,6 +35,7 @@ public final class VLCVideoView extends SurfaceView {
     private final RCTEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
+    private final SurfaceView mSurfaceView;
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -89,9 +93,6 @@ public final class VLCVideoView extends SurfaceView {
                     eventName = VLCVideoEvents.ON_PLAYING_EVENT;
                     event.putDouble(VLCVideoEvents.ON_PLAYING_DURATION_PROP, duration);
                     break;
-                case MediaPlayer.Event.SeekableChanged:
-                    Log.d(TAG, "SeekableChanged");
-                    break;
             }
 
             if (!eventName.equals(VLCVideoEvents.UNHANDLED_EVENT)) {
@@ -104,6 +105,48 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public void onNewLayout(@NonNull final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
+            if (width * height == 0) {
+                return;
+            }
+
+            final int parentWidth = VLCVideoView.this.getWidth();
+            final int parentHeight = VLCVideoView.this.getHeight();
+
+            if (parentWidth * parentHeight == 0) {
+                return;
+            }
+
+            final IVLCVout vlcVout = mMediaPlayer.getVLCVout();
+            vlcVout.setWindowSize(parentWidth, parentHeight);
+
+            // compute the aspect ratio
+            double videoVisibleWidth;
+            if (sarDen == sarNum) {
+                videoVisibleWidth = visibleWidth;
+            } else {
+                videoVisibleWidth = visibleWidth * (double)sarNum / (double)sarDen;
+            }
+
+            final double aspectRatio = videoVisibleWidth / visibleHeight;
+
+            // compute the container aspect ratio
+            double parentAspectRatio = parentWidth / parentHeight;
+
+            int surfaceWidth, surfaceHeight;
+            if (parentAspectRatio < aspectRatio) {
+                surfaceWidth = (int) Math.ceil(parentWidth * width / visibleWidth);
+                surfaceHeight = (int) Math.ceil((parentWidth / aspectRatio) * height / visibleHeight);
+            } else {
+                surfaceWidth = (int) Math.ceil((parentHeight * aspectRatio) * width / visibleWidth);
+                surfaceHeight = (int) Math.ceil(parentHeight * height / visibleHeight);
+            }
+
+            ViewGroup.LayoutParams lp = mSurfaceView.getLayoutParams();
+            lp.width  = surfaceWidth;
+            lp.height = surfaceHeight;
+            mSurfaceView.setLayoutParams(lp);
+            mSurfaceView.invalidate();
+            VLCVideoView.this.invalidate();
         }
 
         @Override
@@ -139,6 +182,9 @@ public final class VLCVideoView extends SurfaceView {
 
         mMediaPlayer = new MediaPlayer(mLibVLC);
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
+
+        LayoutInflater.from(mThemedReactContext).inflate(R.layout.video, VLCVideoView.this);
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
     }
 
     @Override
@@ -199,7 +245,7 @@ public final class VLCVideoView extends SurfaceView {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         vout.addCallback(mVoutCallback);
         if (!vout.areViewsAttached()) {
-            vout.setVideoView(VLCVideoView.this);
+            vout.setVideoView(mSurfaceView);
             vout.attachViews();
         }
     }
