@@ -35,6 +35,7 @@ public final class VLCVideoView extends FrameLayout {
     private int mSarNum;
     private int mSarDen;
     private double mPrevTime;
+    private boolean mSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final RCTEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
@@ -98,6 +99,10 @@ public final class VLCVideoView extends FrameLayout {
 
             if (!eventName.equals(VLCVideoEvents.UNHANDLED_EVENT)) {
                 mEventEmitter.receiveEvent(VLCVideoView.this.getId(), eventName, event);
+                if (mSeekRequested && eventName.equals(VLCVideoEvents.ON_TIME_CHANGED_EVENT)) {
+                    mSeekRequested = false;
+                    mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
+                }
             }
         }
 
@@ -220,9 +225,7 @@ public final class VLCVideoView extends FrameLayout {
     public void seek(final int time) {
         mMediaPlayer.setTime(time);
         mMediaPlayer.play();
-        final WritableMap event = Arguments.createMap();
-        event.putInt(VLCVideoEvents.ON_SEEK_PERFORMED_TIME_PROP, time);
-        mEventEmitter.receiveEvent(getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, event);
+        mSeekRequested = true;
     }
 
     private void attachVLCVoutViews() {
