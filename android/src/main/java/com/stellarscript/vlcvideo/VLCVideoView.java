@@ -220,6 +220,9 @@ public final class VLCVideoView extends FrameLayout {
     public void seek(final int time) {
         mMediaPlayer.setTime(time);
         mMediaPlayer.play();
+        final WritableMap event = Arguments.createMap();
+        event.putInt(VLCVideoEvents.ON_SEEK_PERFORMED_TIME_PROP, time);
+        mEventEmitter.receiveEvent(getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, event);
     }
 
     private void attachVLCVoutViews() {
