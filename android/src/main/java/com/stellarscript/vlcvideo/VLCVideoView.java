@@ -153,7 +153,7 @@ final class VLCVideoView extends FrameLayout {
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
 
         LayoutInflater.from(mThemedReactContext).inflate(R.layout.video, VLCVideoView.this);
-        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        mSurfaceView = (SurfaceView) findViewById(R.id.videoView);
     }
 
     @Override
