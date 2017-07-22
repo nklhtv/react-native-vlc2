@@ -8,7 +8,7 @@ class VLCVideo extends Component {
         super(props);
 
         this._assignRoot = this._assignRoot.bind(this);
-        
+
         this.callbacks = {
             [RCTVLCVideoViewConstants.ON_MEDIA_CHANGED]: this._invokeEventCallback.bind(this, 'onMediaChanged'),
             [RCTVLCVideoViewConstants.ON_BUFFERING]: this._invokeEventCallback.bind(this, 'onBuffering'),
@@ -26,7 +26,7 @@ class VLCVideo extends Component {
             nextProps.keyControlEnabled !== this.props.keyControlEnabled ||
             nextProps.style !== this.props.style;
     }
-    
+
     render() {
         const media = {
             sourceUrl: this.props.sourceUrl,
@@ -35,7 +35,7 @@ class VLCVideo extends Component {
         };
 
         return (
-            <RCTVLCVideoView 
+            <RCTVLCVideoView
                 ref={this._assignRoot}
                 style={this.props.style}
                 keyControlEnabled={this.props.keyControlEnabled}
