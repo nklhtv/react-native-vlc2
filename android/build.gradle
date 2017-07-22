@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 
 def versions = project.hasProperty("versions") ? project.versions : [];
-
 def _compileSdkVersion = versions.compileSdkVersion ?: 23;
 def _buildToolsVersion = versions.buildToolsVersion ?: "23.0.1";
 def _minSdkVersion = versions.minSdkVersion ?: 16;
