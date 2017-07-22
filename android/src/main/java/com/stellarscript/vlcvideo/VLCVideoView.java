@@ -38,7 +38,7 @@ final class VLCVideoView extends FrameLayout {
     private final RCTEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
-    private final SurfaceView mSurfaceView;
+    private final SurfaceView mVideoView;
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -153,7 +153,7 @@ final class VLCVideoView extends FrameLayout {
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
 
         LayoutInflater.from(mThemedReactContext).inflate(R.layout.video, VLCVideoView.this);
-        mSurfaceView = (SurfaceView) findViewById(R.id.videoView);
+        mVideoView = (SurfaceView) findViewById(R.id.videoView);
     }
 
     @Override
@@ -227,7 +227,7 @@ final class VLCVideoView extends FrameLayout {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         vout.addCallback(mVoutCallback);
         if (!vout.areViewsAttached()) {
-            vout.setVideoView(mSurfaceView);
+            vout.setVideoView(mVideoView);
             vout.attachViews();
         }
     }
@@ -270,10 +270,10 @@ final class VLCVideoView extends FrameLayout {
             surfaceHeight = (int) Math.ceil(parentHeight * mVideoHeight / mVideoVisibleHeight);
         }
 
-        final ViewGroup.LayoutParams surfaceLayoutParams = mSurfaceView.getLayoutParams();
+        final ViewGroup.LayoutParams surfaceLayoutParams = mVideoView.getLayoutParams();
         surfaceLayoutParams.width  = surfaceWidth;
         surfaceLayoutParams.height = surfaceHeight;
-        mSurfaceView.setLayoutParams(surfaceLayoutParams);
+        mVideoView.setLayoutParams(surfaceLayoutParams);
 
         VLCVideoView.this.measure(parentWidth, parentHeight);
         VLCVideoView.this.layout(parentLeft, parentTop, parentLeft + parentWidth, parentTop + parentHeight);
