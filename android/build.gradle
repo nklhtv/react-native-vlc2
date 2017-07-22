@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:${_supportLibrary}"
     compile "org.bitbucket.stremio:vlc-android-sdk:2.0.6"
-    compile "com.facebook.react:react-native:+" // from node_modules
+    compile "com.android.support:support-annotations:${_supportLibrary}"
+    compile "com.facebook.react:react-native:+"
 }
