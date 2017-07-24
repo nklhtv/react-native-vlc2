@@ -117,14 +117,14 @@ const RCTVLCVideoViewInterface = {
         ...View.propTypes,
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
-        onMediaChanged: PropTypes.func,
-        onBuffering: PropTypes.func,
-        onPlaying: PropTypes.func,
-        onPaused: PropTypes.func,
-        onEndReached: PropTypes.func,
-        onError: PropTypes.func,
-        onTimeChanged: PropTypes.func,
-        onSeekPerformed: PropTypes.func
+        [RCTVLCVideoViewConstants.ON_MEDIA_CHANGED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_PAUSED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_END_REACHED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_ERROR]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: PropTypes.func
     }
 };
 
