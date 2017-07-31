@@ -200,7 +200,7 @@ public final class VLCVideoView extends FrameLayout {
 
         if (startTime > 0) {
             final int startTimeInSeconds = startTime / 1000;
-            final String startTimeOption = MessageFormat.format(":start-time={0}", startTimeInSeconds);
+            final String startTimeOption = MessageFormat.format(":start-time={0}", String.valueOf(startTimeInSeconds));
             newMedia.addOption(startTimeOption);
         }
 
