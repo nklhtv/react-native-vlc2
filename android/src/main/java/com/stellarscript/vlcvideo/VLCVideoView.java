@@ -21,7 +21,7 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-final class VLCVideoView extends FrameLayout {
+public final class VLCVideoView extends FrameLayout {
 
     private static final String TAG = VLCVideoView.class.getSimpleName();
     private static final String HARDWARE_ACCELERATION_ERROR_MESSAGE = "VLC encountered an error with hardware acceleration.";
