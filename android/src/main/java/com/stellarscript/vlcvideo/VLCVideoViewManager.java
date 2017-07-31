@@ -1,6 +1,7 @@
 package com.stellarscript.vlcvideo;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -11,8 +12,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
@@ -41,6 +40,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         final Map<String, Object> events = MapBuilder.newHashMap();
 
+        events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
         events.put(VLCVideoEvents.ON_BUFFERING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_BUFFERING_EVENT));
         events.put(VLCVideoEvents.ON_PLAYING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PLAYING_EVENT));
         events.put(VLCVideoEvents.ON_PAUSED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PAUSED_EVENT));
@@ -57,6 +57,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     public Map<String, Object> getExportedViewConstants() {
         final Map<String, Object> constants = MapBuilder.newHashMap();
 
+        constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
         constants.put("ON_BUFFERING", VLCVideoEvents.ON_BUFFERING_EVENT);
         constants.put("ON_PLAYING", VLCVideoEvents.ON_PLAYING_EVENT);
         constants.put("ON_PAUSED", VLCVideoEvents.ON_PAUSED_EVENT);

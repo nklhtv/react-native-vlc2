@@ -10,6 +10,7 @@ class VLCVideo extends Component {
         this._assignRoot = this._assignRoot.bind(this);
 
         this.callbacks = {
+            [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: this._invokeEventCallback.bind(this, 'onSeekRequested'),
             [RCTVLCVideoViewConstants.ON_BUFFERING]: this._invokeEventCallback.bind(this, 'onBuffering'),
             [RCTVLCVideoViewConstants.ON_PLAYING]: this._invokeEventCallback.bind(this, 'onPlaying'),
             [RCTVLCVideoViewConstants.ON_PAUSED]: this._invokeEventCallback.bind(this, 'onPaused'),
@@ -94,6 +95,7 @@ VLCVideo.propTypes = {
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
+    onSeekRequested: PropTypes.func,
     onBuffering: PropTypes.func,
     onPlaying: PropTypes.func,
     onPaused: PropTypes.func,
@@ -115,6 +117,7 @@ const RCTVLCVideoViewInterface = {
         ...View.propTypes,
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
+        [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PAUSED]: PropTypes.func,

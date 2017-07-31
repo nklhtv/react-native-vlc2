@@ -223,6 +223,9 @@ public final class VLCVideoView extends FrameLayout {
         mMediaPlayer.setTime(time);
         mMediaPlayer.play();
         mSeekRequested = true;
+        final WritableMap event = Arguments.createMap();
+        event.putDouble(VLCVideoEvents.ON_SEEK_REQUESTED_TIME_PROP, time);
+        mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, event);
     }
 
     public boolean isPlaying() {
