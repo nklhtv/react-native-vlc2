@@ -225,6 +225,18 @@ final class VLCVideoView extends FrameLayout {
         mSeekRequested = true;
     }
 
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
+    }
+
+    public boolean isSeekable() {
+        return mMediaPlayer.isSeekable();
+    }
+
+    public long getTime() {
+        return mMediaPlayer.getTime();
+    }
+
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         vout.addCallback(mVoutCallback);
