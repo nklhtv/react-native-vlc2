@@ -70,6 +70,7 @@ final class VLCVideoView extends FrameLayout {
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     eventName = VLCVideoEvents.ON_ERROR_EVENT;
+                    event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, true);
                     event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, MEDIA_ERROR_MESSAGE);
                     break;
                 case MediaPlayer.Event.Paused:
@@ -130,6 +131,7 @@ final class VLCVideoView extends FrameLayout {
         @Override
         public void onHardwareAccelerationError(@NonNull final IVLCVout vout) {
             final WritableMap event = Arguments.createMap();
+            event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, true);
             event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, HARDWARE_ACCELERATION_ERROR_MESSAGE);
             mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
         }

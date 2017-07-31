@@ -17,6 +17,7 @@ final class VLCVideoEvents {
     static final String ON_SEEK_PERFORMED_EVENT = getFullEventName("onSeekPerformed");
 
     static final String ON_ERROR_MESSAGE_PROP = "message";
+    static final String ON_ERROR_IS_CRITICAL_PROP = "isCritical";
     static final String ON_TIME_CHANGED_TIME_PROP = "time";
     static final String ON_PLAYING_DURATION_PROP = "duration";
     static final String ON_BUFFERING_BUFFERING_PROP = "buffering";
