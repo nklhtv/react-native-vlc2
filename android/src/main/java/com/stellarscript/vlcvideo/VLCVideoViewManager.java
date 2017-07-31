@@ -2,6 +2,7 @@ package com.stellarscript.vlcvideo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,6 +18,12 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     private static final String REACT_CLASS = "RCT" + VLCVideoView.class.getSimpleName();
     private static final String REACT_REGISTRATION_NAME = "registrationName";
+
+    private final View.OnKeyListener mOnKeyListener;
+
+    public VLCVideoViewManager(@Nullable final View.OnKeyListener onKeyListener) {
+        mOnKeyListener = onKeyListener;
+    }
 
     @Override
     public String getName() {
@@ -123,17 +130,17 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         videoView.loadMedia(sourceUrl, startTime, autoplay);
     }
 
-    @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP)
+    @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
     public void setKeyControlEnabled(@NonNull final VLCVideoView videoView, final boolean keyControlEnabled) {
-//        if (keyControlEnabled) {
-//            videoView.setFocusable(true);
-//            videoView.requestFocus();
-//            videoView.setOnKeyListener(videoView);
-//        } else {
-//            videoView.setFocusable(false);
-//            videoView.clearFocus();
-//            videoView.setOnKeyListener(null);
-//        }
+        if (keyControlEnabled && mOnKeyListener != null) {
+            videoView.setFocusable(true);
+            videoView.requestFocus();
+            videoView.setOnKeyListener(mOnKeyListener);
+        } else {
+            videoView.setFocusable(true);
+            videoView.requestFocus();
+            videoView.setOnKeyListener(null);
+        }
     }
 
 }
