@@ -7,11 +7,8 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -35,7 +32,7 @@ public final class VLCVideoView extends FrameLayout {
     private int mSarDen;
     private boolean mSeekRequested;
     private final ThemedReactContext mThemedReactContext;
-    private final RCTEventEmitter mEventEmitter;
+    private final VLCVideoEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
     private final SurfaceView mVideoView;
@@ -61,44 +58,33 @@ public final class VLCVideoView extends FrameLayout {
 
         @Override
         public void onEvent(@NonNull final MediaPlayer.Event mediaEvent) {
-            final WritableMap event = Arguments.createMap();
-            String eventName = VLCVideoEvents.UNHANDLED_EVENT;
-
-            switch (mediaEvent.type) {
+            final int eventType = mediaEvent.type;
+            switch (eventType) {
                 case MediaPlayer.Event.EndReached:
-                    eventName = VLCVideoEvents.ON_END_REACHED_EVENT;
+                    mEventEmitter.emitOnEndReached();
                     break;
                 case MediaPlayer.Event.EncounteredError:
-                    eventName = VLCVideoEvents.ON_ERROR_EVENT;
-                    event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, true);
-                    event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, MEDIA_ERROR_MESSAGE);
+                    mEventEmitter.emitOnError(MEDIA_ERROR_MESSAGE, true);
                     break;
                 case MediaPlayer.Event.Paused:
-                    eventName = VLCVideoEvents.ON_PAUSED_EVENT;
+                    mEventEmitter.emitOnPaused();
                     break;
                 case MediaPlayer.Event.TimeChanged:
                     final double currentTime = mMediaPlayer.getTime();
-                    eventName = VLCVideoEvents.ON_TIME_CHANGED_EVENT;
-                    event.putDouble(VLCVideoEvents.ON_TIME_CHANGED_TIME_PROP, currentTime);
+                    mEventEmitter.emitOnTimeChanged(currentTime);
+                    if (mSeekRequested) {
+                        mSeekRequested = false;
+                        mEventEmitter.emitOnSeekPerformed();
+                    }
                     break;
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
-                    eventName = VLCVideoEvents.ON_PLAYING_EVENT;
-                    event.putDouble(VLCVideoEvents.ON_PLAYING_DURATION_PROP, duration);
+                    mEventEmitter.emitOnPlaying(duration);
                     break;
                 case MediaPlayer.Event.Buffering:
                     final double buffering = mediaEvent.getBuffering();
-                    eventName = VLCVideoEvents.ON_BUFFERING_EVENT;
-                    event.putDouble(VLCVideoEvents.ON_BUFFERING_BUFFERING_PROP, buffering);
+                    mEventEmitter.emitOnBuffering(buffering);
                     break;
-            }
-
-            if (!eventName.equals(VLCVideoEvents.UNHANDLED_EVENT)) {
-                mEventEmitter.receiveEvent(VLCVideoView.this.getId(), eventName, event);
-                if (mSeekRequested && eventName.equals(VLCVideoEvents.ON_TIME_CHANGED_EVENT)) {
-                    mSeekRequested = false;
-                    mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
-                }
             }
         }
 
@@ -130,10 +116,7 @@ public final class VLCVideoView extends FrameLayout {
 
         @Override
         public void onHardwareAccelerationError(@NonNull final IVLCVout vout) {
-            final WritableMap event = Arguments.createMap();
-            event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, true);
-            event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, HARDWARE_ACCELERATION_ERROR_MESSAGE);
-            mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
+            mEventEmitter.emitOnError(HARDWARE_ACCELERATION_ERROR_MESSAGE, true);
         }
 
     };
@@ -144,7 +127,7 @@ public final class VLCVideoView extends FrameLayout {
         mThemedReactContext = themedReactContext;
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
 
-        mEventEmitter = mThemedReactContext.getJSModule(RCTEventEmitter.class);
+        mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
 
         final ArrayList<String> libVLCOptions = new ArrayList<>();
         libVLCOptions.add("-vvv");
@@ -223,9 +206,7 @@ public final class VLCVideoView extends FrameLayout {
         mMediaPlayer.setTime(time);
         mMediaPlayer.play();
         mSeekRequested = true;
-        final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_SEEK_REQUESTED_TIME_PROP, time);
-        mEventEmitter.receiveEvent(VLCVideoView.this.getId(), VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, event);
+        mEventEmitter.emitOnSeekRequested(time);
     }
 
     public boolean isPlaying() {
