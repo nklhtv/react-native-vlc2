@@ -47,7 +47,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         final Map<String, Object> events = MapBuilder.newHashMap();
 
-        events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
         events.put(VLCVideoEvents.ON_BUFFERING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_BUFFERING_EVENT));
         events.put(VLCVideoEvents.ON_PLAYING_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PLAYING_EVENT));
         events.put(VLCVideoEvents.ON_PAUSED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PAUSED_EVENT));
@@ -55,6 +54,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_ERROR_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_ERROR_EVENT));
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
+        events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
 
         return events;
     }
@@ -64,7 +64,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     public Map<String, Object> getExportedViewConstants() {
         final Map<String, Object> constants = MapBuilder.newHashMap();
 
-        constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
         constants.put("ON_BUFFERING", VLCVideoEvents.ON_BUFFERING_EVENT);
         constants.put("ON_PLAYING", VLCVideoEvents.ON_PLAYING_EVENT);
         constants.put("ON_PAUSED", VLCVideoEvents.ON_PAUSED_EVENT);
@@ -72,6 +71,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_ERROR", VLCVideoEvents.ON_ERROR_EVENT);
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
         constants.put("ON_SEEK_PERFORMED", VLCVideoEvents.ON_SEEK_PERFORMED_EVENT);
+        constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
 
         return constants;
     }
