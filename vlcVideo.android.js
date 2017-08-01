@@ -87,6 +87,18 @@ class VLCVideo extends Component {
         );
     }
 
+    setFocusable(focusable) {
+        if (typeof focusable !== 'boolean') {
+            focusable = false;
+        }
+
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.setFocusable,
+            [focusable]
+        );
+    }
+
 }
 
 VLCVideo.propTypes = {
