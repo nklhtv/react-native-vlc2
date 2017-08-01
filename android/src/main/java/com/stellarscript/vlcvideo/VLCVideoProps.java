@@ -8,7 +8,6 @@ final class VLCVideoProps {
     static final int MEDIA_START_TIME_DEFAULT_VALUE = 0;
     static final String MEDIA_AUTOPLAY_PROP = "autoplay";
     static final boolean MEDIA_AUTOPLAY_DEFAULT_VALUE = true;
-
     static final String KEY_CONTROL_ENABLED_PROP = "keyControlEnabled";
     static final boolean KEY_CONTROL_ENABLED_DEFAULT_VALUE = false;
 
