@@ -6,8 +6,6 @@ final class VLCVideoEvents {
 
     private static final String EVENT_NAME_PREFIX = VLCVideoView.class.getSimpleName();
 
-    static final String UNHANDLED_EVENT = "unhandledEvent";
-
     static final String ON_BUFFERING_EVENT = getFullEventName("onBuffering");
     static final String ON_PLAYING_EVENT = getFullEventName("onPlaying");
     static final String ON_PAUSED_EVENT = getFullEventName("onPaused");
