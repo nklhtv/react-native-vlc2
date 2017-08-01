@@ -18,5 +18,8 @@ final class VLCVideoProps {
     static final String SEEK_COMMAND_NAME = "seek";
     static final int SEEK_COMMAND_ID = 3;
     static final int SEEK_COMMAND_TIME_ARGUMENT_INDEX = 0;
+    static final String SET_FOCUSABLE_COMMAND_NAME = "setFocusable";
+    static final int SET_FOCUSABLE_COMMAND_ID = 4;
+    static final int SET_FOCUSABLE_FOCUSABLE_ARGUMENT_INDEX = 0;
 
 }
