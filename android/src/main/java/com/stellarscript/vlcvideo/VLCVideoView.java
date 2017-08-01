@@ -125,7 +125,6 @@ public final class VLCVideoView extends FrameLayout {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
-        mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
 
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
 
@@ -135,7 +134,6 @@ public final class VLCVideoView extends FrameLayout {
         mLibVLC = new LibVLC(mThemedReactContext, libVLCOptions);
 
         mMediaPlayer = new MediaPlayer(mLibVLC);
-        mMediaPlayer.setEventListener(mMediaPlayerEventListener);
 
         LayoutInflater.from(mThemedReactContext).inflate(R.layout.video, VLCVideoView.this);
         mVideoView = (SurfaceView) findViewById(R.id.videoView);
@@ -144,7 +142,8 @@ public final class VLCVideoView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        attachVLCVoutViews();
+        mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
+        mMediaPlayer.setEventListener(mMediaPlayerEventListener);
     }
 
     @Override
@@ -152,6 +151,8 @@ public final class VLCVideoView extends FrameLayout {
         super.onDetachedFromWindow();
         detachVLCVoutViews();
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
+        mMediaPlayer.setEventListener(null);
+        mMediaPlayer.stop();
         mMediaPlayer.release();
         mLibVLC.release();
     }
