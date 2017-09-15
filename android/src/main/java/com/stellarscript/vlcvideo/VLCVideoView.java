@@ -44,8 +44,10 @@ public final class VLCVideoView extends FrameLayout {
 
         @Override
         public void onHostPause() {
-            mMediaPlayer.pause();
-            VLCVideoView.this.detachVLCVoutViews();
+            if (!mMediaPlayer.isReleased()) {
+                mMediaPlayer.pause();
+                VLCVideoView.this.detachVLCVoutViews();
+            }
         }
 
         @Override
