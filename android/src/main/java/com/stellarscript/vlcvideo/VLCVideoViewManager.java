@@ -1,7 +1,5 @@
 package com.stellarscript.vlcvideo;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.facebook.react.bridge.ReadableArray;
@@ -21,7 +19,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     private final View.OnKeyListener mOnKeyListener;
 
-    public VLCVideoViewManager(@Nullable final View.OnKeyListener onKeyListener) {
+    public VLCVideoViewManager(final View.OnKeyListener onKeyListener) {
         mOnKeyListener = onKeyListener;
     }
 
@@ -31,7 +29,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     }
 
     @Override
-    @Nullable
     public Map<String, Integer> getCommandsMap() {
         final Map<String, Integer> commands = MapBuilder.newHashMap();
 
@@ -44,7 +41,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     }
 
     @Override
-    @Nullable
     public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         final Map<String, Object> events = MapBuilder.newHashMap();
 
@@ -60,7 +56,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         return events;
     }
 
-    @Nullable
     @Override
     public Map<String, Object> getExportedViewConstants() {
         final Map<String, Object> constants = MapBuilder.newHashMap();
@@ -78,12 +73,12 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     }
 
     @Override
-    protected VLCVideoView createViewInstance(@NonNull final ThemedReactContext themedReactContext) {
+    protected VLCVideoView createViewInstance(final ThemedReactContext themedReactContext) {
         return new VLCVideoView(themedReactContext);
     }
 
     @Override
-    public void receiveCommand(@NonNull final VLCVideoView videoView, final int commandId, @Nullable final ReadableArray args) {
+    public void receiveCommand(final VLCVideoView videoView, final int commandId, final ReadableArray args) {
         switch (commandId) {
             case VLCVideoProps.PLAY_COMMAND_ID:
                 videoView.play();
@@ -118,7 +113,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     }
 
     @ReactProp(name = VLCVideoProps.MEDIA_PROP)
-    public void loadMedia(@NonNull final VLCVideoView videoView, @Nullable final ReadableMap media) {
+    public void loadMedia(final VLCVideoView videoView, final ReadableMap media) {
         if (media == null ||
                 !media.hasKey(VLCVideoProps.MEDIA_SOURCE_URL_PROP) ||
                 media.isNull(VLCVideoProps.MEDIA_SOURCE_URL_PROP) ||
@@ -146,7 +141,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     }
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
-    public void setKeyControlEnabled(@NonNull final VLCVideoView videoView, final boolean keyControlEnabled) {
+    public void setKeyControlEnabled(final VLCVideoView videoView, final boolean keyControlEnabled) {
         if (keyControlEnabled) {
             videoView.setOnKeyListener(mOnKeyListener);
         } else {

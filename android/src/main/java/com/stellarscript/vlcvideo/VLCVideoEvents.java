@@ -1,7 +1,5 @@
 package com.stellarscript.vlcvideo;
 
-import android.support.annotation.NonNull;
-
 final class VLCVideoEvents {
 
     private static final String EVENT_NAME_PREFIX = VLCVideoView.class.getSimpleName();
@@ -22,7 +20,7 @@ final class VLCVideoEvents {
     static final String ON_BUFFERING_BUFFERING_PROP = "buffering";
     static final String ON_SEEK_REQUESTED_TIME_PROP = "time";
 
-    private static String getFullEventName(@NonNull final String eventName) {
+    private static String getFullEventName(final String eventName) {
         return EVENT_NAME_PREFIX.concat(eventName);
     }
 
