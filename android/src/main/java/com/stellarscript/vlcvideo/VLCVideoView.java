@@ -2,9 +2,8 @@ package com.stellarscript.vlcvideo;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -136,8 +135,8 @@ public final class VLCVideoView extends FrameLayout {
 
         mMediaPlayer = new MediaPlayer(mLibVLC);
 
-        LayoutInflater.from(mThemedReactContext).inflate(R.layout.video, VLCVideoView.this);
-        mVideoView = (SurfaceView) findViewById(R.id.videoView);
+        mVideoView = new SurfaceView(mThemedReactContext);
+        addView(mVideoView);
     }
 
     @Override
@@ -270,9 +269,10 @@ public final class VLCVideoView extends FrameLayout {
             surfaceHeight = (int) Math.ceil(parentHeight * mVideoHeight / mVideoVisibleHeight);
         }
 
-        final ViewGroup.LayoutParams surfaceLayoutParams = mVideoView.getLayoutParams();
+        final FrameLayout.LayoutParams surfaceLayoutParams = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
         surfaceLayoutParams.width  = surfaceWidth;
         surfaceLayoutParams.height = surfaceHeight;
+        surfaceLayoutParams.gravity = Gravity.CENTER;
         mVideoView.setLayoutParams(surfaceLayoutParams);
 
         VLCVideoView.this.measure(parentWidth, parentHeight);
