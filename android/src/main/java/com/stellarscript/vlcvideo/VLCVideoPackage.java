@@ -1,6 +1,5 @@
 package com.stellarscript.vlcvideo;
 
-import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.facebook.react.ReactPackage;
@@ -17,7 +16,7 @@ public final class VLCVideoPackage implements ReactPackage {
 
     private final View.OnKeyListener mOnKeyListener;
 
-    public VLCVideoPackage(@NonNull final View.OnKeyListener onKeyListener) {
+    public VLCVideoPackage(final View.OnKeyListener onKeyListener) {
         mOnKeyListener = onKeyListener;
     }
 
@@ -26,7 +25,7 @@ public final class VLCVideoPackage implements ReactPackage {
     }
 
     @Override
-    public List<NativeModule> createNativeModules(@NonNull final ReactApplicationContext reactContext) {
+    public List<NativeModule> createNativeModules(final ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
 
@@ -36,7 +35,7 @@ public final class VLCVideoPackage implements ReactPackage {
     }
 
     @Override
-    public List<ViewManager> createViewManagers(@NonNull final ReactApplicationContext reactContext) {
+    public List<ViewManager> createViewManagers(final ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(new VLCVideoViewManager(mOnKeyListener));
     }
 

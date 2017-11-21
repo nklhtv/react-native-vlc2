@@ -1,7 +1,6 @@
 package com.stellarscript.vlcvideo;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
@@ -57,7 +56,7 @@ public final class VLCVideoView extends FrameLayout {
     private final MediaPlayer.EventListener mMediaPlayerEventListener = new MediaPlayer.EventListener() {
 
         @Override
-        public void onEvent(@NonNull final MediaPlayer.Event mediaEvent) {
+        public void onEvent(final MediaPlayer.Event mediaEvent) {
             final int eventType = mediaEvent.type;
             switch (eventType) {
                 case MediaPlayer.Event.EndReached:
@@ -92,7 +91,7 @@ public final class VLCVideoView extends FrameLayout {
     private final IVLCVout.Callback mVoutCallback = new IVLCVout.Callback() {
 
         @Override
-        public void onNewLayout(@NonNull final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
+        public void onNewLayout(final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
             if (width * height == 0) {
                 return;
             }
@@ -107,21 +106,21 @@ public final class VLCVideoView extends FrameLayout {
         }
 
         @Override
-        public void onSurfacesCreated(@NonNull final IVLCVout vout) {
+        public void onSurfacesCreated(final IVLCVout vout) {
         }
 
         @Override
-        public void onSurfacesDestroyed(@NonNull final IVLCVout vout) {
+        public void onSurfacesDestroyed(final IVLCVout vout) {
         }
 
         @Override
-        public void onHardwareAccelerationError(@NonNull final IVLCVout vout) {
+        public void onHardwareAccelerationError(final IVLCVout vout) {
             mEventEmitter.emitOnError(HARDWARE_ACCELERATION_ERROR_MESSAGE, true);
         }
 
     };
 
-    public VLCVideoView(@NonNull final ThemedReactContext themedReactContext) {
+    public VLCVideoView(final ThemedReactContext themedReactContext) {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
@@ -165,7 +164,7 @@ public final class VLCVideoView extends FrameLayout {
         }
     }
 
-    public void loadMedia(@NonNull final String sourceUrl, final int startTime, final boolean autoplay) {
+    public void loadMedia(final String sourceUrl, final int startTime, final boolean autoplay) {
         if (sourceUrl.isEmpty()) {
             return;
         }

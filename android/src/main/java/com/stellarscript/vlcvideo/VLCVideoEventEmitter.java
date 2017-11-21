@@ -1,7 +1,5 @@
 package com.stellarscript.vlcvideo;
 
-import android.support.annotation.NonNull;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -12,7 +10,7 @@ final class VLCVideoEventEmitter {
     private final VLCVideoView mVideoView;
     private final RCTEventEmitter mEventEmitter;
 
-    public VLCVideoEventEmitter(@NonNull final VLCVideoView videoView, @NonNull final ThemedReactContext themedReactContext) {
+    public VLCVideoEventEmitter(final VLCVideoView videoView, final ThemedReactContext themedReactContext) {
         mVideoView = videoView;
         mEventEmitter = themedReactContext.getJSModule(RCTEventEmitter.class);
     }
@@ -37,7 +35,7 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_END_REACHED_EVENT, null);
     }
 
-    public void emitOnError(@NonNull final String message, final boolean isCritical) {
+    public void emitOnError(final String message, final boolean isCritical) {
         final WritableMap event = Arguments.createMap();
         event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, message);
         event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, isCritical);
