@@ -1,11 +1,9 @@
 apply plugin: 'com.android.library'
 
-def versions = project.hasProperty("versions") ? project.versions : [];
-def _compileSdkVersion = versions.compileSdkVersion ?: 23;
-def _buildToolsVersion = versions.buildToolsVersion ?: "23.0.1";
-def _minSdkVersion = versions.minSdkVersion ?: 16;
-def _targetSdkVersion = versions.targetSdkVersion ?: 22;
-def _supportLibrary = versions.supportLibrary ?: "23.4.0";
+def _compileSdkVersion = project.hasProperty("compileSdkVersion") ? project.compileSdkVersion.toInteger() : 24;
+def _buildToolsVersion = project.hasProperty("buildToolsVersion") ? project.buildToolsVersion : "26.0.2";
+def _minSdkVersion = project.hasProperty("minSdkVersion") ? project.minSdkVersion.toInteger() : 16;
+def _targetSdkVersion = project.hasProperty("targetSdkVersion") ? project.targetSdkVersion.toInteger() : 22;
 
 android {
     compileSdkVersion _compileSdkVersion
@@ -14,8 +12,8 @@ android {
     defaultConfig {
         minSdkVersion _minSdkVersion
         targetSdkVersion _targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 3
+        versionName "2.0.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -24,6 +22,5 @@ android {
 
 dependencies {
     compile "org.bitbucket.stremio:vlc-android-sdk:2.0.6"
-    compile "com.android.support:support-annotations:${_supportLibrary}"
-    compile "com.facebook.react:react-native:+"
+    compile "com.facebook.react:react-native:+" // from node_modules
 }
