@@ -203,10 +203,10 @@ public final class VLCVideoView extends FrameLayout {
     }
 
     public void seek(final int time) {
-        mMediaPlayer.setTime(time);
-        mMediaPlayer.play();
         mIsSeekRequested = true;
         mEventEmitter.emitOnSeekRequested(time);
+        mMediaPlayer.setTime(time);
+        mMediaPlayer.play();
     }
 
     public boolean isPlaying() {
