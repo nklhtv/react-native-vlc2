@@ -27,7 +27,7 @@ public final class VLCVideoView extends FrameLayout {
     private int mVideoVisibleWidth;
     private int mSarNum;
     private int mSarDen;
-    private boolean mSeekRequested;
+    private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final VLCVideoEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
@@ -71,8 +71,8 @@ public final class VLCVideoView extends FrameLayout {
                 case MediaPlayer.Event.TimeChanged:
                     final double currentTime = mMediaPlayer.getTime();
                     mEventEmitter.emitOnTimeChanged(currentTime);
-                    if (mSeekRequested) {
-                        mSeekRequested = false;
+                    if (mIsSeekRequested) {
+                        mIsSeekRequested = false;
                         mEventEmitter.emitOnSeekPerformed();
                     }
                     break;
@@ -205,7 +205,7 @@ public final class VLCVideoView extends FrameLayout {
     public void seek(final int time) {
         mMediaPlayer.setTime(time);
         mMediaPlayer.play();
-        mSeekRequested = true;
+        mIsSeekRequested = true;
         mEventEmitter.emitOnSeekRequested(time);
     }
 
