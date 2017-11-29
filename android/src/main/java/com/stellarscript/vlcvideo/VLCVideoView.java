@@ -259,7 +259,8 @@ public final class VLCVideoView extends FrameLayout {
         final double videoAspectRatio = videoVisibleWidth / mVideoVisibleHeight;
         final double parentAspectRatio = (double)parentWidth / (double)parentHeight;
 
-        int surfaceWidth, surfaceHeight;
+        final int surfaceWidth;
+        final int surfaceHeight;
         if (parentAspectRatio < videoAspectRatio) {
             surfaceWidth = (int) Math.ceil(parentWidth * mVideoWidth / mVideoVisibleWidth);
             surfaceHeight = (int) Math.ceil((parentWidth / videoAspectRatio) * mVideoHeight / mVideoVisibleHeight);
