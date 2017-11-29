@@ -61,9 +61,11 @@ public final class VLCVideoView extends FrameLayout {
             switch (eventType) {
                 case MediaPlayer.Event.EndReached:
                     mEventEmitter.emitOnEndReached();
+                    VLCVideoView.this.stop();
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     mEventEmitter.emitOnError(MEDIA_ERROR_MESSAGE, true);
+                    VLCVideoView.this.stop();
                     break;
                 case MediaPlayer.Event.Paused:
                     mEventEmitter.emitOnPaused();
@@ -116,6 +118,7 @@ public final class VLCVideoView extends FrameLayout {
         @Override
         public void onHardwareAccelerationError(final IVLCVout vout) {
             mEventEmitter.emitOnError(HARDWARE_ACCELERATION_ERROR_MESSAGE, true);
+            VLCVideoView.this.stop();
         }
 
     };
@@ -187,6 +190,7 @@ public final class VLCVideoView extends FrameLayout {
             newMedia.addOption(startTimeOption);
         }
 
+        stop();
         mMediaPlayer.setMedia(newMedia);
 
         if (autoplay) {
@@ -219,6 +223,11 @@ public final class VLCVideoView extends FrameLayout {
 
     public long getTime() {
         return mMediaPlayer.getTime();
+    }
+
+    private void stop() {
+        mIsSeekRequested = false;
+        mMediaPlayer.stop();
     }
 
     private void attachVLCVoutViews() {
