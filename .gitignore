@@ -1,3 +1,4 @@
 /.vscode
 *.iml
 /android/build
+/example/node_modules
