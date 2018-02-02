@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public final class VLCVideoView extends FrameLayout {
 
-    private static final String HARDWARE_ACCELERATION_ERROR_MESSAGE = "VLC encountered an error with hardware acceleration.";
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
     private int mVideoHeight;
@@ -33,6 +32,24 @@ public final class VLCVideoView extends FrameLayout {
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
     private final SurfaceView mVideoView;
+    private final IVLCVout.OnNewVideoLayoutListener mOnNewVideoLayoutListener = new IVLCVout.OnNewVideoLayoutListener() {
+
+        @Override
+        public void onNewVideoLayout(final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
+            if (width * height == 0) {
+                return;
+            }
+
+            mVideoWidth = width;
+            mVideoHeight = height;
+            mVideoVisibleWidth  = visibleWidth;
+            mVideoVisibleHeight = visibleHeight;
+            mSarNum = sarNum;
+            mSarDen = sarDen;
+            VLCVideoView.this.changeSurfaceLayout();
+        }
+
+    };
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -93,32 +110,11 @@ public final class VLCVideoView extends FrameLayout {
     private final IVLCVout.Callback mVoutCallback = new IVLCVout.Callback() {
 
         @Override
-        public void onNewLayout(final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
-            if (width * height == 0) {
-                return;
-            }
-
-            mVideoWidth = width;
-            mVideoHeight = height;
-            mVideoVisibleWidth  = visibleWidth;
-            mVideoVisibleHeight = visibleHeight;
-            mSarNum = sarNum;
-            mSarDen = sarDen;
-            VLCVideoView.this.changeSurfaceLayout();
-        }
-
-        @Override
         public void onSurfacesCreated(final IVLCVout vout) {
         }
 
         @Override
         public void onSurfacesDestroyed(final IVLCVout vout) {
-        }
-
-        @Override
-        public void onHardwareAccelerationError(final IVLCVout vout) {
-            mEventEmitter.emitOnError(HARDWARE_ACCELERATION_ERROR_MESSAGE, true);
-            VLCVideoView.this.stop();
         }
 
     };
@@ -235,7 +231,7 @@ public final class VLCVideoView extends FrameLayout {
         vout.addCallback(mVoutCallback);
         if (!vout.areViewsAttached()) {
             vout.setVideoView(mVideoView);
-            vout.attachViews();
+            vout.attachViews(mOnNewVideoLayoutListener);
         }
     }
 
