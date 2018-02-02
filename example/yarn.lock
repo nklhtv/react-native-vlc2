@@ -2788,6 +2788,10 @@ react-devtools-core@3.0.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-vlc2@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-vlc2/-/react-native-vlc2-2.0.3.tgz#578157b77fb799d6d4e6b8ea215879e5dea48857"
+
 react-native@0.52.2:
   version "0.52.2"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.52.2.tgz#1ae9a4c4441bd6e54a8ffc8aae4ac2b5c7cccd68"

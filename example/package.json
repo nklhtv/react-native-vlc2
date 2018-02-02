@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "react": "16.2.0",
-    "react-native": "0.52.2"
+    "react-native": "0.52.2",
+    "react-native-vlc2": "2.0.3"
   }
 }
