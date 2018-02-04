@@ -93,32 +93,11 @@ public final class VLCVideoView extends FrameLayout {
     private final IVLCVout.Callback mVoutCallback = new IVLCVout.Callback() {
 
         @Override
-        public void onNewLayout(final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
-            if (width * height == 0) {
-                return;
-            }
-
-            mVideoWidth = width;
-            mVideoHeight = height;
-            mVideoVisibleWidth  = visibleWidth;
-            mVideoVisibleHeight = visibleHeight;
-            mSarNum = sarNum;
-            mSarDen = sarDen;
-            VLCVideoView.this.changeSurfaceLayout();
-        }
-
-        @Override
         public void onSurfacesCreated(final IVLCVout vout) {
         }
 
         @Override
         public void onSurfacesDestroyed(final IVLCVout vout) {
-        }
-
-        @Override
-        public void onHardwareAccelerationError(final IVLCVout vout) {
-            mEventEmitter.emitOnError(HARDWARE_ACCELERATION_ERROR_MESSAGE, true);
-            VLCVideoView.this.stop();
         }
 
     };
@@ -249,6 +228,9 @@ public final class VLCVideoView extends FrameLayout {
 
     private void changeSurfaceLayout() {
         if (mVideoVisibleWidth * mVideoVisibleHeight == 0 || mVideoWidth * mVideoHeight == 0 || mSarDen == 0) {
+            mMediaPlayer.setAspectRatio(null);
+            mMediaPlayer.setScale(0);
+            mMediaPlayer.getVLCVout().setWindowSize(mVideoView.getWidth(), mVideoView.getHeight());
             return;
         }
 
