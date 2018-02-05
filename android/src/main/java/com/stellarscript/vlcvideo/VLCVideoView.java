@@ -13,7 +13,6 @@ import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 
 public final class VLCVideoView extends FrameLayout {
 
@@ -21,8 +20,8 @@ public final class VLCVideoView extends FrameLayout {
 
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
-    private final VLCVideoEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
+    private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
     private final SurfaceView mVideoView;
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
@@ -87,20 +86,13 @@ public final class VLCVideoView extends FrameLayout {
 
     };
 
-    public VLCVideoView(final ThemedReactContext themedReactContext) {
+    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC) {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
-
+        mLibVLC = libVLC;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
-
-        final ArrayList<String> libVLCOptions = new ArrayList<>();
-        libVLCOptions.add("-vvv");
-        libVLCOptions.add("--http-reconnect");
-        mLibVLC = new LibVLC(mThemedReactContext, libVLCOptions);
-
         mMediaPlayer = new MediaPlayer(mLibVLC);
-
         mVideoView = new SurfaceView(mThemedReactContext);
         addView(mVideoView);
     }
@@ -120,7 +112,6 @@ public final class VLCVideoView extends FrameLayout {
         mMediaPlayer.setEventListener(null);
         mMediaPlayer.stop();
         mMediaPlayer.release();
-        mLibVLC.release();
     }
 
     @Override
