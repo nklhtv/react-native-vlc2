@@ -1,7 +1,6 @@
 package com.stellarscript.vlcvideo;
 
 import android.net.Uri;
-import android.view.Gravity;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
 
@@ -20,36 +19,12 @@ public final class VLCVideoView extends FrameLayout {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
-    private int mVideoHeight;
-    private int mVideoWidth;
-    private int mVideoVisibleHeight;
-    private int mVideoVisibleWidth;
-    private int mSarNum;
-    private int mSarDen;
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final VLCVideoEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
     private final SurfaceView mVideoView;
-    private final IVLCVout.OnNewVideoLayoutListener mOnNewVideoLayoutListener = new IVLCVout.OnNewVideoLayoutListener() {
-
-        @Override
-        public void onNewVideoLayout(final IVLCVout vout, final int width, final int height, final int visibleWidth, final int visibleHeight, final int sarNum, final int sarDen) {
-            if (width * height == 0) {
-                return;
-            }
-
-            mVideoWidth = width;
-            mVideoHeight = height;
-            mVideoVisibleWidth  = visibleWidth;
-            mVideoVisibleHeight = visibleHeight;
-            mSarNum = sarNum;
-            mSarDen = sarDen;
-            VLCVideoView.this.changeSurfaceLayout();
-        }
-
-    };
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -59,9 +34,13 @@ public final class VLCVideoView extends FrameLayout {
 
         @Override
         public void onHostPause() {
-            if (!mMediaPlayer.isReleased()) {
-                mMediaPlayer.pause();
-                VLCVideoView.this.detachVLCVoutViews();
+            try {
+                if (!mMediaPlayer.isReleased()) {
+                    mMediaPlayer.pause();
+                    VLCVideoView.this.detachVLCVoutViews();
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -107,17 +86,6 @@ public final class VLCVideoView extends FrameLayout {
         }
 
     };
-    private final IVLCVout.Callback mVoutCallback = new IVLCVout.Callback() {
-
-        @Override
-        public void onSurfacesCreated(final IVLCVout vout) {
-        }
-
-        @Override
-        public void onSurfacesDestroyed(final IVLCVout vout) {
-        }
-
-    };
 
     public VLCVideoView(final ThemedReactContext themedReactContext) {
         super(themedReactContext);
@@ -159,7 +127,10 @@ public final class VLCVideoView extends FrameLayout {
     protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
-            changeSurfaceLayout();
+            final int width = getWidth();
+            final int height = getHeight();
+            final IVLCVout vout = mMediaPlayer.getVLCVout();
+            vout.setWindowSize(width, height);
         }
     }
 
@@ -228,60 +199,17 @@ public final class VLCVideoView extends FrameLayout {
 
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
-        vout.addCallback(mVoutCallback);
         if (!vout.areViewsAttached()) {
             vout.setVideoView(mVideoView);
-            vout.attachViews(mOnNewVideoLayoutListener);
+            vout.attachViews();
         }
     }
 
     private void detachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
-        vout.removeCallback(mVoutCallback);
         if (vout.areViewsAttached()) {
             vout.detachViews();
         }
-    }
-
-    private void changeSurfaceLayout() {
-        if (mVideoVisibleWidth * mVideoVisibleHeight == 0 || mVideoWidth * mVideoHeight == 0 || mSarDen == 0) {
-            return;
-        }
-
-        final int parentWidth = VLCVideoView.this.getWidth();
-        final int parentHeight = VLCVideoView.this.getHeight();
-        final int parentLeft = VLCVideoView.this.getLeft();
-        final int parentTop = VLCVideoView.this.getTop();
-
-        if (parentWidth * parentHeight == 0) {
-            return;
-        }
-
-        final IVLCVout vout = mMediaPlayer.getVLCVout();
-        vout.setWindowSize(parentWidth, parentHeight);
-
-        final double videoVisibleWidth = mVideoVisibleWidth * (double)mSarNum / (double)mSarDen;
-        final double videoAspectRatio = videoVisibleWidth / mVideoVisibleHeight;
-        final double parentAspectRatio = (double)parentWidth / (double)parentHeight;
-
-        final int surfaceWidth;
-        final int surfaceHeight;
-        if (parentAspectRatio < videoAspectRatio) {
-            surfaceWidth = (int) Math.ceil(parentWidth * mVideoWidth / mVideoVisibleWidth);
-            surfaceHeight = (int) Math.ceil((parentWidth / videoAspectRatio) * mVideoHeight / mVideoVisibleHeight);
-        } else {
-            surfaceWidth = (int) Math.ceil((parentHeight * videoAspectRatio) * mVideoWidth / mVideoVisibleWidth);
-            surfaceHeight = (int) Math.ceil(parentHeight * mVideoHeight / mVideoVisibleHeight);
-        }
-
-        final FrameLayout.LayoutParams surfaceLayoutParams = (FrameLayout.LayoutParams) mVideoView.getLayoutParams();
-        surfaceLayoutParams.width  = surfaceWidth;
-        surfaceLayoutParams.height = surfaceHeight;
-        surfaceLayoutParams.gravity = Gravity.CENTER;
-        mVideoView.setLayoutParams(surfaceLayoutParams);
-
-        VLCVideoView.this.measure(parentWidth, parentHeight);
-        VLCVideoView.this.layout(parentLeft, parentTop, parentLeft + parentWidth, parentTop + parentHeight);
     }
 
 }
