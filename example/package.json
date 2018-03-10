@@ -8,6 +8,6 @@
   "dependencies": {
     "react": "16.2.0",
     "react-native": "0.52.2",
-    "react-native-vlc2": "2.0.3"
+    "react-native-vlc2": "https://github.com/NikolaBorislavovHristov/react-native-vlc2.git#2.5.17"
   }
 }
