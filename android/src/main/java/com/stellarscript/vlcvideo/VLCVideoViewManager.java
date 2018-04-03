@@ -10,6 +10,8 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
+import org.videolan.libvlc.LibVLC;
+
 import java.util.Map;
 
 final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
@@ -18,9 +20,11 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     private static final String REACT_REGISTRATION_NAME = "registrationName";
 
     private final View.OnKeyListener mOnKeyListener;
+    private final LibVLC mLibVLC;
 
-    public VLCVideoViewManager(final View.OnKeyListener onKeyListener) {
+    public VLCVideoViewManager(final View.OnKeyListener onKeyListener, final LibVLC libVLC) {
         mOnKeyListener = onKeyListener;
+        mLibVLC = libVLC;
     }
 
     @Override
@@ -74,7 +78,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     @Override
     protected VLCVideoView createViewInstance(final ThemedReactContext themedReactContext) {
-        return new VLCVideoView(themedReactContext);
+        return new VLCVideoView(themedReactContext, mLibVLC);
     }
 
     @Override

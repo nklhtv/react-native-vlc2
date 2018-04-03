@@ -25,7 +25,7 @@ public final class MainApplication extends Application implements ReactApplicati
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
-                    new VLCVideoPackage()
+                    new VLCVideoPackage(MainApplication.this)
             );
         }
 
