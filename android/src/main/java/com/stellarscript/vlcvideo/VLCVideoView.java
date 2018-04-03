@@ -2,7 +2,6 @@ package com.stellarscript.vlcvideo;
 
 import android.net.Uri;
 import android.view.SurfaceView;
-import android.widget.FrameLayout;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -15,7 +14,7 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public final class VLCVideoView extends FrameLayout {
+public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
@@ -24,7 +23,6 @@ public final class VLCVideoView extends FrameLayout {
     private final VLCVideoEventEmitter mEventEmitter;
     private final LibVLC mLibVLC;
     private final MediaPlayer mMediaPlayer;
-    private final SurfaceView mVideoView;
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -100,9 +98,6 @@ public final class VLCVideoView extends FrameLayout {
         mLibVLC = new LibVLC(mThemedReactContext, libVLCOptions);
 
         mMediaPlayer = new MediaPlayer(mLibVLC);
-
-        mVideoView = new SurfaceView(mThemedReactContext);
-        addView(mVideoView);
     }
 
     @Override
@@ -127,8 +122,12 @@ public final class VLCVideoView extends FrameLayout {
     protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
-            final int width = getWidth();
-            final int height = getHeight();
+            final int width = right - left;
+            final int height = bottom - top;
+            if (width * height == 0) {
+                return;
+            }
+
             final IVLCVout vout = mMediaPlayer.getVLCVout();
             vout.setWindowSize(width, height);
         }
@@ -200,7 +199,7 @@ public final class VLCVideoView extends FrameLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            vout.setVideoView(mVideoView);
+            vout.setVideoView(VLCVideoView.this);
             vout.attachViews();
         }
     }
