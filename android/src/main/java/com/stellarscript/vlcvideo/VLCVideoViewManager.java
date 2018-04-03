@@ -39,7 +39,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.PLAY_COMMAND_NAME, VLCVideoProps.PLAY_COMMAND_ID);
         commands.put(VLCVideoProps.PAUSE_COMMAND_NAME, VLCVideoProps.PAUSE_COMMAND_ID);
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
-        commands.put(VLCVideoProps.SET_FOCUSABLE_COMMAND_NAME, VLCVideoProps.SET_FOCUSABLE_COMMAND_ID);
 
         return commands;
     }
@@ -97,20 +96,6 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.getType(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX) == ReadableType.Number) {
                     final int seekTime = (int) args.getDouble(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX);
                     videoView.seek(seekTime);
-                }
-                break;
-            case VLCVideoProps.SET_FOCUSABLE_COMMAND_ID:
-                if (args != null &&
-                        args.size() > 0 &&
-                        !args.isNull(VLCVideoProps.SET_FOCUSABLE_FOCUSABLE_ARGUMENT_INDEX) &&
-                        args.getType(VLCVideoProps.SET_FOCUSABLE_FOCUSABLE_ARGUMENT_INDEX) == ReadableType.Boolean) {
-                    final boolean focusable = args.getBoolean(VLCVideoProps.SET_FOCUSABLE_FOCUSABLE_ARGUMENT_INDEX);
-                    videoView.setFocusable(focusable);
-                    if (focusable) {
-                        videoView.requestFocus();
-                    } else {
-                        videoView.clearFocus();
-                    }
                 }
                 break;
         }
