@@ -135,10 +135,16 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
     public void setKeyControlEnabled(final VLCVideoView videoView, final boolean keyControlEnabled) {
-        if (keyControlEnabled) {
+        if (keyControlEnabled && mOnKeyListener != null) {
             videoView.setOnKeyListener(mOnKeyListener);
+            videoView.setFocusable(true);
+            videoView.setFocusableInTouchMode(true);
+            videoView.requestFocus();
         } else {
             videoView.setOnKeyListener(null);
+            videoView.setFocusable(false);
+            videoView.setFocusableInTouchMode(false);
+            videoView.clearFocus();
         }
     }
 
