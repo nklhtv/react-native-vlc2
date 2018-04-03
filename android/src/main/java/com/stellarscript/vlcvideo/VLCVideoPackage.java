@@ -4,7 +4,6 @@ import android.app.Application;
 import android.view.View;
 
 import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
@@ -42,10 +41,6 @@ public final class VLCVideoPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(final ReactApplicationContext reactApplicationContext) {
-        return Collections.emptyList();
-    }
-
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
     }
 
