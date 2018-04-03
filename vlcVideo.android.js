@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, UIManager, requireNativeComponent, findNodeHandle } from 'react-native';
 
-const RCTVLCVideoViewConstants = UIManager.RCTVLCVideoView.Constants;
-
 class VLCVideo extends Component {
     constructor(props) {
         super(props);
-
-        this._assignRoot = this._assignRoot.bind(this);
 
         this.callbacks = {
             [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: this._invokeEventCallback.bind(this, 'onSeekRequested'),
@@ -26,6 +22,48 @@ class VLCVideo extends Component {
         return nextProps.sourceUrl !== this.props.sourceUrl ||
             nextProps.keyControlEnabled !== this.props.keyControlEnabled ||
             nextProps.style !== this.props.style;
+    }
+
+    _assignRoot = (root) => {
+        this._root = root;
+    }
+
+    _getViewHandle = () => {
+        return findNodeHandle(this._root);
+    }
+
+    _invokeEventCallback = (eventName, event) => {
+        if (typeof this.props[eventName] === 'function') {
+            this.props[eventName](event.nativeEvent);
+        }
+    }
+
+    seek = (time) => {
+        if (isNaN(time) || time < 0) {
+            time = 0;
+        }
+
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.seek,
+            [time]
+        );
+    }
+
+    play = () => {
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.play,
+            null
+        );
+    }
+
+    pause = () => {
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.pause,
+            null
+        );
     }
 
     render() {
@@ -46,52 +84,10 @@ class VLCVideo extends Component {
         );
     }
 
-    _assignRoot(root) {
-        this._root = root;
-    }
-
-    _getViewHandle() {
-        return findNodeHandle(this._root);
-    }
-
-    _invokeEventCallback(eventName, event) {
-        if (typeof this.props[eventName] === 'function') {
-            this.props[eventName](event.nativeEvent);
-        }
-    }
-
-    seek(time) {
-        if (typeof time !== 'number' || isNaN(time) || time < 0) {
-            time = 0;
-        }
-
-        UIManager.dispatchViewManagerCommand(
-            this._getViewHandle(),
-            UIManager.RCTVLCVideoView.Commands.seek,
-            [time]
-        );
-    }
-
-    play() {
-        UIManager.dispatchViewManagerCommand(
-            this._getViewHandle(),
-            UIManager.RCTVLCVideoView.Commands.play,
-            null
-        );
-    }
-
-    pause() {
-        UIManager.dispatchViewManagerCommand(
-            this._getViewHandle(),
-            UIManager.RCTVLCVideoView.Commands.pause,
-            null
-        );
-    }
-
 }
 
 VLCVideo.propTypes = {
-    ...View.propTypes,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
     sourceUrl: PropTypes.string.isRequired,
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
@@ -111,6 +107,8 @@ VLCVideo.defaultProps = {
     startTime: 0,
     keyControlEnabled: false
 };
+
+const RCTVLCVideoViewConstants = UIManager.RCTVLCVideoView.Constants;
 
 const RCTVLCVideoViewInterface = {
     name: 'VLCVideo',
