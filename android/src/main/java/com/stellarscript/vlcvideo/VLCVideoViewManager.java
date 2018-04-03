@@ -94,7 +94,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.size() > 0 &&
                         !args.isNull(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX) &&
                         args.getType(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX) == ReadableType.Number) {
-                    final int seekTime = (int) args.getDouble(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX);
+                    final long seekTime = (long) args.getDouble(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX);
                     videoView.seek(seekTime);
                 }
                 break;
@@ -112,11 +112,11 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
         final String sourceUrl = media.getString(VLCVideoProps.MEDIA_SOURCE_URL_PROP);
 
-        final int startTime;
+        final long startTime;
         if (media.hasKey(VLCVideoProps.MEDIA_START_TIME_PROP) &&
                 !media.isNull(VLCVideoProps.MEDIA_START_TIME_PROP) &&
                 media.getType(VLCVideoProps.MEDIA_START_TIME_PROP) == ReadableType.Number) {
-            startTime = (int) media.getDouble(VLCVideoProps.MEDIA_START_TIME_PROP);
+            startTime = (long) media.getDouble(VLCVideoProps.MEDIA_START_TIME_PROP);
         } else {
             startTime = VLCVideoProps.MEDIA_START_TIME_DEFAULT_VALUE;
         }

@@ -64,8 +64,8 @@ public final class VLCVideoView extends SurfaceView {
                     mEventEmitter.emitOnPaused();
                     break;
                 case MediaPlayer.Event.TimeChanged:
-                    final double currentTime = mMediaPlayer.getTime();
-                    mEventEmitter.emitOnTimeChanged(currentTime);
+                    final double time = mMediaPlayer.getTime();
+                    mEventEmitter.emitOnTimeChanged(time);
                     if (mIsSeekRequested) {
                         mIsSeekRequested = false;
                         mEventEmitter.emitOnSeekPerformed();
@@ -131,7 +131,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final int startTime, final boolean autoplay) {
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay) {
         if (sourceUrl.isEmpty()) {
             return;
         }
@@ -149,7 +149,7 @@ public final class VLCVideoView extends SurfaceView {
         newMedia.setHWDecoderEnabled(true, false);
 
         if (startTime > 0) {
-            final int startTimeInSeconds = startTime / 1000;
+            final long startTimeInSeconds = startTime / 1000;
             final String startTimeOption = MessageFormat.format(":start-time={0}", String.valueOf(startTimeInSeconds));
             newMedia.addOption(startTimeOption);
         }
@@ -170,7 +170,7 @@ public final class VLCVideoView extends SurfaceView {
         mMediaPlayer.pause();
     }
 
-    public void seek(final int time) {
+    public void seek(final long time) {
         mIsSeekRequested = true;
         mEventEmitter.emitOnSeekRequested(time);
         mMediaPlayer.setTime(time);

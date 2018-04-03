@@ -42,9 +42,9 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
     }
 
-    void emitOnTimeChanged(final double currentTime) {
+    void emitOnTimeChanged(final double time) {
         final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_TIME_CHANGED_TIME_PROP, currentTime);
+        event.putDouble(VLCVideoEvents.ON_TIME_CHANGED_TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_TIME_CHANGED_EVENT, event);
     }
 
