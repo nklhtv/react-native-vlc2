@@ -106,8 +106,12 @@ public final class VLCVideoView extends SurfaceView {
         detachVLCVoutViews();
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(null);
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
+        try {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
