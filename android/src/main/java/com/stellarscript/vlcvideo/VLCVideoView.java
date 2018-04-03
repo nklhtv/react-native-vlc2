@@ -91,6 +91,8 @@ public final class VLCVideoView extends SurfaceView {
         mLibVLC = libVLC;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+
+        setClickable(false);
     }
 
     @Override
