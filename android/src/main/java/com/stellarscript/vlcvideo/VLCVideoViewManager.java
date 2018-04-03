@@ -138,12 +138,10 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         if (keyControlEnabled && mOnKeyListener != null) {
             videoView.setOnKeyListener(mOnKeyListener);
             videoView.setFocusable(true);
-            videoView.setFocusableInTouchMode(true);
             videoView.requestFocus();
         } else {
             videoView.setOnKeyListener(null);
             videoView.setFocusable(false);
-            videoView.setFocusableInTouchMode(false);
             videoView.clearFocus();
         }
     }
