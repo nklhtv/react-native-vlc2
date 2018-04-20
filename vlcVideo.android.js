@@ -39,7 +39,7 @@ class VLCVideo extends Component {
     }
 
     seek = (time) => {
-        if (isNaN(time) || time < 0) {
+        if (typeof time !== 'number' || isNaN(time) || time < 0) {
             time = 0;
         }
 
