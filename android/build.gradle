@@ -16,6 +16,6 @@ android {
 }
 
 dependencies {
-    compile "org.bitbucket.Stremio:vlc-android-sdk:2.5.17-rc1"
+    compile "org.bitbucket.Stremio:vlc-android-sdk:3.0.6-rc3"
     compile "com.facebook.react:react-native:+" // from node_modules
 }
