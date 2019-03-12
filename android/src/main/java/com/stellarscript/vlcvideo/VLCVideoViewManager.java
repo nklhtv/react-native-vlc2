@@ -130,7 +130,16 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             autoplay = VLCVideoProps.MEDIA_AUTOPLAY_DEFAULT_VALUE;
         }
 
-        videoView.loadMedia(sourceUrl, startTime, autoplay);
+        final boolean hwDecoderEnabled;
+        if (media.hasKey(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
+                !media.isNull(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
+                media.getType(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) == ReadableType.Boolean) {
+            hwDecoderEnabled = media.getBoolean(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP);
+        } else {
+            hwDecoderEnabled = VLCVideoProps.MEDIA_HW_DECODER_ENABLED_DEFAULT_VALUE;
+        }
+
+        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderEnabled);
     }
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)

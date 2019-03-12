@@ -131,7 +131,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay) {
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled) {
         if (sourceUrl.isEmpty()) {
             return;
         }
@@ -146,7 +146,7 @@ public final class VLCVideoView extends SurfaceView {
         }
 
         final Media newMedia = new Media(mLibVLC, newSourceUri);
-        newMedia.setHWDecoderEnabled(true, false);
+        newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
 
         if (startTime > 0) {
             final long startTimeInSeconds = startTime / 1000;

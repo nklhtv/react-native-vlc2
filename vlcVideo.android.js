@@ -70,7 +70,8 @@ class VLCVideo extends Component {
         const media = {
             sourceUrl: this.props.sourceUrl,
             autoplay: this.props.autoplay,
-            startTime: this.props.startTime
+            startTime: this.props.startTime,
+            hwDecoderEnabled: this.props.hwDecoderEnabled
         };
 
         return (
@@ -91,6 +92,7 @@ VLCVideo.propTypes = {
     sourceUrl: PropTypes.string.isRequired,
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
+    hwDecoderEnabled: PropTypes.bool.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
     onSeekRequested: PropTypes.func,
     onBuffering: PropTypes.func,
@@ -105,6 +107,7 @@ VLCVideo.propTypes = {
 VLCVideo.defaultProps = {
     autoplay: true,
     startTime: 0,
+    hwDecoderEnabled: true,
     keyControlEnabled: false
 };
 
