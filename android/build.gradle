@@ -1,21 +1,18 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion ((rootProject?.ext?.properties?.compileSdkVersion) ?: 28)
+    buildToolsVersion ((rootProject?.ext?.properties?.buildToolsVersion) ?: "28.0.3")
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 22
+        minSdkVersion ((rootProject?.ext?.properties?.minSdkVersion) ?: 21)
+        targetSdkVersion ((rootProject?.ext?.properties?.targetSdkVersion) ?: 28)
         versionCode 1
         versionName "1.0.0"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
     }
 }
 
 dependencies {
-    compile "org.bitbucket.Stremio:vlc-android-sdk:3.0.6-rc3"
-    compile "com.facebook.react:react-native:+" // from node_modules
+    implementation "com.facebook.react:react-native:+" // from node_modules
+    implementation "com.github.stremio:vlc-android-sdk:3.0.6-rc3"
 }
