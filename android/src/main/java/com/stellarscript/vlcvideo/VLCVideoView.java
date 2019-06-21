@@ -1,6 +1,12 @@
 package com.stellarscript.vlcvideo;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
 
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -16,12 +22,44 @@ import java.text.MessageFormat;
 public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
+    private static final String CHANNEL_ID_RESOURCE_NAME = "react_native_vlc2_channel_id";
+    private static final String SMALL_ICON_RESOURCE_NAME = "react_native_vlc2_small_icon";
+    private static final String LARGE_ICON_RESOURCE_NAME = "react_native_vlc2_large_icon";
+    private static final String PLAY_ICON_RESOURCE_NAME = "react_native_vlc2_play_icon";
+    private static final String PAUSE_ICON_RESOURCE_NAME = "react_native_vlc2_pause_icon";
+    private static final String PLAY_INTENT_ACTION = "VLCVideo:Play";
+    private static final String PAUSE_INTENT_ACTION = "VLCVideo:Pause";
 
+    public static final int PLAYBACK_NOTIFICATION_ID = 11740;
+
+    private String mTitle;
+    private boolean mPlayInBackground;
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
+    private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
+    private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
+
+        @Override
+        public boolean onNewIntent(final Intent intent) {
+            final String action = intent != null && intent.getAction() != null ? intent.getAction() : "";
+            switch (action) {
+                case PLAY_INTENT_ACTION:
+                    VLCVideoView.this.attachVLCVoutViews();
+                    mMediaPlayer.play();
+                    return true;
+                case PAUSE_INTENT_ACTION:
+                    VLCVideoView.this.attachVLCVoutViews();
+                    mMediaPlayer.pause();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+    };
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
         @Override
@@ -32,11 +70,10 @@ public final class VLCVideoView extends SurfaceView {
         @Override
         public void onHostPause() {
             try {
-                if (!mMediaPlayer.isReleased()) {
+                if (!mMediaPlayer.isReleased() && !mPlayInBackground) {
                     mMediaPlayer.pause();
-                    VLCVideoView.this.detachVLCVoutViews();
                 }
-            } catch (final Exception e) {
+            } catch (final Throwable e) {
                 e.printStackTrace();
             }
         }
@@ -55,13 +92,16 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.EndReached:
                     mEventEmitter.emitOnEndReached();
                     VLCVideoView.this.stop();
+                    VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     mEventEmitter.emitOnError(MEDIA_ERROR_MESSAGE, true);
                     VLCVideoView.this.stop();
+                    VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.Paused:
                     mEventEmitter.emitOnPaused();
+                    VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.TimeChanged:
                     final double time = mMediaPlayer.getTime();
@@ -74,6 +114,7 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
+                    VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
                     final double buffering = mediaEvent.getBuffering();
@@ -84,11 +125,12 @@ public final class VLCVideoView extends SurfaceView {
 
     };
 
-    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC) {
+    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager) {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
         mLibVLC = libVLC;
+        mCallbackManager = callbackManager;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
 
@@ -98,6 +140,11 @@ public final class VLCVideoView extends SurfaceView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        VLCVideoView.this.attachVLCVoutViews();
+        if (mCallbackManager != null) {
+            mCallbackManager.addCallback(mIntentCallback);
+        }
+
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
     }
@@ -105,7 +152,12 @@ public final class VLCVideoView extends SurfaceView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        detachVLCVoutViews();
+        VLCVideoView.this.clearPlaybackNotification();
+        VLCVideoView.this.detachVLCVoutViews();
+        if (mCallbackManager != null) {
+            mCallbackManager.removeCallback(mIntentCallback);
+        }
+
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(null);
         try {
@@ -131,8 +183,12 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled) {
-        if (sourceUrl.isEmpty()) {
+    public void setPlayInBackground(final boolean playInBackground) {
+        mPlayInBackground = playInBackground;
+    }
+
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
+        if (sourceUrl == null || sourceUrl.isEmpty()) {
             return;
         }
 
@@ -145,6 +201,7 @@ public final class VLCVideoView extends SurfaceView {
             }
         }
 
+        VLCVideoView.this.stop();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
         newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
 
@@ -154,12 +211,13 @@ public final class VLCVideoView extends SurfaceView {
             newMedia.addOption(startTimeOption);
         }
 
-        stop();
+        mTitle = title;
         mMediaPlayer.setMedia(newMedia);
-
         if (autoplay) {
             mMediaPlayer.play();
         }
+
+        VLCVideoView.this.updatePlaybackNotification();
     }
 
     public void play() {
@@ -207,6 +265,61 @@ public final class VLCVideoView extends SurfaceView {
         if (vout.areViewsAttached()) {
             vout.detachViews();
         }
+    }
+
+    private void updatePlaybackNotification() {
+        try {
+            final String channelId = getResources().getString(getResources().getIdentifier(CHANNEL_ID_RESOURCE_NAME, "string", mThemedReactContext.getPackageName()));
+            final int smallIconResId = getResources().getIdentifier(SMALL_ICON_RESOURCE_NAME, "drawable", mThemedReactContext.getPackageName());
+            final int largeIconResId = getResources().getIdentifier(LARGE_ICON_RESOURCE_NAME, "drawable", mThemedReactContext.getPackageName());
+            final int playIconResId = getResources().getIdentifier(PLAY_ICON_RESOURCE_NAME, "drawable", mThemedReactContext.getPackageName());
+            final int pauseIconResId = getResources().getIdentifier(PAUSE_ICON_RESOURCE_NAME, "drawable", mThemedReactContext.getPackageName());
+            final Bitmap lergeIconBitmap = BitmapFactory.decodeResource(getResources(), largeIconResId);
+            final Intent playbackIntent = new Intent(mThemedReactContext, mThemedReactContext.getCurrentActivity().getClass());
+            final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mThemedReactContext, channelId)
+                    .setContentTitle(mTitle != null ? mTitle : "")
+                    .setSmallIcon(smallIconResId)
+                    .setLargeIcon(lergeIconBitmap)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(false);
+            if (mMediaPlayer.isPlaying()) {
+                playbackIntent.setAction(PAUSE_INTENT_ACTION);
+                notificationBuilder.addAction(
+                        new NotificationCompat.Action.Builder(
+                                pauseIconResId,
+                                "Pause",
+                                PendingIntent.getActivity(
+                                        mThemedReactContext,
+                                        PLAYBACK_NOTIFICATION_ID,
+                                        playbackIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                )
+                        ).build()
+                );
+            } else {
+                playbackIntent.setAction(PLAY_INTENT_ACTION);
+                notificationBuilder.addAction(
+                        new NotificationCompat.Action.Builder(
+                                playIconResId,
+                                "Play",
+                                PendingIntent.getActivity(
+                                        mThemedReactContext,
+                                        PLAYBACK_NOTIFICATION_ID,
+                                        playbackIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                )
+                        ).build()
+                );
+            }
+
+            NotificationManagerCompat.from(mThemedReactContext).notify(PLAYBACK_NOTIFICATION_ID, notificationBuilder.build());
+        } catch (final Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clearPlaybackNotification() {
+        NotificationManagerCompat.from(mThemedReactContext).cancel(PLAYBACK_NOTIFICATION_ID);
     }
 
 }

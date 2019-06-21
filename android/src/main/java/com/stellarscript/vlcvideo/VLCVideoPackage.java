@@ -21,22 +21,40 @@ public final class VLCVideoPackage implements ReactPackage {
 
     private final View.OnKeyListener mOnKeyListener;
     private final LibVLC mLibVLC;
+    private final VLCVideoCallbackManager mCallbackManager;
 
     public VLCVideoPackage(final Application application) {
-        this(application, DEFAULT_VLC_OPTIONS, null);
-    }
-
-    public VLCVideoPackage(final Application application, final View.OnKeyListener onKeyListener) {
-        this(application, DEFAULT_VLC_OPTIONS, onKeyListener);
+        this(application, DEFAULT_VLC_OPTIONS, null, null);
     }
 
     public VLCVideoPackage(final Application application, final ArrayList<String> libVLCOptions) {
-        this(application, libVLCOptions, null);
+        this(application, libVLCOptions, null, null);
+    }
+
+    public VLCVideoPackage(final Application application, final View.OnKeyListener onKeyListener) {
+        this(application, DEFAULT_VLC_OPTIONS, onKeyListener, null);
+    }
+
+    public VLCVideoPackage(final Application application, final VLCVideoCallbackManager callbackManager) {
+        this(application, DEFAULT_VLC_OPTIONS, null, callbackManager);
     }
 
     public VLCVideoPackage(final Application application, final ArrayList<String> libVLCOptions, final View.OnKeyListener onKeyListener) {
+        this(application, libVLCOptions, onKeyListener, null);
+    }
+
+    public VLCVideoPackage(final Application application, final ArrayList<String> libVLCOptions, final VLCVideoCallbackManager callbackManager) {
+        this(application, libVLCOptions, null, callbackManager);
+    }
+
+    public VLCVideoPackage(final Application application, final View.OnKeyListener onKeyListener, final VLCVideoCallbackManager callbackManager) {
+        this(application, DEFAULT_VLC_OPTIONS, onKeyListener, callbackManager);
+    }
+
+    public VLCVideoPackage(final Application application, final ArrayList<String> libVLCOptions, final View.OnKeyListener onKeyListener, final VLCVideoCallbackManager callbackManager) {
         mLibVLC = new LibVLC(application, libVLCOptions);
         mOnKeyListener = onKeyListener;
+        mCallbackManager = callbackManager;
     }
 
     @Override
@@ -46,7 +64,7 @@ public final class VLCVideoPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(final ReactApplicationContext reactApplicationContext) {
-        return Arrays.<ViewManager>asList(new VLCVideoViewManager(mOnKeyListener, mLibVLC));
+        return Arrays.<ViewManager>asList(new VLCVideoViewManager(mOnKeyListener, mLibVLC, mCallbackManager));
     }
 
 }

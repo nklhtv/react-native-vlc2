@@ -21,10 +21,12 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     private final View.OnKeyListener mOnKeyListener;
     private final LibVLC mLibVLC;
+    private final VLCVideoCallbackManager mCallbackManager;
 
-    public VLCVideoViewManager(final View.OnKeyListener onKeyListener, final LibVLC libVLC) {
+    public VLCVideoViewManager(final View.OnKeyListener onKeyListener, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager) {
         mOnKeyListener = onKeyListener;
         mLibVLC = libVLC;
+        mCallbackManager = callbackManager;
     }
 
     @Override
@@ -77,7 +79,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     @Override
     protected VLCVideoView createViewInstance(final ThemedReactContext themedReactContext) {
-        return new VLCVideoView(themedReactContext, mLibVLC);
+        return new VLCVideoView(themedReactContext, mLibVLC, mCallbackManager);
     }
 
     @Override
@@ -139,7 +141,16 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             hwDecoderEnabled = VLCVideoProps.MEDIA_HW_DECODER_ENABLED_DEFAULT_VALUE;
         }
 
-        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderEnabled);
+        final String title;
+        if (media.hasKey(VLCVideoProps.MEDIA_TITLE_PROP) &&
+                !media.isNull(VLCVideoProps.MEDIA_TITLE_PROP) &&
+                media.getType(VLCVideoProps.MEDIA_TITLE_PROP) == ReadableType.String) {
+            title = media.getString(VLCVideoProps.MEDIA_TITLE_PROP);
+        } else {
+            title = VLCVideoProps.MEDIA_TITLE_DEFAULT_VALUE;
+        }
+
+        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderEnabled, title);
     }
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
@@ -153,6 +164,11 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             videoView.setFocusable(false);
             videoView.clearFocus();
         }
+    }
+
+    @ReactProp(name = VLCVideoProps.PLAY_IN_BACKGROUND_PROP, defaultBoolean = VLCVideoProps.PLAY_IN_BACKGROUND_DEFAULT_VALUE)
+    public void setPlayInBackground(final VLCVideoView videoView, final boolean playInBackground) {
+        videoView.setPlayInBackground(playInBackground);
     }
 
 }

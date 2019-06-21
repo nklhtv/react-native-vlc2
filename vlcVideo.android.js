@@ -21,6 +21,7 @@ class VLCVideo extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return nextProps.sourceUrl !== this.props.sourceUrl ||
             nextProps.keyControlEnabled !== this.props.keyControlEnabled ||
+            nextProps.playInBackground !== this.props.playInBackground ||
             nextProps.style !== this.props.style;
     }
 
@@ -71,6 +72,7 @@ class VLCVideo extends Component {
             sourceUrl: this.props.sourceUrl,
             autoplay: this.props.autoplay,
             startTime: this.props.startTime,
+            title: this.props.title,
             hwDecoderEnabled: this.props.hwDecoderEnabled
         };
 
@@ -79,6 +81,7 @@ class VLCVideo extends Component {
                 ref={this._assignRoot}
                 style={this.props.style}
                 keyControlEnabled={this.props.keyControlEnabled}
+                playInBackground={this.props.playInBackground}
                 media={media}
                 {...this.callbacks}
             />
@@ -92,8 +95,10 @@ VLCVideo.propTypes = {
     sourceUrl: PropTypes.string.isRequired,
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
     hwDecoderEnabled: PropTypes.bool.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
+    playInBackground: PropTypes.bool.isRequired,
     onSeekRequested: PropTypes.func,
     onBuffering: PropTypes.func,
     onPlaying: PropTypes.func,
@@ -107,8 +112,10 @@ VLCVideo.propTypes = {
 VLCVideo.defaultProps = {
     autoplay: true,
     startTime: 0,
+    title: '',
     hwDecoderEnabled: true,
-    keyControlEnabled: false
+    keyControlEnabled: false,
+    playInBackground: false
 };
 
 const RCTVLCVideoViewConstants = UIManager.RCTVLCVideoView.Constants;
@@ -119,6 +126,7 @@ const RCTVLCVideoViewInterface = {
         ...View.propTypes,
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
+        playInBackground: PropTypes.bool.isRequired,
         [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
@@ -133,7 +141,8 @@ const RCTVLCVideoViewInterface = {
 const RCTVLCVideoView = requireNativeComponent('RCTVLCVideoView', RCTVLCVideoViewInterface, {
     nativeOnly: {
         media: true,
-        keyControlEnabled: true
+        keyControlEnabled: true,
+        playInBackground: true
     }
 });
 

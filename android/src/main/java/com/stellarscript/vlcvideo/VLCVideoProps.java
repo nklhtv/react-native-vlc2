@@ -10,8 +10,12 @@ final class VLCVideoProps {
     static final boolean MEDIA_AUTOPLAY_DEFAULT_VALUE = true;
     static final String MEDIA_HW_DECODER_ENABLED_PROP = "hwDecoderEnabled";
     static final boolean MEDIA_HW_DECODER_ENABLED_DEFAULT_VALUE = true;
+    static final String MEDIA_TITLE_PROP = "title";
+    static final String MEDIA_TITLE_DEFAULT_VALUE = "";
     static final String KEY_CONTROL_ENABLED_PROP = "keyControlEnabled";
     static final boolean KEY_CONTROL_ENABLED_DEFAULT_VALUE = false;
+    static final String PLAY_IN_BACKGROUND_PROP = "playInBackground";
+    static final boolean PLAY_IN_BACKGROUND_DEFAULT_VALUE = false;
 
     static final String PLAY_COMMAND_NAME = "play";
     static final int PLAY_COMMAND_ID = 1;
