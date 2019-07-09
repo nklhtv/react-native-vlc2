@@ -14,5 +14,5 @@ android {
 
 dependencies {
     implementation "com.facebook.react:react-native:+" // from node_modules
-    implementation "com.github.stremio:vlc-android-sdk:3.0.6-rc3"
+    implementation "com.github.stremio:vlc-android-sdk:4.0.3"
 }
