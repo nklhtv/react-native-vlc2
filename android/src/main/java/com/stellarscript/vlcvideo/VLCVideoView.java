@@ -114,6 +114,7 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
+                    mMediaPlayer.setSpuTrack(-1);
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
@@ -216,7 +217,7 @@ public final class VLCVideoView extends SurfaceView {
         if (autoplay) {
             mMediaPlayer.play();
         }
-
+        
         VLCVideoView.this.updatePlaybackNotification();
     }
 
