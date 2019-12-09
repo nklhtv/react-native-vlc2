@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.KeyEvent;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -18,6 +20,13 @@ import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
 import java.text.MessageFormat;
+
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_BACK;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_SPACE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
 
 public final class VLCVideoView extends SurfaceView {
 
@@ -40,6 +49,40 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
+    private final OnKeyListener mOnKeyListener = new OnKeyListener() {
+        private static final int D_PAD_SEEK_TIME = 30000;
+
+        @Override
+        public boolean onKey(final View view, final int keyCode, final KeyEvent keyEvent) {
+            if (keyCode == KEYCODE_BACK) {
+                return false;
+            }
+            final int action = keyEvent.getAction();
+            final int repeatCount = keyEvent.getRepeatCount();
+            if (action == ACTION_DOWN && repeatCount == 0) {
+                switch (keyCode) {
+                    case KEYCODE_SPACE:
+                    case KEYCODE_MEDIA_PLAY_PAUSE:
+                        if (mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        } else {
+                            mMediaPlayer.play();
+                        }
+                        break;
+                    case KEYCODE_MEDIA_FAST_FORWARD:
+                    case KEYCODE_MEDIA_REWIND:
+                        if (mMediaPlayer.isSeekable()) {
+                            final int multiplier =  ((keyCode == KEYCODE_DPAD_LEFT) || ( keyCode == KEYCODE_MEDIA_REWIND)) ? -1 : 1;
+                            final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
+                            VLCVideoView.this.seek(seekTime);
+                        }
+                        break;
+                }
+            }
+            return true;
+        }
+    };
+
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
@@ -142,6 +185,8 @@ public final class VLCVideoView extends SurfaceView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         VLCVideoView.this.attachVLCVoutViews();
+        getRootView().setOnKeyListener(mOnKeyListener);
+        getRootView().setFocusableInTouchMode(true);
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
         }
@@ -155,6 +200,8 @@ public final class VLCVideoView extends SurfaceView {
         super.onDetachedFromWindow();
         VLCVideoView.this.clearPlaybackNotification();
         VLCVideoView.this.detachVLCVoutViews();
+        getRootView().setOnKeyListener(null);
+        getRootView().setFocusableInTouchMode(false);
         if (mCallbackManager != null) {
             mCallbackManager.removeCallback(mIntentCallback);
         }
