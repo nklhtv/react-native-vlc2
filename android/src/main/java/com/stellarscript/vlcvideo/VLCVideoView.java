@@ -72,7 +72,7 @@ public final class VLCVideoView extends SurfaceView {
                     case KEYCODE_MEDIA_FAST_FORWARD:
                     case KEYCODE_MEDIA_REWIND:
                         if (mMediaPlayer.isSeekable()) {
-                            final int multiplier =  ((keyCode == KEYCODE_DPAD_LEFT) || ( keyCode == KEYCODE_MEDIA_REWIND)) ? -1 : 1;
+                            final int multiplier =  keyCode == KEYCODE_MEDIA_REWIND ? -1 : 1;
                             final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
                             VLCVideoView.this.seek(seekTime);
                         }
