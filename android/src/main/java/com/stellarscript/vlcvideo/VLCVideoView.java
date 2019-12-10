@@ -29,6 +29,7 @@ import static android.view.KeyEvent.KEYCODE_SPACE;
 import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
 import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
 
+
 public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
@@ -55,12 +56,6 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public boolean onKey(final View view, final int keyCode, final KeyEvent keyEvent) {
-            if (keyCode != KEYCODE_SPACE &&
-                keyCode != KEYCODE_MEDIA_PLAY_PAUSE &&
-                keyCode != KEYCODE_MEDIA_FAST_FORWARD &&
-                keyCode != KEYCODE_MEDIA_REWIND) {
-                return false;
-            }
             Log.i("Background", String.valueOf(keyCode) + " " + String.valueOf(keyEvent.getRepeatCount()));
             final int action = keyEvent.getAction();
             final int repeatCount = keyEvent.getRepeatCount();
@@ -88,18 +83,17 @@ public final class VLCVideoView extends SurfaceView {
         }
     };
 
-    public void getFocusForKeyListener() {
+    private void setKeyListener(boolean setKeyListener) {
         View view = mThemedReactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        view.setOnKeyListener(mOnKeyListener);
-        view.setFocusable(true);
-        view.setFocusableInTouchMode(true);
-    }
-    public void clearFocusForKeyListener() {
-        View view = mThemedReactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        view.setOnKeyListener(null);
-        view.setFocusable(false);
-        view.setFocusableInTouchMode(false);
-        view.clearFocus();
+        if(setKeyListener) {
+            view.setOnKeyListener(mOnKeyListener);
+        }
+        else {
+            view.setOnKeyListener(null);
+            view.clearFocus();
+        }
+        view.setFocusable(setKeyListener);
+        view.setFocusableInTouchMode(setKeyListener);
     }
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
@@ -201,7 +195,9 @@ public final class VLCVideoView extends SurfaceView {
 
     @Override
     protected void onAttachedToWindow() {
+        Log.i("Background", "Attached");
         super.onAttachedToWindow();
+        this.setKeyListener(true);
         VLCVideoView.this.attachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
@@ -213,8 +209,9 @@ public final class VLCVideoView extends SurfaceView {
 
     @Override
     protected void onDetachedFromWindow() {
+        Log.i("Background", "Detached");
         super.onDetachedFromWindow();
-        clearFocusForKeyListener();
+        this.setKeyListener(false);
         VLCVideoView.this.clearPlaybackNotification();
         VLCVideoView.this.detachVLCVoutViews();
         if (mCallbackManager != null) {
