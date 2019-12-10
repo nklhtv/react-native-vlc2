@@ -40,6 +40,7 @@ public final class VLCVideoView extends SurfaceView {
     private static final String PAUSE_ICON_RESOURCE_NAME = "react_native_vlc2_pause_icon";
     private static final String PLAY_INTENT_ACTION = "VLCVideo:Play";
     private static final String PAUSE_INTENT_ACTION = "VLCVideo:Pause";
+    private static final int D_PAD_SEEK_TIME = 30000;
 
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
 
@@ -51,15 +52,31 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
-    private final OnKeyListener mOnKeyListener = new OnKeyListener() {
-        private static final int D_PAD_SEEK_TIME = 30000;
+
+    private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
-        public boolean onKey(final View view, final int keyCode, final KeyEvent keyEvent) {
-            Log.i("Background", String.valueOf(keyCode) + " " + String.valueOf(keyEvent.getRepeatCount()));
+        public boolean onNewIntent(final Intent intent) {
+            final String action = intent != null && intent.getAction() != null ? intent.getAction() : "";
+            switch (action) {
+                case PLAY_INTENT_ACTION:
+                    VLCVideoView.this.attachVLCVoutViews();
+                    mMediaPlayer.play();
+                    return true;
+                case PAUSE_INTENT_ACTION:
+                    VLCVideoView.this.attachVLCVoutViews();
+                    mMediaPlayer.pause();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+            Log.i("VideoViewOnKeyListenerG", String.valueOf(keyCode));
             final int action = keyEvent.getAction();
-            final int repeatCount = keyEvent.getRepeatCount();
-            if (action == ACTION_DOWN && repeatCount == 0) {
+            if (action == ACTION_DOWN) {
                 switch (keyCode) {
                     case KEYCODE_SPACE:
                     case KEYCODE_MEDIA_PLAY_PAUSE:
@@ -80,38 +97,6 @@ public final class VLCVideoView extends SurfaceView {
                 }
             }
             return false;
-        }
-    };
-
-    private void setKeyListener(boolean setKeyListener) {
-        View view = mThemedReactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-        if(setKeyListener) {
-            view.setOnKeyListener(mOnKeyListener);
-        }
-        else {
-            view.setOnKeyListener(null);
-            view.clearFocus();
-        }
-        view.setFocusable(setKeyListener);
-        view.setFocusableInTouchMode(setKeyListener);
-    }
-    private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
-
-        @Override
-        public boolean onNewIntent(final Intent intent) {
-            final String action = intent != null && intent.getAction() != null ? intent.getAction() : "";
-            switch (action) {
-                case PLAY_INTENT_ACTION:
-                    VLCVideoView.this.attachVLCVoutViews();
-                    mMediaPlayer.play();
-                    return true;
-                case PAUSE_INTENT_ACTION:
-                    VLCVideoView.this.attachVLCVoutViews();
-                    mMediaPlayer.pause();
-                    return true;
-                default:
-                    return false;
-            }
         }
 
     };
@@ -195,9 +180,7 @@ public final class VLCVideoView extends SurfaceView {
 
     @Override
     protected void onAttachedToWindow() {
-        Log.i("Background", "Attached");
         super.onAttachedToWindow();
-        this.setKeyListener(true);
         VLCVideoView.this.attachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
@@ -209,9 +192,7 @@ public final class VLCVideoView extends SurfaceView {
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.i("Background", "Detached");
         super.onDetachedFromWindow();
-        this.setKeyListener(false);
         VLCVideoView.this.clearPlaybackNotification();
         VLCVideoView.this.detachVLCVoutViews();
         if (mCallbackManager != null) {
