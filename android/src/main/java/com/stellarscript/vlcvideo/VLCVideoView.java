@@ -55,7 +55,7 @@ public final class VLCVideoView extends SurfaceView {
         @Override
         public boolean onKey(final View view, final int keyCode, final KeyEvent keyEvent) {
             if (keyCode == KEYCODE_BACK) {
-                return false;
+                VLCVideo.this.finish();
             }
             final int action = keyEvent.getAction();
             final int repeatCount = keyEvent.getRepeatCount();
@@ -79,10 +79,22 @@ public final class VLCVideoView extends SurfaceView {
                         break;
                 }
             }
-            return true;
+            return false;
         }
     };
 
+    public void getFocusForKeyListener() {
+        getRootView().setOnKeyListener(mOnKeyListener);
+        getRootView().setFocusable(true);
+        getRootView().setFocusableInTouchMode(true);
+        getRootView().requestFocus();
+    }
+    public void clearFocusForKeyListener() {
+        getRootView().setOnKeyListener(null);
+        getRootView().setFocusableInTouchMode(false);
+        getRootView().setFocusable(false);
+        getRootView().clearFocus();
+    }
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
@@ -185,8 +197,6 @@ public final class VLCVideoView extends SurfaceView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         VLCVideoView.this.attachVLCVoutViews();
-        getRootView().setOnKeyListener(mOnKeyListener);
-        getRootView().setFocusableInTouchMode(true);
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
         }
@@ -198,10 +208,9 @@ public final class VLCVideoView extends SurfaceView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        clearFocusForKeyListener();
         VLCVideoView.this.clearPlaybackNotification();
         VLCVideoView.this.detachVLCVoutViews();
-        getRootView().setOnKeyListener(null);
-        getRootView().setFocusableInTouchMode(false);
         if (mCallbackManager != null) {
             mCallbackManager.removeCallback(mIntentCallback);
         }
@@ -264,7 +273,7 @@ public final class VLCVideoView extends SurfaceView {
         if (autoplay) {
             mMediaPlayer.play();
         }
-        
+
         VLCVideoView.this.updatePlaybackNotification();
     }
 
