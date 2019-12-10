@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.KeyEvent;
+import android.util.Log;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -54,9 +55,13 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public boolean onKey(final View view, final int keyCode, final KeyEvent keyEvent) {
-            if (keyCode == KEYCODE_BACK) {
-                VLCVideo.this.finish();
+            if (keyCode != KEYCODE_SPACE &&
+                keyCode != KEYCODE_MEDIA_PLAY_PAUSE &&
+                keyCode != KEYCODE_MEDIA_FAST_FORWARD &&
+                keyCode != KEYCODE_MEDIA_REWIND) {
+                return false;
             }
+            Log.i("Background", String.valueOf(keyCode) + " " + String.valueOf(keyEvent.getRepeatCount()));
             final int action = keyEvent.getAction();
             final int repeatCount = keyEvent.getRepeatCount();
             if (action == ACTION_DOWN && repeatCount == 0) {
@@ -68,7 +73,7 @@ public final class VLCVideoView extends SurfaceView {
                         } else {
                             mMediaPlayer.play();
                         }
-                        break;
+                        return true;
                     case KEYCODE_MEDIA_FAST_FORWARD:
                     case KEYCODE_MEDIA_REWIND:
                         if (mMediaPlayer.isSeekable()) {
@@ -76,7 +81,7 @@ public final class VLCVideoView extends SurfaceView {
                             final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
                             VLCVideoView.this.seek(seekTime);
                         }
-                        break;
+                        return true;
                 }
             }
             return false;
@@ -84,16 +89,17 @@ public final class VLCVideoView extends SurfaceView {
     };
 
     public void getFocusForKeyListener() {
-        getRootView().setOnKeyListener(mOnKeyListener);
-        getRootView().setFocusable(true);
-        getRootView().setFocusableInTouchMode(true);
-        getRootView().requestFocus();
+        View view = mThemedReactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        view.setOnKeyListener(mOnKeyListener);
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
     }
     public void clearFocusForKeyListener() {
-        getRootView().setOnKeyListener(null);
-        getRootView().setFocusableInTouchMode(false);
-        getRootView().setFocusable(false);
-        getRootView().clearFocus();
+        View view = mThemedReactContext.getCurrentActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        view.setOnKeyListener(null);
+        view.setFocusable(false);
+        view.setFocusableInTouchMode(false);
+        view.clearFocus();
     }
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
