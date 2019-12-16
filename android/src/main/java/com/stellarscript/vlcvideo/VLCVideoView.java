@@ -52,6 +52,33 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
 
+    private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
+        @Override
+        public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+            final int action = keyEvent.getAction();
+            if (action == ACTION_DOWN) {
+                switch (keyCode) {
+                    case KEYCODE_SPACE:
+                    case KEYCODE_MEDIA_PLAY_PAUSE:
+                        if (mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        } else {
+                            mMediaPlayer.play();
+                        }
+                        return true;
+                    case KEYCODE_MEDIA_FAST_FORWARD:
+                    case KEYCODE_MEDIA_REWIND:
+                        if (mMediaPlayer.isSeekable()) {
+                            final int multiplier = keyCode == KEYCODE_MEDIA_REWIND ? -1 : 1;
+                            final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
+                            VLCVideoView.this.seek(seekTime);
+                        }
+                        return true;
+                }
+            }
+            return false;
+        }
+    }
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
@@ -70,33 +97,6 @@ public final class VLCVideoView extends SurfaceView {
                     return false;
             }
         }
-
-        @Override
-        public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
-            final int action = keyEvent.getAction();
-            if (action == ACTION_DOWN) {
-                switch (keyCode) {
-                    case KEYCODE_SPACE:
-                    case KEYCODE_MEDIA_PLAY_PAUSE:
-                        if (mMediaPlayer.isPlaying()) {
-                            mMediaPlayer.pause();
-                        } else {
-                            mMediaPlayer.play();
-                        }
-                        return true;
-                    case KEYCODE_MEDIA_FAST_FORWARD:
-                    case KEYCODE_MEDIA_REWIND:
-                        if (mMediaPlayer.isSeekable()) {
-                            final int multiplier =  keyCode == KEYCODE_MEDIA_REWIND ? -1 : 1;
-                            final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
-                            VLCVideoView.this.seek(seekTime);
-                        }
-                        return true;
-                }
-            }
-            return false;
-        }
-
     };
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
@@ -183,6 +183,9 @@ public final class VLCVideoView extends SurfaceView {
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
         }
+        if (mOnKeyDownCallback != null) {
+            mCallbackManager.addCallback(mOnKeyDownCallback);
+        }
 
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
@@ -195,6 +198,9 @@ public final class VLCVideoView extends SurfaceView {
         VLCVideoView.this.detachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.removeCallback(mIntentCallback);
+        }
+        if (mOnKeyDownCallback != null) {
+            mCallbackManager.removeCallback(mOnKeyDownCallback);
         }
 
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
