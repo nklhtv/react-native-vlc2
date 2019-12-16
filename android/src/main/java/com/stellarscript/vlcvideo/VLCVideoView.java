@@ -10,7 +10,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.KeyEvent;
-import android.util.Log;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -74,7 +73,6 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
-            Log.i("VideoViewOnKeyListenerG", String.valueOf(keyCode));
             final int action = keyEvent.getAction();
             if (action == ACTION_DOWN) {
                 switch (keyCode) {
