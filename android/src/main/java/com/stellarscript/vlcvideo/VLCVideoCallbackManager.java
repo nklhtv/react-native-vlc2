@@ -13,7 +13,7 @@ public class VLCVideoCallbackManager {
     }
 
     interface OnKeyDownCallback {
-        boolean onKeyDown(final int keyCode, final KeyEvent keyEvent)
+        boolean onKeyDown(final int keyCode, final KeyEvent keyEvent);
     }
 
     private Set<IntentCallback> intentCallbacks;

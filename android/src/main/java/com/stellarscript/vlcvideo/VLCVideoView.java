@@ -78,7 +78,7 @@ public final class VLCVideoView extends SurfaceView {
             }
             return false;
         }
-    }
+    };
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
