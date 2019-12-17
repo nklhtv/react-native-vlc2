@@ -196,8 +196,6 @@ public final class VLCVideoView extends SurfaceView {
         VLCVideoView.this.detachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.removeCallback(mIntentCallback);
-        }
-        if (mOnKeyDownCallback != null) {
             mCallbackManager.removeCallback(mOnKeyDownCallback);
         }
 
