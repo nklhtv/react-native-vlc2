@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.KeyEvent;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -19,6 +21,14 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.text.MessageFormat;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_BACK;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_SPACE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
+
+
 public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
@@ -29,6 +39,7 @@ public final class VLCVideoView extends SurfaceView {
     private static final String PAUSE_ICON_RESOURCE_NAME = "react_native_vlc2_pause_icon";
     private static final String PLAY_INTENT_ACTION = "VLCVideo:Play";
     private static final String PAUSE_INTENT_ACTION = "VLCVideo:Pause";
+    private static final int D_PAD_SEEK_TIME = 30000;
 
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
 
@@ -40,6 +51,34 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
+
+    private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
+        @Override
+        public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+            final int action = keyEvent.getAction();
+            if (action == ACTION_DOWN) {
+                switch (keyCode) {
+                    case KEYCODE_SPACE:
+                    case KEYCODE_MEDIA_PLAY_PAUSE:
+                        if (mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        } else {
+                            mMediaPlayer.play();
+                        }
+                        return true;
+                    case KEYCODE_MEDIA_FAST_FORWARD:
+                    case KEYCODE_MEDIA_REWIND:
+                        if (mMediaPlayer.isSeekable()) {
+                            final int multiplier = keyCode == KEYCODE_MEDIA_REWIND ? -1 : 1;
+                            final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
+                            VLCVideoView.this.seek(seekTime);
+                        }
+                        return true;
+                }
+            }
+            return false;
+        }
+    };
     private final VLCVideoCallbackManager.IntentCallback mIntentCallback = new VLCVideoCallbackManager.IntentCallback() {
 
         @Override
@@ -58,7 +97,6 @@ public final class VLCVideoView extends SurfaceView {
                     return false;
             }
         }
-
     };
     private final LifecycleEventListener mLifecycleEventListener = new LifecycleEventListener() {
 
@@ -144,6 +182,7 @@ public final class VLCVideoView extends SurfaceView {
         VLCVideoView.this.attachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
+            mCallbackManager.addCallback(mOnKeyDownCallback);
         }
 
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
@@ -157,6 +196,7 @@ public final class VLCVideoView extends SurfaceView {
         VLCVideoView.this.detachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.removeCallback(mIntentCallback);
+            mCallbackManager.removeCallback(mOnKeyDownCallback);
         }
 
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
@@ -217,7 +257,7 @@ public final class VLCVideoView extends SurfaceView {
         if (autoplay) {
             mMediaPlayer.play();
         }
-        
+
         VLCVideoView.this.updatePlaybackNotification();
     }
 
