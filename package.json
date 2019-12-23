@@ -1,6 +1,6 @@
 {
     "name": "react-native-vlc2",
-    "version": "3.0.9-rc.1",
+    "version": "3.0.9",
     "main": "index.js",
     "author": "Nikola Hristov",
     "license": "MIT",
