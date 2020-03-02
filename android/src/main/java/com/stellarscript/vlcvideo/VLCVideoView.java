@@ -276,6 +276,7 @@ public final class VLCVideoView extends SurfaceView {
 
     public void seek(final long time) {
         requestSeek(time);
+        mMediaPlayer.play();
         mMediaPlayer.setTime(time);
     }
 
