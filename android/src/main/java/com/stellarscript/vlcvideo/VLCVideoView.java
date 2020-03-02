@@ -70,7 +70,8 @@ public final class VLCVideoView extends SurfaceView {
                     case KEYCODE_MEDIA_REWIND:
                         if (mMediaPlayer.isSeekable()) {
                             final int multiplier = keyCode == KEYCODE_MEDIA_REWIND ? -1 : 1;
-                            final long seekTime = Math.max(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), 0);
+                            final long seekTime = Math.max(Math.min(mMediaPlayer.getTime() + (multiplier * D_PAD_SEEK_TIME), mMediaPlayer.getLength()-1000), 0);
+                            VLCVideoView.this.requestSeek(seekTime);
                             VLCVideoView.this.seek(seekTime);
                         }
                         return true;
@@ -269,11 +270,13 @@ public final class VLCVideoView extends SurfaceView {
         mMediaPlayer.pause();
     }
 
-    public void seek(final long time) {
+    public void requestSeek(final long time) {
         mIsSeekRequested = true;
         mEventEmitter.emitOnSeekRequested(time);
+    }
+
+    public void seek(final long time) {
         mMediaPlayer.setTime(time);
-        mMediaPlayer.play();
     }
 
     public boolean isPlaying() {
@@ -287,6 +290,8 @@ public final class VLCVideoView extends SurfaceView {
     public long getTime() {
         return mMediaPlayer.getTime();
     }
+
+    public long getDuration() { return mMediaPlayer.getLength(); }
 
     private void stop() {
         mIsSeekRequested = false;
