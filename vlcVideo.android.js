@@ -14,7 +14,10 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_END_REACHED]: this._invokeEventCallback.bind(this, 'onEndReached'),
             [RCTVLCVideoViewConstants.ON_ERROR]: this._invokeEventCallback.bind(this, 'onError'),
             [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: this._invokeEventCallback.bind(this, 'onTimeChanged'),
-            [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed')
+            [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed'),
+            [RCTVLCVideoViewConstants.ON_EMBEDDED_SUBTITLES_AVAILABLE]: this._invokeEventCallback.bind(this, 'onEmbeddedSubtitlesAvailable'),
+            [RCTVLCVideoViewConstants.ON_EMBEDDED_AUDIO_AVAILABLE]: this._invokeEventCallback.bind(this, 'onEmbeddedAudioAvailable')
+
         };
     }
 
@@ -67,6 +70,30 @@ class VLCVideo extends Component {
         );
     }
 
+    spu = (index) => {
+        if(typeof index !== 'number' || isNaN(index)) {
+            index = -1;
+        }
+
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.spu,
+            [index]
+        );
+    }
+
+    audio = (index) => {
+        if(typeof index !== 'number' || isNaN(index)) {
+            index = -1;
+        }
+
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.audio,
+            [index]
+        );
+    }    
+
     render() {
         const media = {
             sourceUrl: this.props.sourceUrl,
@@ -106,7 +133,9 @@ VLCVideo.propTypes = {
     onEndReached: PropTypes.func,
     onError: PropTypes.func,
     onTimeChanged: PropTypes.func,
-    onSeekPerformed: PropTypes.func
+    onSeekPerformed: PropTypes.func,
+    onEmbeddedSubtitlesAvailable: PropTypes.func,
+    onEmbeddedAudioAvailable: PropTypes.func
 };
 
 VLCVideo.defaultProps = {
@@ -127,6 +156,7 @@ const RCTVLCVideoViewInterface = {
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
         playInBackground: PropTypes.bool.isRequired,
+        spuTracks:
         [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
@@ -134,7 +164,9 @@ const RCTVLCVideoViewInterface = {
         [RCTVLCVideoViewConstants.ON_END_REACHED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_ERROR]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: PropTypes.func,
-        [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: PropTypes.func
+        [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_EMBEDDED_SUBTITLES_AVAILABLE]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_EMBEDDED_AUDIO_AVAILABLE]: PropTypes.func
     }
 };
 

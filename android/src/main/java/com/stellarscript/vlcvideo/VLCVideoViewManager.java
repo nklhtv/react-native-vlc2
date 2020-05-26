@@ -2,15 +2,20 @@ package com.stellarscript.vlcvideo;
 
 import android.view.View;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.MediaPlayer.TrackDescription;
 
 import java.util.Map;
 
@@ -41,6 +46,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.PLAY_COMMAND_NAME, VLCVideoProps.PLAY_COMMAND_ID);
         commands.put(VLCVideoProps.PAUSE_COMMAND_NAME, VLCVideoProps.PAUSE_COMMAND_ID);
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_SPU_COMMAND_NAME, VLCVideoProps.SET_SPU_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_AUDIO_COMMAND_NAME, VLCVideoProps.SET_AUDIO_COMMAND_ID);
 
         return commands;
     }
@@ -57,6 +64,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
+        events.put(VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT));
+        events.put(VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT));
 
         return events;
     }
@@ -73,6 +82,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
         constants.put("ON_SEEK_PERFORMED", VLCVideoEvents.ON_SEEK_PERFORMED_EVENT);
         constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
+        constants.put("ON_EMBEDDED_SUBTITLES_AVAILABLE", VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT);
+        constants.put("ON_EMBEDDED_AUDIO_AVAILABLE", VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT);
 
         return constants;
     }
@@ -98,6 +109,24 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.getType(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX) == ReadableType.Number) {
                     final long seekTime = (long) args.getDouble(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX);
                     videoView.seek(seekTime);
+                }
+                break;
+            case VLCVideoProps.SET_SPU_COMMAND_ID:
+                if (args != null &&
+                        args.size() > 0 &&
+                        !args.isNull(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) &&
+                        args.getType(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) == ReadableType.Number) {
+                    final int index = (int) args.getInt(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX);
+                    videoView.setSpuTrack(index);
+                }
+                break;
+            case VLCVideoProps.SET_AUDIO_COMMAND_ID:
+                if (args != null &&
+                        args.size() > 0 &&
+                        !args.isNull(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) &&
+                        args.getType(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) == ReadableType.Number) {
+                    final int index = (int) args.getInt(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX);
+                    videoView.setAudioTrack(index);
                 }
                 break;
         }

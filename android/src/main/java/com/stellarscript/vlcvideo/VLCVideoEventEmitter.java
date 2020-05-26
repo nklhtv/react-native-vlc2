@@ -58,4 +58,20 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
     }
 
+    void emitOnEmbeddedSubtitlesAvailable() {
+        WritableMap event = Arguments.createMap();
+        for(TrackDescription track: mVideoView.getSpuTracks()) {
+            tracks.putInt(track.Name, track.id);
+        }
+        mEventEmitter.receiveEvent(mVideoView.getID(), VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, event);
+    }
+
+    void emitOnEmbeddedAudioAvailable() {
+        WritableMap event = Arguments.createMap();
+        for(TrackDescription track: mVideoView.getAudioTracks()) {
+            tracks.putInt(track.Name, track.id);
+        }
+        mEventEmitter.receiveEvent(mVideoView.getID(), VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, event);
+    }
+
 }

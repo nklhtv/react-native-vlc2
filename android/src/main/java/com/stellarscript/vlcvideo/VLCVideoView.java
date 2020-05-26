@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.KeyEvent;
+import android.util.Log;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -18,8 +19,11 @@ import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.MediaPlayer.TrackDescription;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+
 
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.KEYCODE_BACK;
@@ -258,11 +262,21 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.play();
         }
 
+        if(isSpuAvailable) {
+            mEventEmitter.emitOnEmbeddedSubtitlesAvailable();
+        }
+
+        if(isAudioAvailable) {
+            mEventEmitter.emitOnEmbeddedAudioAvailable();
+        }
+
         VLCVideoView.this.updatePlaybackNotification();
     }
 
     public void play() {
         mMediaPlayer.play();
+        this.getSpuTracks();
+        this.getAudioTracks();
     }
 
     public void pause() {
@@ -314,6 +328,44 @@ public final class VLCVideoView extends SurfaceView {
         if (vout.areViewsAttached()) {
             vout.detachViews();
         }
+    }
+
+    public TrackDescription [] getAudioTracks() {
+        for(TrackDescription x: mMediaPlayer.getAudioTracks()) {
+            Log.d("TRACK", x.name);
+        }
+        return mMediaPlayer.getAudioTracks();
+    }
+
+    public TrackDescription [] getSpuTracks() {
+        for(TrackDescription x: mMediaPlayer.getSpuTracks()) {
+            Log.d("TRACK", x.name);
+        }
+        return mMediaPlayer.getSpuTracks();
+    }
+
+    public boolean setSpuTrack(int index) {
+        return mMediaPlayer.setSpuTrack(index);
+    }
+
+    public boolean setAudioTrack(int index) {
+        return mMediaPlayer.setAudioTrack(index);
+    }
+
+    public long getSpuDelay() {
+        return mMediaPlayer.getSpuDelay();
+    }
+
+    public boolean setSpuDelay(long delay) {
+        return mMediaPlayer.setSpuDelay(delay);
+    }
+
+    public boolean isSpuAvailable() {
+        return mMediaPlayer.getSpuTracksCount() != 0;
+    }
+
+    public boolean isAudioAvailable() {
+        return mMediaPlayer.getAudioTracksCount() != 0;
     }
 
     private void updatePlaybackNotification() {
