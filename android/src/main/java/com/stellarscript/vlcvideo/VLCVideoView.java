@@ -156,7 +156,16 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
-                    mMediaPlayer.setSpuTrack(-1);
+                    if(isSpuAvailable()) {
+                        Log.d("TRACK", "emitting spu");
+                        mEventEmitter.emitOnEmbeddedSubtitlesAvailable();
+                    }
+
+                    if(isAudioAvailable()) {
+                        Log.d("TRACK", "emitting audio");
+                        mEventEmitter.emitOnEmbeddedAudioAvailable();
+                    }      
+                                  
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
@@ -262,21 +271,11 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.play();
         }
 
-        if(isSpuAvailable) {
-            mEventEmitter.emitOnEmbeddedSubtitlesAvailable();
-        }
-
-        if(isAudioAvailable) {
-            mEventEmitter.emitOnEmbeddedAudioAvailable();
-        }
-
         VLCVideoView.this.updatePlaybackNotification();
     }
 
     public void play() {
         mMediaPlayer.play();
-        this.getSpuTracks();
-        this.getAudioTracks();
     }
 
     public void pause() {
@@ -332,14 +331,14 @@ public final class VLCVideoView extends SurfaceView {
 
     public TrackDescription [] getAudioTracks() {
         for(TrackDescription x: mMediaPlayer.getAudioTracks()) {
-            Log.d("TRACK", x.name);
+            Log.d("TRACK", x.name + " " + Integer.toString(x.id));
         }
         return mMediaPlayer.getAudioTracks();
     }
 
     public TrackDescription [] getSpuTracks() {
         for(TrackDescription x: mMediaPlayer.getSpuTracks()) {
-            Log.d("TRACK", x.name);
+            Log.d("TRACK", x.name + " " + Integer.toString(x.id));
         }
         return mMediaPlayer.getSpuTracks();
     }
@@ -361,11 +360,11 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     public boolean isSpuAvailable() {
-        return mMediaPlayer.getSpuTracksCount() != 0;
+        return mMediaPlayer.getSpuTracksCount() > 0;
     }
 
     public boolean isAudioAvailable() {
-        return mMediaPlayer.getAudioTracksCount() != 0;
+        return mMediaPlayer.getAudioTracksCount() > 0;
     }
 
     private void updatePlaybackNotification() {

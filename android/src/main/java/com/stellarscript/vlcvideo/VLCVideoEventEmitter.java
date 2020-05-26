@@ -5,6 +5,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import org.videolan.libvlc.MediaPlayer.TrackDescription;
+
 final class VLCVideoEventEmitter {
 
     private final VLCVideoView mVideoView;
@@ -61,17 +63,17 @@ final class VLCVideoEventEmitter {
     void emitOnEmbeddedSubtitlesAvailable() {
         WritableMap event = Arguments.createMap();
         for(TrackDescription track: mVideoView.getSpuTracks()) {
-            tracks.putInt(track.Name, track.id);
+            event.putInt(track.name, track.id);
         }
-        mEventEmitter.receiveEvent(mVideoView.getID(), VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, event);
     }
 
     void emitOnEmbeddedAudioAvailable() {
         WritableMap event = Arguments.createMap();
         for(TrackDescription track: mVideoView.getAudioTracks()) {
-            tracks.putInt(track.Name, track.id);
+            event.putInt(track.name, track.id);
         }
-        mEventEmitter.receiveEvent(mVideoView.getID(), VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, event);
     }
 
 }

@@ -15,7 +15,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import org.videolan.libvlc.LibVLC;
-import org.videolan.libvlc.MediaPlayer.TrackDescription;
 
 import java.util.Map;
 
@@ -64,8 +63,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
-        events.put(VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT));
-        events.put(VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT));
+        events.put(VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT));
+        events.put(VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT));
 
         return events;
     }

@@ -156,7 +156,6 @@ const RCTVLCVideoViewInterface = {
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
         playInBackground: PropTypes.bool.isRequired,
-        spuTracks:
         [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
