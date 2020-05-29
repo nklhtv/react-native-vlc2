@@ -63,7 +63,9 @@ final class VLCVideoEventEmitter {
     void emitOnEmbeddedSubtitlesAvailable() {
         WritableMap event = Arguments.createMap();
         for(TrackDescription track: mVideoView.getSpuTracks()) {
-            event.putInt(track.name, track.id);
+            if(!track.name.toLowerCase().contains("disable")) {
+                event.putInt(track.name, track.id);
+            }
         }
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, event);
     }
@@ -71,7 +73,9 @@ final class VLCVideoEventEmitter {
     void emitOnEmbeddedAudioAvailable() {
         WritableMap event = Arguments.createMap();
         for(TrackDescription track: mVideoView.getAudioTracks()) {
-            event.putInt(track.name, track.id);
+            if(!track.name.toLowerCase().contains("disable")) {
+                event.putInt(track.name, track.id);
+            }
         }
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, event);
     }
