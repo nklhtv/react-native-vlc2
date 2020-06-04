@@ -10,7 +10,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.KeyEvent;
-import android.util.Log;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -157,12 +156,10 @@ public final class VLCVideoView extends SurfaceView {
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
                     if(isSpuAvailable()) {
-                        Log.d("TRACK", "emitting spu");
                         mEventEmitter.emitOnEmbeddedSubtitlesAvailable();
                     }
 
                     if(isAudioAvailable()) {
-                        Log.d("TRACK", "emitting audio");
                         mEventEmitter.emitOnEmbeddedAudioAvailable();
                     }      
                                   
@@ -331,14 +328,12 @@ public final class VLCVideoView extends SurfaceView {
 
     public TrackDescription [] getAudioTracks() {
         for(TrackDescription x: mMediaPlayer.getAudioTracks()) {
-            Log.d("TRACK", x.name + " " + Integer.toString(x.id));
         }
         return mMediaPlayer.getAudioTracks();
     }
 
     public TrackDescription [] getSpuTracks() {
         for(TrackDescription x: mMediaPlayer.getSpuTracks()) {
-            Log.d("TRACK", x.name + " " + Integer.toString(x.id));
         }
         return mMediaPlayer.getSpuTracks();
     }
