@@ -15,8 +15,8 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_ERROR]: this._invokeEventCallback.bind(this, 'onError'),
             [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: this._invokeEventCallback.bind(this, 'onTimeChanged'),
             [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed'),
-            [RCTVLCVideoViewConstants.ON_SUBTITLES_AVAILABLE]: this._invokeEventCallback.bind(this, 'onSubtitlesAvailable'),
-            [RCTVLCVideoViewConstants.ON_AUDIO_AVAILABLE]: this._invokeEventCallback.bind(this, 'onAudioAvailable')
+            [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onSubtitleTracksChanged'),
+            [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onAudioTracksChanged')
 
         };
     }
@@ -134,8 +134,8 @@ VLCVideo.propTypes = {
     onError: PropTypes.func,
     onTimeChanged: PropTypes.func,
     onSeekPerformed: PropTypes.func,
-    onSubtitlesAvailable: PropTypes.func,
-    onAudioAvailable: PropTypes.func
+    onSubtitleTracksChanged: PropTypes.func,
+    onAudioTracksChanged: PropTypes.func
 };
 
 VLCVideo.defaultProps = {
@@ -164,8 +164,8 @@ const RCTVLCVideoViewInterface = {
         [RCTVLCVideoViewConstants.ON_ERROR]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: PropTypes.func,
-        [RCTVLCVideoViewConstants.ON_SUBTITLES_AVAILABLE]: PropTypes.func,
-        [RCTVLCVideoViewConstants.ON_AUDIO_AVAILABLE]: PropTypes.func
+        [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: PropTypes.func
     }
 };
 

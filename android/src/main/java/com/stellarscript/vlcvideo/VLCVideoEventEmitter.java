@@ -60,24 +60,24 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
     }
 
-    void emitOnSubtitlesAvailable(TrackDescription[] tracks) {
+    void emitOnSubtitleTracksChanged(TrackDescription[] tracks) {
         final WritableMap event = Arguments.createMap();
         for (TrackDescription track : tracks) {
             if (!track.name.toLowerCase().contains("disable")) {
                 event.putInt(track.name, track.id);
             }
         }
-        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLES_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT, event);
     }
 
-    void emitOnAudioAvailable(TrackDescription[] tracks) {
+    void emitOnAudioTracksChanged(TrackDescription[] tracks) {
         final WritableMap event = Arguments.createMap();
         for (TrackDescription track : tracks) {
             if (!track.name.toLowerCase().contains("disable")) {
                 event.putInt(track.name, track.id);
             }
         }
-        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, event);
     }
 
 }
