@@ -155,14 +155,14 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
-                    if(isSpuAvailable()) {
+                    if (isSubtitlesAvailable()) {
                         mEventEmitter.emitOnSubtitlesAvailable(mMediaPlayer.getSpuTracks());
                     }
 
-                    if(isAudioAvailable()) {
+                    if (isAudioAvailable()) {
                         mEventEmitter.emitOnAudioAvailable(mMediaPlayer.getAudioTracks());
-                    }      
-                                  
+                    }
+
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
@@ -326,7 +326,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public boolean setSpuTrack(int index) {
+    public boolean setSubtitlesTrack(int index) {
         return mMediaPlayer.setSpuTrack(index);
     }
 
@@ -334,7 +334,7 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.setAudioTrack(index);
     }
 
-    public boolean isSpuAvailable() {
+    public boolean isSubtitlesAvailable() {
         return mMediaPlayer.getSpuTracksCount() > 0;
     }
 

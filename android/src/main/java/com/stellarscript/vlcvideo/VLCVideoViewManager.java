@@ -45,7 +45,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.PLAY_COMMAND_NAME, VLCVideoProps.PLAY_COMMAND_ID);
         commands.put(VLCVideoProps.PAUSE_COMMAND_NAME, VLCVideoProps.PAUSE_COMMAND_ID);
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
-        commands.put(VLCVideoProps.SET_SPU_COMMAND_NAME, VLCVideoProps.SET_SPU_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_SUBTITLES_COMMAND_NAME, VLCVideoProps.SET_SUBTITLES_COMMAND_ID);
         commands.put(VLCVideoProps.SET_AUDIO_COMMAND_NAME, VLCVideoProps.SET_AUDIO_COMMAND_ID);
 
         return commands;
@@ -110,13 +110,13 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                     videoView.seek(seekTime);
                 }
                 break;
-            case VLCVideoProps.SET_SPU_COMMAND_ID:
+            case VLCVideoProps.SET_SUBTITLES_COMMAND_ID:
                 if (args != null &&
                         args.size() > 0 &&
                         !args.isNull(0) &&
                         args.getType(0) == ReadableType.Number) {
                     final int index = (int) args.getInt(0);
-                    videoView.setSpuTrack(index);
+                    videoView.setSubtitlesTrack(index);
                 }
                 break;
             case VLCVideoProps.SET_AUDIO_COMMAND_ID:
