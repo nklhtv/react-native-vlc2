@@ -60,24 +60,24 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
     }
 
-    void emitOnEmbeddedSubtitlesAvailable() {
-        WritableMap event = Arguments.createMap();
-        for(TrackDescription track: mVideoView.getSpuTracks()) {
-            if(!track.name.toLowerCase().contains("disable")) {
+    void emitOnSubtitlesAvailable(TrackDescription[] tracks) {
+        final WritableMap event = Arguments.createMap();
+        for (TrackDescription track : tracks) {
+            if (!track.name.toLowerCase().contains("disable")) {
                 event.putInt(track.name, track.id);
             }
         }
-        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLES_AVAILABLE_EVENT, event);
     }
 
-    void emitOnEmbeddedAudioAvailable() {
-        WritableMap event = Arguments.createMap();
-        for(TrackDescription track: mVideoView.getAudioTracks()) {
-            if(!track.name.toLowerCase().contains("disable")) {
+    void emitOnAudioAvailable(TrackDescription[] tracks) {
+        final WritableMap event = Arguments.createMap();
+        for (TrackDescription track : tracks) {
+            if (!track.name.toLowerCase().contains("disable")) {
                 event.putInt(track.name, track.id);
             }
         }
-        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, event);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_AVAILABLE_EVENT, event);
     }
 
 }

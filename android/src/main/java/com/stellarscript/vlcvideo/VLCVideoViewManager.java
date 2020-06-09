@@ -63,8 +63,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
-        events.put(VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT));
-        events.put(VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT));
+        events.put(VLCVideoEvents.ON_SUBTITLES_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SUBTITLES_AVAILABLE_EVENT));
+        events.put(VLCVideoEvents.ON_AUDIO_AVAILABLE_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_AUDIO_AVAILABLE_EVENT));
 
         return events;
     }
@@ -81,8 +81,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
         constants.put("ON_SEEK_PERFORMED", VLCVideoEvents.ON_SEEK_PERFORMED_EVENT);
         constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
-        constants.put("ON_EMBEDDED_SUBTITLES_AVAILABLE", VLCVideoEvents.ON_EMBEDDED_SUBTITLES_AVAILABLE_EVENT);
-        constants.put("ON_EMBEDDED_AUDIO_AVAILABLE", VLCVideoEvents.ON_EMBEDDED_AUDIO_AVAILABLE_EVENT);
+        constants.put("ON_SUBTITLES_AVAILABLE", VLCVideoEvents.ON_SUBTITLES_AVAILABLE_EVENT);
+        constants.put("ON_AUDIO_AVAILABLE", VLCVideoEvents.ON_AUDIO_AVAILABLE_EVENT);
 
         return constants;
     }
@@ -113,18 +113,18 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             case VLCVideoProps.SET_SPU_COMMAND_ID:
                 if (args != null &&
                         args.size() > 0 &&
-                        !args.isNull(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) &&
-                        args.getType(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) == ReadableType.Number) {
-                    final int index = (int) args.getInt(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX);
+                        !args.isNull(0) &&
+                        args.getType(0) == ReadableType.Number) {
+                    final int index = (int) args.getInt(0);
                     videoView.setSpuTrack(index);
                 }
                 break;
             case VLCVideoProps.SET_AUDIO_COMMAND_ID:
                 if (args != null &&
                         args.size() > 0 &&
-                        !args.isNull(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) &&
-                        args.getType(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX) == ReadableType.Number) {
-                    final int index = (int) args.getInt(VLCVideoProps.SET_SPU_AUDIO_COMMAND_INDEX);
+                        !args.isNull(0) &&
+                        args.getType(0) == ReadableType.Number) {
+                    final int index = (int) args.getInt(0);
                     videoView.setAudioTrack(index);
                 }
                 break;
