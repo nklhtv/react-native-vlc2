@@ -69,15 +69,15 @@ class VLCVideo extends Component {
         );
     }
 
-    setSubtitlesTrack = (index) => {
-        if (typeof index !== 'number' || isNaN(index)) {
-            index = -1;
+    setSubtitleTrack = (id) => {
+        if (typeof id !== 'number' || isNaN(id)) {
+            id = -1;
         }
 
         UIManager.dispatchViewManagerCommand(
             this._getViewHandle(),
-            UIManager.RCTVLCVideoView.Commands.setSubtitlesTrack,
-            [index]
+            UIManager.RCTVLCVideoView.Commands.setSubtitleTrack,
+            [id]
         );
     }
 
