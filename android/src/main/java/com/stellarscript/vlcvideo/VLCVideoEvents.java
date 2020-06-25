@@ -15,7 +15,6 @@ final class VLCVideoEvents {
     static final String ON_SUBTITLE_TRACKS_CHANGED_EVENT = getFullEventName("onSubtitleTracksChanged");
     static final String ON_AUDIO_TRACKS_CHANGED_EVENT = getFullEventName("onAudioTracksChanged");
 
-
     static final String ON_ERROR_MESSAGE_PROP = "message";
     static final String ON_ERROR_IS_CRITICAL_PROP = "isCritical";
     static final String ON_TIME_CHANGED_TIME_PROP = "time";
