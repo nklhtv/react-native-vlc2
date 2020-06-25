@@ -42,7 +42,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.PAUSE_COMMAND_NAME, VLCVideoProps.PAUSE_COMMAND_ID);
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
         commands.put(VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_NAME, VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_ID);
-        commands.put(VLCVideoProps.SET_AUDIO_COMMAND_NAME, VLCVideoProps.SET_AUDIO_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_AUDIO_TRACK_COMMAND_NAME, VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID);
 
         return commands;
     }
@@ -115,7 +115,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                     videoView.setSubtitlesTrack(index);
                 }
                 break;
-            case VLCVideoProps.SET_AUDIO_COMMAND_ID:
+            case VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID:
                 if (args != null &&
                         args.size() > 0 &&
                         !args.isNull(0) &&
