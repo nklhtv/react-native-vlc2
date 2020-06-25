@@ -82,13 +82,22 @@ final class VLCVideoEventEmitter {
     }
 
     void emitOnAudioTracksChanged(final TrackDescription[] tracks) {
-        final WritableMap event = Arguments.createMap();
+        final WritableMap eventTracks = Arguments.createMap();
         for (final TrackDescription track : tracks) {
-            if (!track.name.toLowerCase().contains("disable")) {
-                event.putInt(track.name, track.id);
+            if (track.name.toLowerCase().contains("disable")) {
+                continue;
             }
+
+            final WritableArray ids = eventTracks.hasKey(track.name) ?
+                    Arguments.fromList(eventTracks.getArray(track.name).toArrayList())
+                    :
+                    Arguments.createArray();
+            ids.pushInt(track.id);
+            eventTracks.putArray(track.name, ids);
         }
 
+        final WritableMap event = Arguments.createMap();
+        event.putMap(VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_AUDIO_TRACKS_PROP, eventTracks);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, event);
     }
 
