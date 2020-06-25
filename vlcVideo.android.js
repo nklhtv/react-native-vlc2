@@ -17,7 +17,6 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed'),
             [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onSubtitleTracksChanged'),
             [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onAudioTracksChanged')
-
         };
     }
 
@@ -71,7 +70,7 @@ class VLCVideo extends Component {
     }
 
     setSubtitlesTrack = (index) => {
-        if(typeof index !== 'number' || isNaN(index)) {
+        if (typeof index !== 'number' || isNaN(index)) {
             index = -1;
         }
 
@@ -83,7 +82,7 @@ class VLCVideo extends Component {
     }
 
     setAudioTrack = (index) => {
-        if(typeof index !== 'number' || isNaN(index)) {
+        if (typeof index !== 'number' || isNaN(index)) {
             index = -1;
         }
 
@@ -92,7 +91,7 @@ class VLCVideo extends Component {
             UIManager.RCTVLCVideoView.Commands.setAudioTrack,
             [index]
         );
-    }    
+    }
 
     render() {
         const media = {
