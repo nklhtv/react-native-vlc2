@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.view.SurfaceView;
 import android.view.KeyEvent;
+import android.view.SurfaceView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -21,12 +21,11 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.text.MessageFormat;
 
-
 import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-import static android.view.KeyEvent.KEYCODE_SPACE;
-import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
 import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_SPACE;
 
 
 public final class VLCVideoView extends SurfaceView {
