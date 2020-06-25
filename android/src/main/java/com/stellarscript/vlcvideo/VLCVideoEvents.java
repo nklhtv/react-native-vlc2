@@ -22,6 +22,8 @@ final class VLCVideoEvents {
     static final String ON_PLAYING_DURATION_PROP = "duration";
     static final String ON_BUFFERING_BUFFERING_PROP = "buffering";
     static final String ON_SEEK_REQUESTED_TIME_PROP = "time";
+    static final String ON_SUBTITLE_TRACKS_CHANGED_SUBTITLE_TRACKS_PROP = "subtitleTracks";
+    static final String ON_AUDIO_TRACKS_CHANGED_AUDIO_TRACKS_PROP = "audioTracks";
 
     private static String getFullEventName(final String eventName) {
         return EVENT_NAME_PREFIX.concat(eventName);
