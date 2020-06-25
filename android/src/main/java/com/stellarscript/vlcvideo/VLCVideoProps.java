@@ -23,8 +23,8 @@ final class VLCVideoProps {
     static final int PAUSE_COMMAND_ID = 2;
     static final String SEEK_COMMAND_NAME = "seek";
     static final int SEEK_COMMAND_ID = 3;
-    static final String SET_SUBTITLES_COMMAND_NAME = "setSubtitlesTrack";
-    static final int SET_SUBTITLES_COMMAND_ID = 4;
+    static final String SET_SUBTITLE_TRACK_COMMAND_NAME = "setSubtitleTrack";
+    static final int SET_SUBTITLE_TRACK_COMMAND_ID = 4;
     static final String SET_AUDIO_COMMAND_NAME = "setAudioTrack";
     static final int SET_AUDIO_COMMAND_ID = 5;
     static final int SEEK_COMMAND_TIME_ARGUMENT_INDEX = 0;
