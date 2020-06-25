@@ -322,7 +322,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public boolean setSubtitlesTrack(int index) {
+    public boolean setSubtitleTrack(int index) {
         return mMediaPlayer.setSpuTrack(index);
     }
 

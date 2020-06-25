@@ -112,7 +112,7 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         !args.isNull(0) &&
                         args.getType(0) == ReadableType.Number) {
                     final int id = args.getInt(0);
-                    videoView.setSubtitlesTrack(id);
+                    videoView.setSubtitleTrack(id);
                 }
                 break;
             case VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID:
