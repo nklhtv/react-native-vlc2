@@ -1,6 +1,7 @@
 package com.stellarscript.vlcvideo;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
@@ -61,13 +62,22 @@ final class VLCVideoEventEmitter {
     }
 
     void emitOnSubtitleTracksChanged(final TrackDescription[] tracks) {
-        final WritableMap event = Arguments.createMap();
+        final WritableMap eventTracks = Arguments.createMap();
         for (final TrackDescription track : tracks) {
-            if (!track.name.toLowerCase().contains("disable")) {
-                event.putInt(track.name, track.id);
+            if (track.name.toLowerCase().contains("disable")) {
+                continue;
             }
+
+            final WritableArray ids = eventTracks.hasKey(track.name) ?
+                    Arguments.fromList(eventTracks.getArray(track.name).toArrayList())
+                    :
+                    Arguments.createArray();
+            ids.pushInt(track.id);
+            eventTracks.putArray(track.name, ids);
         }
 
+        final WritableMap event = Arguments.createMap();
+        event.putMap(VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_SUBTITLE_TRACKS_PROP, eventTracks);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT, event);
     }
 
