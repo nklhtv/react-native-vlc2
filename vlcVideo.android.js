@@ -81,15 +81,15 @@ class VLCVideo extends Component {
         );
     }
 
-    setAudioTrack = (index) => {
-        if (typeof index !== 'number' || isNaN(index)) {
-            index = -1;
+    setAudioTrack = (id) => {
+        if (typeof id !== 'number' || isNaN(id)) {
+            id = -1;
         }
 
         UIManager.dispatchViewManagerCommand(
             this._getViewHandle(),
             UIManager.RCTVLCVideoView.Commands.setAudioTrack,
-            [index]
+            [id]
         );
     }
 
