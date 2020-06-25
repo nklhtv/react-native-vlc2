@@ -12,7 +12,7 @@ final class VLCVideoEvents {
     static final String ON_TIME_CHANGED_EVENT = getFullEventName("onTimeChanged");
     static final String ON_SEEK_REQUESTED_EVENT = getFullEventName("onSeekRequested");
     static final String ON_SEEK_PERFORMED_EVENT = getFullEventName("onSeekPerformed");
-    static final String ON_SUBTITLE_TRACKS_CHANGED_EVENT = getFullEventName("onSubtitlesTracksChanged");
+    static final String ON_SUBTITLE_TRACKS_CHANGED_EVENT = getFullEventName("onSubtitleTracksChanged");
     static final String ON_AUDIO_TRACKS_CHANGED_EVENT = getFullEventName("onAudioTracksChanged");
 
 
