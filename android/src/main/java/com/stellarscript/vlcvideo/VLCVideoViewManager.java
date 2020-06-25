@@ -111,8 +111,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.size() > 0 &&
                         !args.isNull(0) &&
                         args.getType(0) == ReadableType.Number) {
-                    final int index = (int) args.getInt(0);
-                    videoView.setSubtitlesTrack(index);
+                    final int id = (int) args.getInt(0);
+                    videoView.setSubtitlesTrack(id);
                 }
                 break;
             case VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID:
@@ -120,8 +120,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.size() > 0 &&
                         !args.isNull(0) &&
                         args.getType(0) == ReadableType.Number) {
-                    final int index = (int) args.getInt(0);
-                    videoView.setAudioTrack(index);
+                    final int id = (int) args.getInt(0);
+                    videoView.setAudioTrack(id);
                 }
                 break;
         }
