@@ -302,6 +302,22 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
+    public boolean setSubtitleTrack(int index) {
+        return mMediaPlayer.setSpuTrack(index);
+    }
+
+    public boolean setAudioTrack(int index) {
+        return mMediaPlayer.setAudioTrack(index);
+    }
+
+    public boolean isSubtitlesAvailable() {
+        return mMediaPlayer.getSpuTracksCount() > 0;
+    }
+
+    public boolean isAudioAvailable() {
+        return mMediaPlayer.getAudioTracksCount() > 0;
+    }
+    
     private void stop() {
         mIsSeekRequested = false;
         mMediaPlayer.stop();
@@ -320,22 +336,6 @@ public final class VLCVideoView extends SurfaceView {
         if (vout.areViewsAttached()) {
             vout.detachViews();
         }
-    }
-
-    public boolean setSubtitleTrack(int index) {
-        return mMediaPlayer.setSpuTrack(index);
-    }
-
-    public boolean setAudioTrack(int index) {
-        return mMediaPlayer.setAudioTrack(index);
-    }
-
-    public boolean isSubtitlesAvailable() {
-        return mMediaPlayer.getSpuTracksCount() > 0;
-    }
-
-    public boolean isAudioAvailable() {
-        return mMediaPlayer.getAudioTracksCount() > 0;
     }
 
     private void updatePlaybackNotification() {
