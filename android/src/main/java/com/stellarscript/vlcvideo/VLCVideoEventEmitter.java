@@ -62,46 +62,42 @@ final class VLCVideoEventEmitter {
     }
 
     void emitOnSubtitleTracksChanged(final TrackDescription[] tracks) {
-        final WritableMap eventTracks = Arguments.createMap();
+        final WritableArray eventTracks = Arguments.createArray();
         if (tracks != null) {
             for (final TrackDescription track : tracks) {
                 if (track.name.toLowerCase().contains("disable")) {
                     continue;
                 }
 
-                final WritableArray ids = eventTracks.hasKey(track.name) ?
-                        Arguments.fromList(eventTracks.getArray(track.name).toArrayList())
-                        :
-                        Arguments.createArray();
-                ids.pushInt(track.id);
-                eventTracks.putArray(track.name, ids);
+                final WritableMap eventTrack = Arguments.createMap();
+                eventTrack.putInt("id", track.id);
+                eventTrack.putString("name", track.name);
+                eventTracks.pushMap(eventTrack);
             }
         }
 
         final WritableMap event = Arguments.createMap();
-        event.putMap(VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_SUBTITLE_TRACKS_PROP, eventTracks);
+        event.putArray(VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_SUBTITLE_TRACKS_PROP, eventTracks);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT, event);
     }
 
     void emitOnAudioTracksChanged(final TrackDescription[] tracks) {
-        final WritableMap eventTracks = Arguments.createMap();
+        final WritableArray eventTracks = Arguments.createArray();
         if (tracks != null) {
             for (final TrackDescription track : tracks) {
                 if (track.name.toLowerCase().contains("disable")) {
                     continue;
                 }
 
-                final WritableArray ids = eventTracks.hasKey(track.name) ?
-                        Arguments.fromList(eventTracks.getArray(track.name).toArrayList())
-                        :
-                        Arguments.createArray();
-                ids.pushInt(track.id);
-                eventTracks.putArray(track.name, ids);
+                final WritableMap eventTrack = Arguments.createMap();
+                eventTrack.putInt("id", track.id);
+                eventTrack.putString("name", track.name);
+                eventTracks.pushMap(eventTrack);
             }
         }
 
         final WritableMap event = Arguments.createMap();
-        event.putMap(VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_AUDIO_TRACKS_PROP, eventTracks);
+        event.putArray(VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_AUDIO_TRACKS_PROP, eventTracks);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, event);
     }
 }
