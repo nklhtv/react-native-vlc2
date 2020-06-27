@@ -226,10 +226,6 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void setPlayInBackground(final boolean playInBackground) {
-        mPlayInBackground = playInBackground;
-    }
-
     public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty()) {
             return;
@@ -292,6 +288,10 @@ public final class VLCVideoView extends SurfaceView {
 
     public void setAudioTrack(final int id) {
         mMediaPlayer.setAudioTrack(id);
+    }
+
+    public void setPlayInBackground(final boolean playInBackground) {
+        mPlayInBackground = playInBackground;
     }
 
     public boolean isPlaying() {
