@@ -286,6 +286,14 @@ public final class VLCVideoView extends SurfaceView {
         mMediaPlayer.play();
     }
 
+    public void setSubtitleTrack(final int id) {
+        mMediaPlayer.setSpuTrack(id);
+    }
+
+    public void setAudioTrack(final int id) {
+        mMediaPlayer.setAudioTrack(id);
+    }
+
     public boolean isPlaying() {
         return mMediaPlayer.isPlaying();
     }
@@ -300,14 +308,6 @@ public final class VLCVideoView extends SurfaceView {
 
     public long getDuration() {
         return mMediaPlayer.getLength();
-    }
-
-    public void setSubtitleTrack(final int id) {
-        mMediaPlayer.setSpuTrack(id);
-    }
-
-    public void setAudioTrack(final int id) {
-        mMediaPlayer.setAudioTrack(id);
     }
 
     private void stop() {
