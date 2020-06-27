@@ -27,7 +27,6 @@ import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
 import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
 import static android.view.KeyEvent.KEYCODE_SPACE;
 
-
 public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
