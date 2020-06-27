@@ -302,12 +302,12 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
-    public boolean setSubtitleTrack(final int id) {
-        return mMediaPlayer.setSpuTrack(id);
+    public void setSubtitleTrack(final int id) {
+        mMediaPlayer.setSpuTrack(id);
     }
 
-    public boolean setAudioTrack(final int id) {
-        return mMediaPlayer.setAudioTrack(id);
+    public void setAudioTrack(final int id) {
+        mMediaPlayer.setAudioTrack(id);
     }
 
     private void stop() {
@@ -384,5 +384,4 @@ public final class VLCVideoView extends SurfaceView {
     private void clearPlaybackNotification() {
         NotificationManagerCompat.from(mThemedReactContext).cancel(PLAYBACK_NOTIFICATION_ID);
     }
-
 }
