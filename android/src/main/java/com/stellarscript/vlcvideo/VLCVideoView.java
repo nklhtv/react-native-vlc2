@@ -302,12 +302,12 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
-    public boolean setSubtitleTrack(int index) {
-        return mMediaPlayer.setSpuTrack(index);
+    public boolean setSubtitleTrack(final int id) {
+        return mMediaPlayer.setSpuTrack(id);
     }
 
-    public boolean setAudioTrack(int index) {
-        return mMediaPlayer.setAudioTrack(index);
+    public boolean setAudioTrack(final int id) {
+        return mMediaPlayer.setAudioTrack(id);
     }
 
     private void stop() {
