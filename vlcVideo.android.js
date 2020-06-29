@@ -17,8 +17,8 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed'),
             [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onSubtitleTracksChanged'),
             [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onAudioTracksChanged'),
-            [RCTVLCVideoViewConstants.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED]: this._invokeEventCallback(this, 'onSelectedSubtitleTrackIdChanged'),
-            [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: this._invokeEventCallback(this, 'onSelectedAudioTrackIdChanged')
+            [RCTVLCVideoViewConstants.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedSubtitleTrackIdChanged'),
+            [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedAudioTrackIdChanged')
         };
     }
 
