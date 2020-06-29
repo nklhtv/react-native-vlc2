@@ -70,8 +70,8 @@ final class VLCVideoEventEmitter {
                 }
 
                 final WritableMap eventTrack = Arguments.createMap();
-                eventTrack.putInt("id", track.id);
-                eventTrack.putString("name", track.name);
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
                 eventTracks.pushMap(eventTrack);
             }
         }
@@ -90,8 +90,8 @@ final class VLCVideoEventEmitter {
                 }
 
                 final WritableMap eventTrack = Arguments.createMap();
-                eventTrack.putInt("id", track.id);
-                eventTrack.putString("name", track.name);
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
                 eventTracks.pushMap(eventTrack);
             }
         }
