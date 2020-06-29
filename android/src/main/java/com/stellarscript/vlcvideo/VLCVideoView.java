@@ -255,10 +255,10 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.play();
         }
 
-        final MediaPlayer.TrackDescription[] subtitleTracks = mMediaPlayer.getSpuTracks();
-        mEventEmitter.emitOnSubtitleTracksChanged(subtitleTracks);
-        final MediaPlayer.TrackDescription[] audioTracks = mMediaPlayer.getAudioTracks();
-        mEventEmitter.emitOnAudioTracksChanged(audioTracks);
+        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        mEventEmitter.emitOnSubtitleTracksChanged(mMediaPlayer.getSpuTracks());
+        mEventEmitter.emitOnAudioTracksChanged(mMediaPlayer.getAudioTracks());
         VLCVideoView.this.updatePlaybackNotification();
     }
 
