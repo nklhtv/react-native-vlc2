@@ -14,6 +14,8 @@ final class VLCVideoEvents {
     static final String ON_SEEK_PERFORMED_EVENT = getFullEventName("onSeekPerformed");
     static final String ON_SUBTITLE_TRACKS_CHANGED_EVENT = getFullEventName("onSubtitleTracksChanged");
     static final String ON_AUDIO_TRACKS_CHANGED_EVENT = getFullEventName("onAudioTracksChanged");
+    static final String ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT = getFullEventName("onSelectedSubtitleTrackIdChanged");
+    static final String ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT = getFullEventName("onAudioTrackIdChanged");
 
     static final String MESSAGE_PROP = "message";
     static final String IS_CRITICAL_PROP = "isCritical";

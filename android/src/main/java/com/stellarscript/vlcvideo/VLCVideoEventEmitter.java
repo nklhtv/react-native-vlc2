@@ -100,4 +100,16 @@ final class VLCVideoEventEmitter {
         event.putArray(VLCVideoEvents.AUDIO_TRACKS_PROP, eventTracks);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, event);
     }
+
+    void emitOnSelectedSubtitleTrackIdChanged(final int id) {
+        final WritableMap event = Arguments.createMap();
+        event.putInt(VLCVideoEvents.TRACK_ID_PROP, id);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT, event);
+    }
+
+    void emitOnSelectedAudioTrackIdChanged(final int id) {
+        final WritableMap event = Arguments.createMap();
+        event.putInt(VLCVideoEvents.TRACK_ID_PROP, id);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT, event);
+    }
 }

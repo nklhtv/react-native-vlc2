@@ -283,10 +283,12 @@ public final class VLCVideoView extends SurfaceView {
 
     public void setSubtitleTrack(final int id) {
         mMediaPlayer.setSpuTrack(id);
+        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
     }
 
     public void setAudioTrack(final int id) {
         mMediaPlayer.setAudioTrack(id);
+        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
     }
 
     public void setPlayInBackground(final boolean playInBackground) {
