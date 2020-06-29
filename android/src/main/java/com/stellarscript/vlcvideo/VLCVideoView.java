@@ -247,6 +247,8 @@ public final class VLCVideoView extends SurfaceView {
             final long startTimeInSeconds = startTime / 1000;
             final String startTimeOption = MessageFormat.format(":start-time={0}", String.valueOf(startTimeInSeconds));
             newMedia.addOption(startTimeOption);
+            final String subtitleTrackOption = MessageFormat.format(":sub-track-id={0}", String.valueOf(Integer.MAX_VALUE));
+            newMedia.addOption(subtitleTrackOption);
         }
 
         mTitle = title;
