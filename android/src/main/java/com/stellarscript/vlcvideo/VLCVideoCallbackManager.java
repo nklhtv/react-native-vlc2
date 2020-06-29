@@ -6,7 +6,7 @@ import android.view.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VLCVideoCallbackManager {
+public final class VLCVideoCallbackManager {
 
     interface IntentCallback {
         boolean onNewIntent(final Intent intent);
@@ -16,8 +16,8 @@ public class VLCVideoCallbackManager {
         boolean onKeyDown(final int keyCode, final KeyEvent keyEvent);
     }
 
-    private Set<IntentCallback> intentCallbacks;
-    private Set<OnKeyDownCallback> onKeyDownCallbacks;
+    private final Set<IntentCallback> intentCallbacks;
+    private final Set<OnKeyDownCallback> onKeyDownCallbacks;
 
     public VLCVideoCallbackManager() {
         intentCallbacks = new HashSet<>();

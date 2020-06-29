@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.view.KeyEvent;
+import android.view.SurfaceView;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.KeyEvent;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -22,12 +22,10 @@ import org.videolan.libvlc.MediaPlayer;
 import java.text.MessageFormat;
 
 import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_BACK;
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-import static android.view.KeyEvent.KEYCODE_SPACE;
-import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
 import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
-
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_SPACE;
 
 public final class VLCVideoView extends SurfaceView {
 
@@ -152,7 +150,10 @@ public final class VLCVideoView extends SurfaceView {
                 case MediaPlayer.Event.Playing:
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
-                    mMediaPlayer.setSpuTrack(-1);
+                    final MediaPlayer.TrackDescription[] subtitleTracks = mMediaPlayer.getSpuTracks();
+                    mEventEmitter.emitOnSubtitleTracksChanged(subtitleTracks);
+                    final MediaPlayer.TrackDescription[] audioTracks = mMediaPlayer.getAudioTracks();
+                    mEventEmitter.emitOnAudioTracksChanged(audioTracks);
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
@@ -224,10 +225,6 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void setPlayInBackground(final boolean playInBackground) {
-        mPlayInBackground = playInBackground;
-    }
-
     public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty()) {
             return;
@@ -250,6 +247,8 @@ public final class VLCVideoView extends SurfaceView {
             final long startTimeInSeconds = startTime / 1000;
             final String startTimeOption = MessageFormat.format(":start-time={0}", String.valueOf(startTimeInSeconds));
             newMedia.addOption(startTimeOption);
+            final String subtitleTrackOption = MessageFormat.format(":sub-track-id={0}", String.valueOf(Integer.MAX_VALUE));
+            newMedia.addOption(subtitleTrackOption);
         }
 
         mTitle = title;
@@ -258,6 +257,10 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.play();
         }
 
+        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        mEventEmitter.emitOnSubtitleTracksChanged(mMediaPlayer.getSpuTracks());
+        mEventEmitter.emitOnAudioTracksChanged(mMediaPlayer.getAudioTracks());
         VLCVideoView.this.updatePlaybackNotification();
     }
 
@@ -280,6 +283,20 @@ public final class VLCVideoView extends SurfaceView {
         mMediaPlayer.play();
     }
 
+    public void setSubtitleTrack(final int id) {
+        mMediaPlayer.setSpuTrack(id);
+        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+    }
+
+    public void setAudioTrack(final int id) {
+        mMediaPlayer.setAudioTrack(id);
+        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+    }
+
+    public void setPlayInBackground(final boolean playInBackground) {
+        mPlayInBackground = playInBackground;
+    }
+
     public boolean isPlaying() {
         return mMediaPlayer.isPlaying();
     }
@@ -299,6 +316,8 @@ public final class VLCVideoView extends SurfaceView {
     private void stop() {
         mIsSeekRequested = false;
         mMediaPlayer.stop();
+        mMediaPlayer.setSpuTrack(-1);
+        mMediaPlayer.setAudioTrack(-1);
     }
 
     private void attachVLCVoutViews() {
@@ -370,5 +389,4 @@ public final class VLCVideoView extends SurfaceView {
     private void clearPlaybackNotification() {
         NotificationManagerCompat.from(mThemedReactContext).cancel(PLAYBACK_NOTIFICATION_ID);
     }
-
 }

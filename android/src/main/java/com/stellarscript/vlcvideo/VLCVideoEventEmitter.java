@@ -1,9 +1,12 @@
 package com.stellarscript.vlcvideo;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+
+import org.videolan.libvlc.MediaPlayer.TrackDescription;
 
 final class VLCVideoEventEmitter {
 
@@ -17,13 +20,13 @@ final class VLCVideoEventEmitter {
 
     void emitOnBuffering(final double buffering) {
         final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_BUFFERING_BUFFERING_PROP, buffering);
+        event.putDouble(VLCVideoEvents.BUFFERING_PROP, buffering);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_BUFFERING_EVENT, event);
     }
 
     void emitOnPlaying(final double duration) {
         final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_PLAYING_DURATION_PROP, duration);
+        event.putDouble(VLCVideoEvents.DURATION_PROP, duration);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_PLAYING_EVENT, event);
     }
 
@@ -37,20 +40,20 @@ final class VLCVideoEventEmitter {
 
     void emitOnError(final String message, final boolean isCritical) {
         final WritableMap event = Arguments.createMap();
-        event.putString(VLCVideoEvents.ON_ERROR_MESSAGE_PROP, message);
-        event.putBoolean(VLCVideoEvents.ON_ERROR_IS_CRITICAL_PROP, isCritical);
+        event.putString(VLCVideoEvents.MESSAGE_PROP, message);
+        event.putBoolean(VLCVideoEvents.IS_CRITICAL_PROP, isCritical);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
     }
 
     void emitOnTimeChanged(final double time) {
         final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_TIME_CHANGED_TIME_PROP, time);
+        event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_TIME_CHANGED_EVENT, event);
     }
 
     void emitOnSeekRequested(final double time) {
         final WritableMap event = Arguments.createMap();
-        event.putDouble(VLCVideoEvents.ON_SEEK_REQUESTED_TIME_PROP, time);
+        event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, event);
     }
 
@@ -58,4 +61,55 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, null);
     }
 
+    void emitOnSubtitleTracksChanged(final TrackDescription[] tracks) {
+        final WritableArray eventTracks = Arguments.createArray();
+        if (tracks != null) {
+            for (final TrackDescription track : tracks) {
+                if (track.name.toLowerCase().contains("disable")) {
+                    continue;
+                }
+
+                final WritableMap eventTrack = Arguments.createMap();
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
+                eventTracks.pushMap(eventTrack);
+            }
+        }
+
+        final WritableMap event = Arguments.createMap();
+        event.putArray(VLCVideoEvents.SUBTITLE_TRACKS_PROP, eventTracks);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT, event);
+    }
+
+    void emitOnAudioTracksChanged(final TrackDescription[] tracks) {
+        final WritableArray eventTracks = Arguments.createArray();
+        if (tracks != null) {
+            for (final TrackDescription track : tracks) {
+                if (track.name.toLowerCase().contains("disable")) {
+                    continue;
+                }
+
+                final WritableMap eventTrack = Arguments.createMap();
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
+                eventTracks.pushMap(eventTrack);
+            }
+        }
+
+        final WritableMap event = Arguments.createMap();
+        event.putArray(VLCVideoEvents.AUDIO_TRACKS_PROP, eventTracks);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, event);
+    }
+
+    void emitOnSelectedSubtitleTrackIdChanged(final int id) {
+        final WritableMap event = Arguments.createMap();
+        event.putInt(VLCVideoEvents.TRACK_ID_PROP, id);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT, event);
+    }
+
+    void emitOnSelectedAudioTrackIdChanged(final int id) {
+        final WritableMap event = Arguments.createMap();
+        event.putInt(VLCVideoEvents.TRACK_ID_PROP, id);
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT, event);
+    }
 }

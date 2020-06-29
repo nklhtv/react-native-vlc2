@@ -41,6 +41,8 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.PLAY_COMMAND_NAME, VLCVideoProps.PLAY_COMMAND_ID);
         commands.put(VLCVideoProps.PAUSE_COMMAND_NAME, VLCVideoProps.PAUSE_COMMAND_ID);
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_NAME, VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_ID);
+        commands.put(VLCVideoProps.SET_AUDIO_TRACK_COMMAND_NAME, VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID);
 
         return commands;
     }
@@ -57,6 +59,10 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
+        events.put(VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT));
+        events.put(VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT));
+        events.put(VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT));
+        events.put(VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT));
 
         return events;
     }
@@ -73,6 +79,10 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
         constants.put("ON_SEEK_PERFORMED", VLCVideoEvents.ON_SEEK_PERFORMED_EVENT);
         constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
+        constants.put("ON_SUBTITLE_TRACKS_CHANGED", VLCVideoEvents.ON_SUBTITLE_TRACKS_CHANGED_EVENT);
+        constants.put("ON_AUDIO_TRACKS_CHANGED", VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT);
+        constants.put("ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED", VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT);
+        constants.put("ON_SELECTED_AUDIO_TRACK_ID_CHANGED", VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT);
 
         return constants;
     }
@@ -98,6 +108,24 @@ final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                         args.getType(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX) == ReadableType.Number) {
                     final long seekTime = (long) args.getDouble(VLCVideoProps.SEEK_COMMAND_TIME_ARGUMENT_INDEX);
                     videoView.seek(seekTime);
+                }
+                break;
+            case VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_ID:
+                if (args != null &&
+                        args.size() > 0 &&
+                        !args.isNull(0) &&
+                        args.getType(0) == ReadableType.Number) {
+                    final int id = args.getInt(0);
+                    videoView.setSubtitleTrack(id);
+                }
+                break;
+            case VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID:
+                if (args != null &&
+                        args.size() > 0 &&
+                        !args.isNull(0) &&
+                        args.getType(0) == ReadableType.Number) {
+                    final int id = args.getInt(0);
+                    videoView.setAudioTrack(id);
                 }
                 break;
         }
