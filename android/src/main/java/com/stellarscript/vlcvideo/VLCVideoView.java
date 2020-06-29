@@ -314,6 +314,8 @@ public final class VLCVideoView extends SurfaceView {
     private void stop() {
         mIsSeekRequested = false;
         mMediaPlayer.stop();
+        mMediaPlayer.setSpuTrack(-1);
+        mMediaPlayer.setAudioTrack(-1);
     }
 
     private void attachVLCVoutViews() {
