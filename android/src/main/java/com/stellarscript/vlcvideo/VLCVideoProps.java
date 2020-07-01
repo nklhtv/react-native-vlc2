@@ -1,4 +1,4 @@
-package com.stellarscript.vlcvideo;
+package com.stremio.vlcvideo;
 
 final class VLCVideoProps {
 

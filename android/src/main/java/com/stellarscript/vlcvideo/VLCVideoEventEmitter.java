@@ -1,4 +1,4 @@
-package com.stellarscript.vlcvideo;
+package com.stremio.vlcvideo;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableArray;

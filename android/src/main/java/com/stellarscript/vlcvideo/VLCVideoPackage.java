@@ -1,4 +1,4 @@
-package com.stellarscript.vlcvideo;
+package com.stremio.vlcvideo;
 
 import android.app.Application;
 import android.view.View;

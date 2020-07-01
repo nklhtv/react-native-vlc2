@@ -1,4 +1,4 @@
-package com.stellarscript.vlcvideo;
+package com.stremio.vlcvideo;
 
 import android.content.Intent;
 import android.view.KeyEvent;
