@@ -3,7 +3,11 @@
     "version": "3.0.10",
     "description": "VLC video component for react-native",
     "main": "index.js",
-    "author": "Nikola Hristov",
+    "author": {
+        "name": "Smart Code Ltd.",
+        "email": "office@stremio.com",
+        "url": "https://stremio.com"
+    },
     "license": "MIT",
     "repository": {
         "type": "git",
