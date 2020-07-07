@@ -43,6 +43,7 @@ public final class VLCVideoView extends SurfaceView {
 
     private String mTitle;
     private boolean mPlayInBackground;
+    private boolean mPlaybackStarted;
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
@@ -148,6 +149,10 @@ public final class VLCVideoView extends SurfaceView {
                     }
                     break;
                 case MediaPlayer.Event.Playing:
+                    if (!mPlaybackStarted) {
+                        mPlaybackStarted = true;
+                        mMediaPlayer.setSpuTrack(-1);
+                    }
                     final double duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
                     final int subtitleTrackId = mMediaPlayer.getSpuTrack();
@@ -318,6 +323,7 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     private void stop() {
+        mPlaybackStarted = false;
         mIsSeekRequested = false;
         mMediaPlayer.stop();
         mMediaPlayer.setSpuTrack(-1);
