@@ -55,15 +55,21 @@ public final class VLCVideoView extends SurfaceView {
         @Override
         public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
             final int action = keyEvent.getAction();
-            if (action == ACTION_DOWN) {
+            final int repeatCount = keyEvent.getRepeatCount();
+            if (action == ACTION_DOWN && repeatCount % 4 == 0) {
                 switch (keyCode) {
                     case KEYCODE_SPACE:
                     case KEYCODE_MEDIA_PLAY_PAUSE:
+                        if (repeatCount > 0) {
+                            return false;
+                        }
+
                         if (mMediaPlayer.isPlaying()) {
                             mMediaPlayer.pause();
                         } else {
                             mMediaPlayer.play();
                         }
+
                         return true;
                     case KEYCODE_MEDIA_FAST_FORWARD:
                     case KEYCODE_MEDIA_REWIND:
