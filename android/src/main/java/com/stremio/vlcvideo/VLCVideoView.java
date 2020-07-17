@@ -37,7 +37,7 @@ public final class VLCVideoView extends SurfaceView {
     private static final String PAUSE_ICON_RESOURCE_NAME = "react_native_vlc2_pause_icon";
     private static final String PLAY_INTENT_ACTION = "VLCVideo:Play";
     private static final String PAUSE_INTENT_ACTION = "VLCVideo:Pause";
-    private static final int D_PAD_SEEK_TIME = 30000;
+    private static final int D_PAD_SEEK_TIME = 15000;
 
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
 
