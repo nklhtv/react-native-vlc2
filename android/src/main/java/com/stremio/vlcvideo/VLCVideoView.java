@@ -280,32 +280,44 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     public void play() {
-        mMediaPlayer.play();
+        if(!mMediaPlayer.isReleased()) {
+            mMediaPlayer.play();
+        }
     }
 
     public void pause() {
-        mMediaPlayer.pause();
+        if(!mMediaPlayer.isReleased()) {
+            mMediaPlayer.pause();
+        }
     }
 
     public void requestSeek(final long time) {
-        mIsSeekRequested = true;
-        mEventEmitter.emitOnSeekRequested(time);
+        if(!mMediaPlayer.isReleased()) {
+            mIsSeekRequested = true;
+            mEventEmitter.emitOnSeekRequested(time);
+        }
     }
 
     public void seek(final long time) {
-        requestSeek(time);
-        mMediaPlayer.setTime(time);
-        mMediaPlayer.play();
+        if(!mMediaPlayer.isReleased()) {
+            requestSeek(time);
+            mMediaPlayer.setTime(time);
+            mMediaPlayer.play();
+        }
     }
 
     public void setSubtitleTrack(final int id) {
-        mMediaPlayer.setSpuTrack(id);
-        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        if(!mMediaPlayer.isReleased()) {
+            mMediaPlayer.setSpuTrack(id);
+            mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        }
     }
 
     public void setAudioTrack(final int id) {
-        mMediaPlayer.setAudioTrack(id);
-        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        if(!mMediaPlayer.isReleased()) {
+            mMediaPlayer.setAudioTrack(id);
+            mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        }
     }
 
     public void setPlayInBackground(final boolean playInBackground) {
