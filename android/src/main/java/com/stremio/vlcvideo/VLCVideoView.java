@@ -54,6 +54,9 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
         public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+            if (mMediaPlayer.isReleased()) {
+                return false;
+            }
             final int action = keyEvent.getAction();
             final int repeatCount = keyEvent.getRepeatCount();
             if (action == ACTION_DOWN && repeatCount % 4 == 0) {
@@ -88,6 +91,9 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public boolean onNewIntent(final Intent intent) {
+            if (mMediaPlayer.isReleased()) {
+                return false;
+            }
             final String action = intent != null && intent.getAction() != null ? intent.getAction() : "";
             switch (action) {
                 case PLAY_INTENT_ACTION:
@@ -107,7 +113,9 @@ public final class VLCVideoView extends SurfaceView {
 
         @Override
         public void onHostResume() {
-            VLCVideoView.this.attachVLCVoutViews();
+            if (!mMediaPlayer.isReleased()) {
+                VLCVideoView.this.attachVLCVoutViews();
+            }
         }
 
         @Override
@@ -217,18 +225,16 @@ public final class VLCVideoView extends SurfaceView {
 
         mThemedReactContext.removeLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(null);
-        try {
+        if (!mMediaPlayer.isReleased()) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
-        } catch (final Exception e) {
-            e.printStackTrace();
         }
     }
 
     @Override
     protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (changed) {
+        if (changed && !mMediaPlayer.isReleased()) {
             final int width = right - left;
             final int height = bottom - top;
             if (width * height == 0) {
@@ -241,7 +247,7 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
-        if (sourceUrl == null || sourceUrl.isEmpty()) {
+        if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
             return;
         }
 
@@ -280,32 +286,44 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     public void play() {
-        mMediaPlayer.play();
+        if (!mMediaPlayer.isReleased()) {
+            mMediaPlayer.play();
+        }
     }
 
     public void pause() {
-        mMediaPlayer.pause();
+        if (!mMediaPlayer.isReleased()) {
+            mMediaPlayer.pause();
+        }
     }
 
     public void requestSeek(final long time) {
-        mIsSeekRequested = true;
-        mEventEmitter.emitOnSeekRequested(time);
+        if (!mMediaPlayer.isReleased()) {
+            mIsSeekRequested = true;
+            mEventEmitter.emitOnSeekRequested(time);
+        }
     }
 
     public void seek(final long time) {
-        requestSeek(time);
-        mMediaPlayer.setTime(time);
-        mMediaPlayer.play();
+        if (!mMediaPlayer.isReleased()) {
+            requestSeek(time);
+            mMediaPlayer.setTime(time);
+            mMediaPlayer.play();
+        }
     }
 
     public void setSubtitleTrack(final int id) {
-        mMediaPlayer.setSpuTrack(id);
-        mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        if (!mMediaPlayer.isReleased()) {
+            mMediaPlayer.setSpuTrack(id);
+            mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
+        }
     }
 
     public void setAudioTrack(final int id) {
-        mMediaPlayer.setAudioTrack(id);
-        mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        if (!mMediaPlayer.isReleased()) {
+            mMediaPlayer.setAudioTrack(id);
+            mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
+        }
     }
 
     public void setPlayInBackground(final boolean playInBackground) {
