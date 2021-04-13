@@ -14,7 +14,8 @@ import androidx.core.app.NotificationManagerCompat;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
 
-import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.interfaces.IVLCVout;
+import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
@@ -252,7 +253,7 @@ public final class VLCVideoView extends SurfaceView {
         }
 
         final Uri newSourceUri = Uri.parse(sourceUrl);
-        final Media oldMedia = mMediaPlayer.getMedia();
+        final IMedia oldMedia = mMediaPlayer.getMedia();
         if (oldMedia != null) {
             final Uri oldSourceUri = oldMedia.getUri();
             if (oldSourceUri.compareTo(newSourceUri) == 0) {
