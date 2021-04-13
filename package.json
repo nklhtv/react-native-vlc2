@@ -1,6 +1,6 @@
 {
     "name": "@stremio/react-native-vlc2",
-    "version": "3.0.10",
+    "version": "4.0.0",
     "description": "VLC video component for react-native",
     "main": "index.js",
     "author": {
