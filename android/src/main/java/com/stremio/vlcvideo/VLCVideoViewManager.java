@@ -14,7 +14,7 @@ import org.videolan.libvlc.LibVLC;
 
 import java.util.Map;
 
-final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
+public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
 
     private static final String REACT_CLASS = "RCT" + VLCVideoView.class.getSimpleName();
     private static final String REACT_REGISTRATION_NAME = "registrationName";
