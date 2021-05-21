@@ -101,8 +101,11 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         mSelectedRenderer.removeOnPropertyChangedCallback(mSelectedRendererListener);
-        for (final RendererDiscoverer discoverer: mDiscoverers) {
+        for (final RendererDiscoverer discoverer : mDiscoverers) {
             discoverer.setEventListener(null);
+            if (!discoverer.isReleased()) {
+                discoverer.stop();
+            }
         }
     }
 
@@ -120,7 +123,7 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setSelectedRenderer(final String rendererDisplayName) {
-        for (final RendererItem renderer: mRenderers) {
+        for (final RendererItem renderer : mRenderers) {
             if (renderer.displayName.equals(rendererDisplayName)) {
                 mSelectedRenderer.set(renderer);
                 return;
