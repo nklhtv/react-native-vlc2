@@ -1,5 +1,8 @@
 package com.stremio.vlccasting;
 
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableField;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -26,9 +29,10 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
     private static final String REACT_CLASS = VLCCastingModule.class.getSimpleName();
 
     private final LibVLC mLibVLC;
+    private final Set<RendererDiscoverer> mDiscoverers = new HashSet<>();
     private final Set<RendererItem> mRenderers = new HashSet<>();
+    private final ObservableField<RendererItem> mSelectedRenderer;
     private final RendererDiscoverer.EventListener mDiscovererEventListener = new RendererDiscoverer.EventListener() {
-
         @Override
         public void onEvent(final RendererDiscoverer.Event event) {
             final RendererItem renderer = event.getItem();
@@ -45,14 +49,20 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
 
             eminOnRenderersChange();
         }
-
+    };
+    private final Observable.OnPropertyChangedCallback mSelectedRendererListener = new Observable.OnPropertyChangedCallback() {
+        @Override
+        public void onPropertyChanged(final Observable sender, final int id) {
+            emitOnSelectedRendererChange();
+        }
     };
 
     private DeviceEventManagerModule.RCTDeviceEventEmitter mDeviceEventEmitter;
 
-    public VLCCastingModule(final ReactApplicationContext reactContext, final LibVLC libVLC) {
+    public VLCCastingModule(final ReactApplicationContext reactContext, final LibVLC libVLC, final ObservableField<RendererItem> selectedRenderer) {
         super(reactContext);
         mLibVLC = libVLC;
+        mSelectedRenderer = selectedRenderer;
     }
 
     @Override
@@ -74,8 +84,10 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
     public void initialize() {
         super.initialize();
         mDeviceEventEmitter = getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+        mSelectedRenderer.addOnPropertyChangedCallback(mSelectedRendererListener);
         for (final RendererDiscoverer.Description discovererDescription : RendererDiscoverer.list(mLibVLC)) {
             final RendererDiscoverer discoverer = new RendererDiscoverer(mLibVLC, discovererDescription.name);
+            mDiscoverers.add(discoverer);
             discoverer.setEventListener(mDiscovererEventListener);
             startDiscoverer(discoverer);
         }
@@ -84,48 +96,62 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
+        mSelectedRenderer.removeOnPropertyChangedCallback(mSelectedRendererListener);
+        for (final RendererDiscoverer discoverer: mDiscoverers) {
+            discoverer.setEventListener(null);
+        }
     }
 
     @ReactMethod
     public void getRenderers(final Callback callback) {
-        final WritableMap event = getRenderersEvent();
+        final WritableMap event = createRenderersEvent();
         callback.invoke(event);
     }
 
     @ReactMethod
     public void getSelectedRenderer(final Callback callback) {
-        final WritableMap event = getSelectedRendererEvent();
+        final WritableMap event = createSelectedRendererEvent();
         callback.invoke(event);
     }
 
+    @ReactMethod
+    public void setSelectedRenderer(final String rendererDisplayName) {
+        for (final RendererItem renderer: mRenderers) {
+            if (renderer.displayName.equals(rendererDisplayName)) {
+                mSelectedRenderer.set(renderer);
+                return;
+            }
+        }
+
+        mSelectedRenderer.set(null);
+    }
+
     private void emitOnSelectedRendererChange() {
-        final WritableMap event = getSelectedRendererEvent();
+        final WritableMap event = createSelectedRendererEvent();
         mDeviceEventEmitter.emit(VLCCastingEvents.ON_SELECTED_RENDERER_CHANGE, event);
     }
 
     private void eminOnRenderersChange() {
-        final WritableMap event = getRenderersEvent();
+        final WritableMap event = createRenderersEvent();
         mDeviceEventEmitter.emit(VLCCastingEvents.ON_RENDERERS_CHANGE, event);
     }
 
-    private WritableMap getSelectedRendererEvent() {
+    private WritableMap createSelectedRendererEvent() {
         final WritableMap event = Arguments.createMap();
-        final WritableMap rendererValue = Arguments.createMap();
-        // TODO
-        // rendererValue.putString(VLCCastingEvents.RENDERER_NAME_PROP, renderer.name);
-        // rendererValue.putString(VLCCastingEvents.RENDERER_DISPLAY_NAME_PROP, renderer.displayName);
-        event.putMap(VLCCastingEvents.ON_SELECTED_RENDERER_CHANGE_RENDERER_PROP, rendererValue);
+        final RendererItem renderer = mSelectedRenderer.get();
+        if (renderer != null) {
+            event.putString(VLCCastingEvents.ON_SELECTED_RENDERER_CHANGE_RENDERER_PROP, renderer.displayName);
+        } else {
+            event.putNull(VLCCastingEvents.ON_SELECTED_RENDERER_CHANGE_RENDERER_PROP);
+        }
         return event;
     }
 
-    private WritableMap getRenderersEvent() {
+    private WritableMap createRenderersEvent() {
         final WritableMap event = Arguments.createMap();
         final WritableArray renderersValue = Arguments.createArray();
         for (final RendererItem renderer : mRenderers) {
-            final WritableMap rendererValue = Arguments.createMap();
-            rendererValue.putString(VLCCastingEvents.RENDERER_NAME_PROP, renderer.name);
-            rendererValue.putString(VLCCastingEvents.RENDERER_DISPLAY_NAME_PROP, renderer.displayName);
-            renderersValue.pushMap(rendererValue);
+            renderersValue.pushString(renderer.displayName);
         }
         event.putArray(VLCCastingEvents.ON_RENDERERS_CHANGE_RENDERERS_PROP, renderersValue);
         return event;

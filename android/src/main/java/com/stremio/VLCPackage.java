@@ -3,6 +3,8 @@ package com.stremio;
 import android.app.Application;
 import android.view.View;
 
+import androidx.databinding.ObservableField;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -12,6 +14,7 @@ import com.stremio.vlcvideo.VLCVideoCallbackManager;
 import com.stremio.vlcvideo.VLCVideoViewManager;
 
 import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.RendererItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +27,7 @@ public final class VLCPackage implements ReactPackage {
     private final View.OnKeyListener mOnKeyListener;
     private final LibVLC mLibVLC;
     private final VLCVideoCallbackManager mCallbackManager;
+    private final ObservableField<RendererItem> mSelectedRenderer = new ObservableField<>(null);
 
     public VLCPackage(final Application application) {
         this(application, DEFAULT_VLC_OPTIONS, null, null);
@@ -61,7 +65,7 @@ public final class VLCPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(final ReactApplicationContext reactApplicationContext) {
-        return Arrays.<NativeModule>asList(new VLCCastingModule(reactApplicationContext, mLibVLC));
+        return Arrays.<NativeModule>asList(new VLCCastingModule(reactApplicationContext, mLibVLC, mSelectedRenderer));
     }
 
     @Override
