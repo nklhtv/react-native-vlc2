@@ -47,6 +47,10 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
                 }
             }
 
+            if (!mRenderers.contains(mSelectedRenderer.get())) {
+                mSelectedRenderer.set(null);
+            }
+
             eminOnRenderersChange();
         }
     };
