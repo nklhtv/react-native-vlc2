@@ -10,18 +10,19 @@ import android.view.SurfaceView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.stremio.vlc.R;
 
-import org.videolan.libvlc.RendererItem;
-import org.videolan.libvlc.interfaces.IVLCVout;
-import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.RendererItem;
+import org.videolan.libvlc.interfaces.IMedia;
+import org.videolan.libvlc.interfaces.IVLCVout;
 
 import java.text.MessageFormat;
 
@@ -192,6 +193,16 @@ public final class VLCVideoView extends SurfaceView {
         }
 
     };
+    private final Observable.OnPropertyChangedCallback mRendererListener = new Observable.OnPropertyChangedCallback() {
+
+        @Override
+        public void onPropertyChanged(final Observable sender, final int id) {
+            if (!mMediaPlayer.isReleased()) {
+                mMediaPlayer.setRenderer(mSelectedRenderer.get());
+            }
+        }
+
+    };
 
     public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
         super(themedReactContext);
@@ -217,6 +228,7 @@ public final class VLCVideoView extends SurfaceView {
 
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
+        mSelectedRenderer.addOnPropertyChangedCallback(mRendererListener);
     }
 
     @Override
@@ -235,6 +247,8 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.stop();
             mMediaPlayer.release();
         }
+
+        mSelectedRenderer.removeOnPropertyChangedCallback(mRendererListener);
     }
 
     @Override
