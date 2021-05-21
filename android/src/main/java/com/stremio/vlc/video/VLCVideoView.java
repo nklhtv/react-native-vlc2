@@ -10,10 +10,13 @@ import android.view.SurfaceView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.databinding.ObservableField;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.stremio.vlc.R;
 
+import org.videolan.libvlc.RendererItem;
 import org.videolan.libvlc.interfaces.IVLCVout;
 import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.LibVLC;
@@ -51,6 +54,7 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
+    private final ObservableField<RendererItem> mSelectedRenderer;
 
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
@@ -189,7 +193,7 @@ public final class VLCVideoView extends SurfaceView {
 
     };
 
-    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager) {
+    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
@@ -197,6 +201,7 @@ public final class VLCVideoView extends SurfaceView {
         mCallbackManager = callbackManager;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+        mSelectedRenderer = selectedRenderer;
 
         setBackgroundResource(R.drawable.video_view_background);
     }

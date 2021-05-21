@@ -70,7 +70,7 @@ public final class VLCPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(final ReactApplicationContext reactApplicationContext) {
-        return Arrays.<ViewManager>asList(new VLCVideoViewManager(mOnKeyListener, mLibVLC, mCallbackManager));
+        return Arrays.<ViewManager>asList(new VLCVideoViewManager(mOnKeyListener, mLibVLC, mCallbackManager, mSelectedRenderer));
     }
 
 }
