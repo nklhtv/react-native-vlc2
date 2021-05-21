@@ -1,4 +1,4 @@
-package com.stremio;
+package com.stremio.vlc;
 
 import android.app.Application;
 import android.view.View;
@@ -9,9 +9,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.stremio.vlccasting.VLCCastingModule;
-import com.stremio.vlcvideo.VLCVideoCallbackManager;
-import com.stremio.vlcvideo.VLCVideoViewManager;
+import com.stremio.vlc.casting.VLCCastingModule;
+import com.stremio.vlc.video.VLCVideoCallbackManager;
+import com.stremio.vlc.video.VLCVideoViewManager;
 
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.RendererItem;

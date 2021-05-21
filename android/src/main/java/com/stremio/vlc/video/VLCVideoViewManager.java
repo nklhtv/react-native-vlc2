@@ -1,4 +1,4 @@
-package com.stremio.vlcvideo;
+package com.stremio.vlc.video;
 
 import android.view.View;
 

@@ -1,4 +1,4 @@
-package com.stremio.vlccasting;
+package com.stremio.vlc.casting;
 
 final class VLCCastingEvents {
 

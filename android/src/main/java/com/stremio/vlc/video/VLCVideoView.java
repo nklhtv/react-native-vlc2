@@ -1,4 +1,4 @@
-package com.stremio.vlcvideo;
+package com.stremio.vlc.video;
 
 import android.app.PendingIntent;
 import android.content.Intent;
