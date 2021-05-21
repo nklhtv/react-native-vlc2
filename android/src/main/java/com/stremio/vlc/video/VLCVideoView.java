@@ -293,6 +293,7 @@ public final class VLCVideoView extends SurfaceView {
         }
 
         mTitle = title;
+        mMediaPlayer.setRenderer(mSelectedRenderer.get());
         mMediaPlayer.setMedia(newMedia);
         if (autoplay) {
             mMediaPlayer.play();
