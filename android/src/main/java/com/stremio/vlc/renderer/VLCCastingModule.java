@@ -1,4 +1,4 @@
-package com.stremio.vlc.casting;
+package com.stremio.vlc.renderer;
 
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;

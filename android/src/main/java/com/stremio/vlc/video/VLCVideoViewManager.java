@@ -22,14 +22,14 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     private static final String REACT_CLASS = "RCT" + VLCVideoView.class.getSimpleName();
     private static final String REACT_REGISTRATION_NAME = "registrationName";
 
-    private final View.OnKeyListener mOnKeyListener;
     private final LibVLC mLibVLC;
+    private final View.OnKeyListener mOnKeyListener;
     private final VLCVideoCallbackManager mCallbackManager;
     private final ObservableField<RendererItem> mSelectedRenderer;
 
-    public VLCVideoViewManager(final View.OnKeyListener onKeyListener, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
-        mOnKeyListener = onKeyListener;
+    public VLCVideoViewManager(final LibVLC libVLC, final View.OnKeyListener onKeyListener, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
         mLibVLC = libVLC;
+        mOnKeyListener = onKeyListener;
         mCallbackManager = callbackManager;
         mSelectedRenderer = selectedRenderer;
     }
