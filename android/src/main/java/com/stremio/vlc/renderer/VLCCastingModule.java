@@ -43,12 +43,11 @@ public final class VLCCastingModule extends ReactContextBaseJavaModule {
                 }
                 case RendererDiscoverer.Event.ItemDeleted: {
                     mRenderers.remove(renderer);
+                    if (renderer == mSelectedRenderer.get()) {
+                        mSelectedRenderer.set(null);
+                    }
                     break;
                 }
-            }
-
-            if (!mRenderers.contains(mSelectedRenderer.get())) {
-                mSelectedRenderer.set(null);
             }
 
             eminOnRenderersChange();
