@@ -1,6 +1,5 @@
 package com.stremio.vlc.video;
 
-import android.util.Pair;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
@@ -10,8 +9,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 import org.videolan.libvlc.MediaPlayer.TrackDescription;
-
-import java.util.ArrayList;
 
 public final class VLCVideoEventEmitter {
 
@@ -67,24 +64,16 @@ public final class VLCVideoEventEmitter {
     }
 
     public void emitOnSubtitleTracksChanged(final TrackDescription[] tracks) {
-        final ArrayList<Pair<Integer, String>> tracksList = new ArrayList<>();
-        for (final TrackDescription track: tracks) {
-            tracksList.add(new Pair<>(track.id, track.name));
-        }
-        emitOnSubtitleTracksChanged(tracksList);
-    }
-
-    public void emitOnSubtitleTracksChanged(final ArrayList<Pair<Integer, String>> tracks) {
         final WritableArray eventTracks = Arguments.createArray();
         if (tracks != null) {
-            for (final Pair<Integer, String> track : tracks) {
-                if (track.second.toLowerCase().contains("disable")) {
+            for (final TrackDescription track : tracks) {
+                if (track.name.toLowerCase().contains("disable")) {
                     continue;
                 }
 
                 final WritableMap eventTrack = Arguments.createMap();
-                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.first);
-                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.second);
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
                 eventTracks.pushMap(eventTrack);
             }
         }
@@ -95,24 +84,16 @@ public final class VLCVideoEventEmitter {
     }
 
     public void emitOnAudioTracksChanged(final TrackDescription[] tracks) {
-        final ArrayList<Pair<Integer, String>> tracksList = new ArrayList<>();
-        for (final TrackDescription track: tracks) {
-            tracksList.add(new Pair<>(track.id, track.name));
-        }
-        emitOnAudioTracksChanged(tracksList);
-    }
-
-    public void emitOnAudioTracksChanged(final ArrayList<Pair<Integer, String>> tracks) {
         final WritableArray eventTracks = Arguments.createArray();
         if (tracks != null) {
-            for (final Pair<Integer, String> track : tracks) {
-                if (track.second.toLowerCase().contains("disable")) {
+            for (final TrackDescription track : tracks) {
+                if (track.name.toLowerCase().contains("disable")) {
                     continue;
                 }
 
                 final WritableMap eventTrack = Arguments.createMap();
-                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.first);
-                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.second);
+                eventTrack.putInt(VLCVideoEvents.TRACK_ID_PROP, track.id);
+                eventTrack.putString(VLCVideoEvents.TRACK_NAME_PROP, track.name);
                 eventTracks.pushMap(eventTrack);
             }
         }
