@@ -161,7 +161,7 @@ public final class VLCVideoView extends SurfaceView {
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.TimeChanged:
-                    final double time = mMediaPlayer.getTime();
+                    final long time = mMediaPlayer.getTime();
                     mEventEmitter.emitOnTimeChanged(time);
                     if (mIsSeekRequested) {
                         mIsSeekRequested = false;
@@ -173,7 +173,7 @@ public final class VLCVideoView extends SurfaceView {
                         mPlaybackStarted = true;
                         mMediaPlayer.setSpuTrack(-1);
                     }
-                    final double duration = mMediaPlayer.getLength();
+                    final long duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
                     final int subtitleTrackId = mMediaPlayer.getSpuTrack();
                     mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(subtitleTrackId);
@@ -186,7 +186,7 @@ public final class VLCVideoView extends SurfaceView {
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
-                    final double buffering = mediaEvent.getBuffering();
+                    final long buffering = (long) mediaEvent.getBuffering();
                     mEventEmitter.emitOnBuffering(buffering);
                     break;
             }

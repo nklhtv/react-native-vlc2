@@ -20,13 +20,13 @@ public final class VLCVideoEventEmitter {
         mEventEmitter = themedReactContext.getJSModule(RCTEventEmitter.class);
     }
 
-    public void emitOnBuffering(final double buffering) {
+    public void emitOnBuffering(final long buffering) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.BUFFERING_PROP, buffering);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_BUFFERING_EVENT, event);
     }
 
-    public void emitOnPlaying(final double duration) {
+    public void emitOnPlaying(final long duration) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.DURATION_PROP, duration);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_PLAYING_EVENT, event);
@@ -47,13 +47,13 @@ public final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
     }
 
-    public void emitOnTimeChanged(final double time) {
+    public void emitOnTimeChanged(final long time) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_TIME_CHANGED_EVENT, event);
     }
 
-    public void emitOnSeekRequested(final double time) {
+    public void emitOnSeekRequested(final long time) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, event);
