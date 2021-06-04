@@ -148,12 +148,12 @@ public final class VLCVideoView extends SurfaceView {
             switch (eventType) {
                 case MediaPlayer.Event.EndReached:
                     mEventEmitter.emitOnEndReached();
-                    VLCVideoView.this.stop();
+                    VLCVideoView.this.unloadMedia();
                     VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     mEventEmitter.emitOnError(MEDIA_ERROR_MESSAGE, true);
-                    VLCVideoView.this.stop();
+                    VLCVideoView.this.unloadMedia();
                     VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.Paused:
@@ -280,7 +280,7 @@ public final class VLCVideoView extends SurfaceView {
             }
         }
 
-        VLCVideoView.this.stop();
+        VLCVideoView.this.unloadMedia();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
         newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
 
@@ -367,7 +367,7 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
-    private void stop() {
+    private void unloadMedia() {
         mPlaybackStarted = false;
         mIsSeekRequested = false;
         mMediaPlayer.stop();
