@@ -292,12 +292,14 @@ public final class VLCVideoView extends SurfaceView {
             newMedia.addOption(subtitleTrackOption);
         }
 
+        if (!autoplay) {
+            newMedia.addOption(":start-paused");
+        }
+
         mTitle = title;
         mMediaPlayer.setRenderer(mSelectedRenderer.get());
         mMediaPlayer.setMedia(newMedia);
-        if (autoplay) {
-            mMediaPlayer.play();
-        }
+        mMediaPlayer.play();
 
         mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
         mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
