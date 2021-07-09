@@ -1,4 +1,4 @@
-package com.stremio.vlcvideo;
+package com.stremio.vlc.video;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableArray;
@@ -18,13 +18,13 @@ final class VLCVideoEventEmitter {
         mEventEmitter = themedReactContext.getJSModule(RCTEventEmitter.class);
     }
 
-    void emitOnBuffering(final double buffering) {
+    void emitOnBuffering(final long buffering) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.BUFFERING_PROP, buffering);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_BUFFERING_EVENT, event);
     }
 
-    void emitOnPlaying(final double duration) {
+    void emitOnPlaying(final long duration) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.DURATION_PROP, duration);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_PLAYING_EVENT, event);
@@ -45,13 +45,13 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
     }
 
-    void emitOnTimeChanged(final double time) {
+    void emitOnTimeChanged(final long time) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_TIME_CHANGED_EVENT, event);
     }
 
-    void emitOnSeekRequested(final double time) {
+    void emitOnSeekRequested(final long time) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.TIME_PROP, time);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, event);

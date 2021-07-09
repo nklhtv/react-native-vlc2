@@ -1,4 +1,4 @@
-package com.stremio.vlcvideo;
+package com.stremio.vlc.video;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,15 +10,19 @@ import android.view.SurfaceView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableField;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.stremio.vlc.R;
 
-import org.videolan.libvlc.interfaces.IVLCVout;
-import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.RendererItem;
+import org.videolan.libvlc.interfaces.IMedia;
+import org.videolan.libvlc.interfaces.IVLCVout;
 
 import java.text.MessageFormat;
 
@@ -51,6 +55,7 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
+    private final ObservableField<RendererItem> mSelectedRenderer;
 
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
@@ -143,12 +148,12 @@ public final class VLCVideoView extends SurfaceView {
             switch (eventType) {
                 case MediaPlayer.Event.EndReached:
                     mEventEmitter.emitOnEndReached();
-                    VLCVideoView.this.stop();
+                    VLCVideoView.this.unloadMedia();
                     VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.EncounteredError:
                     mEventEmitter.emitOnError(MEDIA_ERROR_MESSAGE, true);
-                    VLCVideoView.this.stop();
+                    VLCVideoView.this.unloadMedia();
                     VLCVideoView.this.clearPlaybackNotification();
                     break;
                 case MediaPlayer.Event.Paused:
@@ -156,7 +161,7 @@ public final class VLCVideoView extends SurfaceView {
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.TimeChanged:
-                    final double time = mMediaPlayer.getTime();
+                    final long time = mMediaPlayer.getTime();
                     mEventEmitter.emitOnTimeChanged(time);
                     if (mIsSeekRequested) {
                         mIsSeekRequested = false;
@@ -168,7 +173,7 @@ public final class VLCVideoView extends SurfaceView {
                         mPlaybackStarted = true;
                         mMediaPlayer.setSpuTrack(-1);
                     }
-                    final double duration = mMediaPlayer.getLength();
+                    final long duration = mMediaPlayer.getLength();
                     mEventEmitter.emitOnPlaying(duration);
                     final int subtitleTrackId = mMediaPlayer.getSpuTrack();
                     mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(subtitleTrackId);
@@ -181,15 +186,25 @@ public final class VLCVideoView extends SurfaceView {
                     VLCVideoView.this.updatePlaybackNotification();
                     break;
                 case MediaPlayer.Event.Buffering:
-                    final double buffering = mediaEvent.getBuffering();
+                    final long buffering = (long) mediaEvent.getBuffering();
                     mEventEmitter.emitOnBuffering(buffering);
                     break;
             }
         }
 
     };
+    private final Observable.OnPropertyChangedCallback mRendererListener = new Observable.OnPropertyChangedCallback() {
 
-    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager) {
+        @Override
+        public void onPropertyChanged(final Observable sender, final int id) {
+            if (!mMediaPlayer.isReleased()) {
+                mMediaPlayer.setRenderer(mSelectedRenderer.get());
+            }
+        }
+
+    };
+
+    public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
         super(themedReactContext);
 
         mThemedReactContext = themedReactContext;
@@ -197,6 +212,7 @@ public final class VLCVideoView extends SurfaceView {
         mCallbackManager = callbackManager;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+        mSelectedRenderer = selectedRenderer;
 
         setBackgroundResource(R.drawable.video_view_background);
     }
@@ -212,6 +228,7 @@ public final class VLCVideoView extends SurfaceView {
 
         mThemedReactContext.addLifecycleEventListener(mLifecycleEventListener);
         mMediaPlayer.setEventListener(mMediaPlayerEventListener);
+        mSelectedRenderer.addOnPropertyChangedCallback(mRendererListener);
     }
 
     @Override
@@ -230,6 +247,8 @@ public final class VLCVideoView extends SurfaceView {
             mMediaPlayer.stop();
             mMediaPlayer.release();
         }
+
+        mSelectedRenderer.removeOnPropertyChangedCallback(mRendererListener);
     }
 
     @Override
@@ -261,7 +280,7 @@ public final class VLCVideoView extends SurfaceView {
             }
         }
 
-        VLCVideoView.this.stop();
+        VLCVideoView.this.unloadMedia();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
         newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
 
@@ -273,11 +292,14 @@ public final class VLCVideoView extends SurfaceView {
             newMedia.addOption(subtitleTrackOption);
         }
 
-        mTitle = title;
-        mMediaPlayer.setMedia(newMedia);
-        if (autoplay) {
-            mMediaPlayer.play();
+        if (!autoplay) {
+            newMedia.addOption(":start-paused");
         }
+
+        mTitle = title;
+        mMediaPlayer.setRenderer(mSelectedRenderer.get());
+        mMediaPlayer.setMedia(newMedia);
+        mMediaPlayer.play();
 
         mEventEmitter.emitOnSelectedSubtitleTrackIdChanged(mMediaPlayer.getSpuTrack());
         mEventEmitter.emitOnSelectedAudioTrackIdChanged(mMediaPlayer.getAudioTrack());
@@ -347,7 +369,7 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
-    private void stop() {
+    private void unloadMedia() {
         mPlaybackStarted = false;
         mIsSeekRequested = false;
         mMediaPlayer.stop();
