@@ -124,7 +124,7 @@ VLCVideo.propTypes = {
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    hwDecoderEnabled: PropTypes.bool.isRequired,
+    hwDecoderEnabled: PropTypes.number.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
     playInBackground: PropTypes.bool.isRequired,
     onSeekRequested: PropTypes.func,
@@ -145,7 +145,7 @@ VLCVideo.defaultProps = {
     autoplay: true,
     startTime: 0,
     title: '',
-    hwDecoderEnabled: true,
+    hwDecoderEnabled: 1,
     keyControlEnabled: false,
     playInBackground: false
 };
