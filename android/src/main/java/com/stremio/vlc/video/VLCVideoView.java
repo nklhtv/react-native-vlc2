@@ -274,7 +274,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderEnabled, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
             return;
         }
@@ -290,7 +290,7 @@ public final class VLCVideoView extends SurfaceView {
 
         VLCVideoView.this.unloadMedia();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
-        newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
+        setMediaOptions(newMedia, hwDecoderEnabled);
 
         if (startTime > 0) {
             final long startTimeInSeconds = startTime / 1000;
@@ -377,6 +377,25 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
+    private void setMediaOptions(Media media, int hwDecoderEnabled)
+    {
+        switch (hwDecoderEnabled) {
+            case HW_ACCELERATION_DISABLED:
+                media.setHWDecoderEnabled(false, false);
+            break;
+            case HW_ACCELERATION_FULL:
+                media.setHWDecoderEnabled(true, true);
+            break;
+            case HW_ACCELERATION_AUTOMATIC:
+            break;
+            case HW_ACCELERATION_DECODING:
+            default:
+                media.setHWDecoderEnabled(true, true);
+                media.addOption(":no-mediacodec-dr");
+                media.addOption(":no-omxil-dr");
+            break;
+        }
+    }
     private void unloadMedia() {
         mPlaybackStarted = false;
         mIsSeekRequested = false;

@@ -165,11 +165,11 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             autoplay = VLCVideoProps.MEDIA_AUTOPLAY_DEFAULT_VALUE;
         }
 
-        final boolean hwDecoderEnabled;
+        final int hwDecoderEnabled;
         if (media.hasKey(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
                 !media.isNull(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
-                media.getType(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) == ReadableType.Boolean) {
-            hwDecoderEnabled = media.getBoolean(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP);
+                media.getType(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) == ReadableType.Number) {
+            hwDecoderEnabled = media.getInt(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP);
         } else {
             hwDecoderEnabled = VLCVideoProps.MEDIA_HW_DECODER_ENABLED_DEFAULT_VALUE;
         }
