@@ -274,7 +274,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderEnabled, final String title) {
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderMode, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
             return;
         }
@@ -290,7 +290,7 @@ public final class VLCVideoView extends SurfaceView {
 
         VLCVideoView.this.unloadMedia();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
-        setMediaOptions(newMedia, hwDecoderEnabled);
+        setMediaOptions(newMedia, hwDecoderMode);
 
         if (startTime > 0) {
             final long startTimeInSeconds = startTime / 1000;
@@ -377,9 +377,9 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
-    private void setMediaOptions(Media media, int hwDecoderEnabled)
+    private void setMediaOptions(Media media, int hwDecoderMode)
     {
-        switch (hwDecoderEnabled) {
+        switch (hwDecoderMode) {
             case HW_ACCELERATION_DISABLED:
                 media.setHWDecoderEnabled(false, false);
             break;

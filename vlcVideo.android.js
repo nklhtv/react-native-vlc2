@@ -101,7 +101,7 @@ class VLCVideo extends Component {
             autoplay: this.props.autoplay,
             startTime: this.props.startTime,
             title: this.props.title,
-            hwDecoderEnabled: this.props.hwDecoderEnabled
+            hwDecoderMode: this.props.hwDecoderMode
         };
 
         return (
@@ -124,7 +124,7 @@ VLCVideo.propTypes = {
     autoplay: PropTypes.bool.isRequired,
     startTime: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    hwDecoderEnabled: PropTypes.number.isRequired,
+    hwDecoderMode: PropTypes.number.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
     playInBackground: PropTypes.bool.isRequired,
     onSeekRequested: PropTypes.func,
@@ -145,7 +145,7 @@ VLCVideo.defaultProps = {
     autoplay: true,
     startTime: 0,
     title: '',
-    hwDecoderEnabled: 1,
+    hwDecoderMode: 1,
     keyControlEnabled: false,
     playInBackground: false
 };
