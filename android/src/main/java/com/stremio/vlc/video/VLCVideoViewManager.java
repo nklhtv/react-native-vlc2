@@ -183,7 +183,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             title = VLCVideoProps.MEDIA_TITLE_DEFAULT_VALUE;
         }
 
-        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderEnabled, title);
+        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderMode, title);
     }
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
