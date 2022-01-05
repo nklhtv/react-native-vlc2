@@ -35,13 +35,21 @@ import static android.view.KeyEvent.KEYCODE_SPACE;
 public final class VLCVideoView extends SurfaceView {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
+
     private static final String CHANNEL_ID_RESOURCE_NAME = "react_native_vlc2_channel_id";
     private static final String SMALL_ICON_RESOURCE_NAME = "react_native_vlc2_small_icon";
     private static final String LARGE_ICON_RESOURCE_NAME = "react_native_vlc2_large_icon";
     private static final String PLAY_ICON_RESOURCE_NAME = "react_native_vlc2_play_icon";
     private static final String PAUSE_ICON_RESOURCE_NAME = "react_native_vlc2_pause_icon";
+
+    private static final int HW_ACCELERATION_AUTOMATIC = -1;
+    private static final int HW_ACCELERATION_DISABLED = 0;
+    private static final int HW_ACCELERATION_DECODING = 1;
+    private static final int HW_ACCELERATION_FULL = 2;
+
     private static final String PLAY_INTENT_ACTION = "VLCVideo:Play";
     private static final String PAUSE_INTENT_ACTION = "VLCVideo:Pause";
+
     private static final int D_PAD_SEEK_TIME = 15000;
 
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
@@ -266,7 +274,7 @@ public final class VLCVideoView extends SurfaceView {
         }
     }
 
-    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final boolean hwDecoderEnabled, final String title) {
+    public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderMode, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
             return;
         }
@@ -282,7 +290,7 @@ public final class VLCVideoView extends SurfaceView {
 
         VLCVideoView.this.unloadMedia();
         final Media newMedia = new Media(mLibVLC, newSourceUri);
-        newMedia.setHWDecoderEnabled(hwDecoderEnabled, false);
+        setMediaOptions(newMedia, hwDecoderMode);
 
         if (startTime > 0) {
             final long startTimeInSeconds = startTime / 1000;
@@ -369,6 +377,25 @@ public final class VLCVideoView extends SurfaceView {
         return mMediaPlayer.getLength();
     }
 
+    private void setMediaOptions(Media media, int hwDecoderMode)
+    {
+        switch (hwDecoderMode) {
+            case HW_ACCELERATION_DISABLED:
+                media.setHWDecoderEnabled(false, false);
+            break;
+            case HW_ACCELERATION_FULL:
+                media.setHWDecoderEnabled(true, true);
+            break;
+            case HW_ACCELERATION_AUTOMATIC:
+            break;
+            case HW_ACCELERATION_DECODING:
+            default:
+                media.setHWDecoderEnabled(true, true);
+                media.addOption(":no-mediacodec-dr");
+                media.addOption(":no-omxil-dr");
+            break;
+        }
+    }
     private void unloadMedia() {
         mPlaybackStarted = false;
         mIsSeekRequested = false;

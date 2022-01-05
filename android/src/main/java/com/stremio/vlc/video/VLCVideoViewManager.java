@@ -165,13 +165,13 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             autoplay = VLCVideoProps.MEDIA_AUTOPLAY_DEFAULT_VALUE;
         }
 
-        final boolean hwDecoderEnabled;
-        if (media.hasKey(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
-                !media.isNull(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) &&
-                media.getType(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP) == ReadableType.Boolean) {
-            hwDecoderEnabled = media.getBoolean(VLCVideoProps.MEDIA_HW_DECODER_ENABLED_PROP);
+        final int hwDecoderMode;
+        if (media.hasKey(VLCVideoProps.MEDIA_HW_DECODER_MODE_PROP) &&
+                !media.isNull(VLCVideoProps.MEDIA_HW_DECODER_MODE_PROP) &&
+                media.getType(VLCVideoProps.MEDIA_HW_DECODER_MODE_PROP) == ReadableType.Number) {
+            hwDecoderMode = media.getInt(VLCVideoProps.MEDIA_HW_DECODER_MODE_PROP);
         } else {
-            hwDecoderEnabled = VLCVideoProps.MEDIA_HW_DECODER_ENABLED_DEFAULT_VALUE;
+            hwDecoderMode = VLCVideoProps.MEDIA_HW_DECODER_MODE_DEFAULT_VALUE;
         }
 
         final String title;
@@ -183,7 +183,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
             title = VLCVideoProps.MEDIA_TITLE_DEFAULT_VALUE;
         }
 
-        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderEnabled, title);
+        videoView.loadMedia(sourceUrl, startTime, autoplay, hwDecoderMode, title);
     }
 
     @ReactProp(name = VLCVideoProps.KEY_CONTROL_ENABLED_PROP, defaultBoolean = VLCVideoProps.KEY_CONTROL_ENABLED_DEFAULT_VALUE)
