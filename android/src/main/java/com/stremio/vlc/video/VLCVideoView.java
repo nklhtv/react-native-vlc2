@@ -23,6 +23,7 @@ import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.RendererItem;
 import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.interfaces.IVLCVout;
+import org.videolan.libvlc.util.DisplayManager;
 
 import java.text.MessageFormat;
 
@@ -64,6 +65,7 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
     private final ObservableField<RendererItem> mSelectedRenderer;
+    private final DisplayManager mDisplayManager;
 
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
@@ -220,6 +222,7 @@ public final class VLCVideoView extends SurfaceView {
         mCallbackManager = callbackManager;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
+        mDisplayManager = new DisplayManager(mThemedReactContext.getCurrentActivity(), null, false, false, false);
         mSelectedRenderer = selectedRenderer;
 
         setBackgroundResource(R.drawable.video_view_background);
@@ -404,8 +407,9 @@ public final class VLCVideoView extends SurfaceView {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            vout.setVideoView(VLCVideoView.this);
-            vout.attachViews();
+            if(!mDisplayManager.isOnRenderer) {
+                mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, false, false);
+            }
         }
     }
 
