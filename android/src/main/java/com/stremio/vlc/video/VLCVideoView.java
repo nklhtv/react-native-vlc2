@@ -24,6 +24,7 @@ import org.videolan.libvlc.RendererItem;
 import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.interfaces.IVLCVout;
 import org.videolan.libvlc.util.DisplayManager;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.text.MessageFormat;
 
