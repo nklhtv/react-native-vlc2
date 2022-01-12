@@ -33,7 +33,7 @@ import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
 import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
 import static android.view.KeyEvent.KEYCODE_SPACE;
 
-public final class VLCVideoView extends SurfaceView {
+public final class VLCVideoView extends VLCVideoLayout {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
@@ -407,7 +407,7 @@ public final class VLCVideoView extends SurfaceView {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            if(!mDisplayManager.isOnRenderer) {
+            if(!mDisplayManager.isOnRenderer()) {
                 mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, false, false);
                 mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
             }
