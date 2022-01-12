@@ -409,6 +409,7 @@ public final class VLCVideoView extends SurfaceView {
         if (!vout.areViewsAttached()) {
             if(!mDisplayManager.isOnRenderer) {
                 mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, false, false);
+                mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT.ordinal);
             }
         }
     }
