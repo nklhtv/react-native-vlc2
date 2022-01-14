@@ -409,7 +409,7 @@ public final class VLCVideoView extends VLCVideoLayout {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
             if(!mDisplayManager.isOnRenderer()) {
-                mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, false, false);
+                mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, true, false);
                 mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
             }
         }
