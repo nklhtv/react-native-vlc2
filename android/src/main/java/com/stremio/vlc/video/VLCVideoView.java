@@ -410,7 +410,8 @@ public final class VLCVideoView extends VLCVideoLayout {
         if (!vout.areViewsAttached()) {
             if(!mDisplayManager.isOnRenderer()) {
                 mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, true, false);
-                //mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
+                //todo make it a setting in video player
+                mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
             }
         }
     }
