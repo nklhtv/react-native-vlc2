@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 
@@ -66,7 +67,8 @@ public final class VLCVideoView extends VLCVideoLayout {
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
     private final ObservableField<RendererItem> mSelectedRenderer;
-    private final DisplayManager mDisplayManager;
+
+    private int scaleType = 0;
 
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
@@ -223,7 +225,6 @@ public final class VLCVideoView extends VLCVideoLayout {
         mCallbackManager = callbackManager;
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
-        mDisplayManager = new DisplayManager(mThemedReactContext.getCurrentActivity(), null, false, false, false);
         mSelectedRenderer = selectedRenderer;
 
         setBackgroundResource(R.drawable.video_view_background);
@@ -343,7 +344,12 @@ public final class VLCVideoView extends VLCVideoLayout {
     }
 
     public void pause() {
+        MediaPlayer.ScaleType[] types = {MediaPlayer.ScaleType.SURFACE_BEST_FIT, MediaPlayer.ScaleType.SURFACE_4_3,
+        MediaPlayer.ScaleType.SURFACE_16_9, MediaPlayer.ScaleType.SURFACE_FILL, MediaPlayer.ScaleType.SURFACE_FIT_SCREEN,
+        MediaPlayer.ScaleType.SURFACE_ORIGINAL};
         if (!mMediaPlayer.isReleased()) {
+            scaleType++;
+            this.setVideoScale(types[scaleType % 6]);
             mMediaPlayer.pause();
         }
     }
@@ -407,19 +413,21 @@ public final class VLCVideoView extends VLCVideoLayout {
 
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
-        if (!vout.areViewsAttached()) {
-            if(!mDisplayManager.isOnRenderer()) {
-                mMediaPlayer.attachViews(VLCVideoView.this, mDisplayManager, true, false);
-                //todo make it a setting in video player
-                mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
-            }
+        if(!vout.areViewsAttached()) {
+            mMediaPlayer.attachViews(VLCVideoView.this, null, true, false);
+            //todo make it a setting in video player
+            this.setVideoScale(MediaPlayer.ScaleType.SURFACE_4_3);
         }
     }
-
+    private void setVideoScale(MediaPlayer.ScaleType type) {
+        Log.d("StremioType", type.toString());
+        mMediaPlayer.setVideoScale(type);
+        mMediaPlayer.updateVideoSurfaces();
+    }
     private void detachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (vout.areViewsAttached()) {
-            vout.detachViews();
+            mMediaPlayer.detachViews();
         }
     }
 
