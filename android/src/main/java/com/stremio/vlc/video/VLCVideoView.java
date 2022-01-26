@@ -68,7 +68,6 @@ public final class VLCVideoView extends VLCVideoLayout {
     private final MediaPlayer mMediaPlayer;
     private final ObservableField<RendererItem> mSelectedRenderer;
 
-    private int scaleType = 0;
 
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
@@ -264,20 +263,6 @@ public final class VLCVideoView extends VLCVideoLayout {
         mSelectedRenderer.removeOnPropertyChangedCallback(mRendererListener);
     }
 
-    @Override
-    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (changed && !mMediaPlayer.isReleased()) {
-            final int width = right - left;
-            final int height = bottom - top;
-            if (width * height == 0) {
-                return;
-            }
-
-            final IVLCVout vout = mMediaPlayer.getVLCVout();
-            vout.setWindowSize(width, height);
-        }
-    }
 
     public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderMode, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
@@ -344,12 +329,7 @@ public final class VLCVideoView extends VLCVideoLayout {
     }
 
     public void pause() {
-        MediaPlayer.ScaleType[] types = {MediaPlayer.ScaleType.SURFACE_BEST_FIT, MediaPlayer.ScaleType.SURFACE_4_3,
-        MediaPlayer.ScaleType.SURFACE_16_9, MediaPlayer.ScaleType.SURFACE_FILL, MediaPlayer.ScaleType.SURFACE_FIT_SCREEN,
-        MediaPlayer.ScaleType.SURFACE_ORIGINAL};
         if (!mMediaPlayer.isReleased()) {
-            scaleType++;
-            this.setVideoScale(types[scaleType % 6]);
             mMediaPlayer.pause();
         }
     }
@@ -414,16 +394,11 @@ public final class VLCVideoView extends VLCVideoLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if(!vout.areViewsAttached()) {
-            mMediaPlayer.attachViews(VLCVideoView.this, null, true, false);
-            //todo make it a setting in video player
-            this.setVideoScale(MediaPlayer.ScaleType.SURFACE_4_3);
+            mMediaPlayer.attachViews(this, null, true,false);
+            mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
-    private void setVideoScale(MediaPlayer.ScaleType type) {
-        Log.d("StremioType", type.toString());
-        mMediaPlayer.setVideoScale(type);
-        mMediaPlayer.updateVideoSurfaces();
-    }
+
     private void detachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (vout.areViewsAttached()) {
@@ -485,4 +460,5 @@ public final class VLCVideoView extends VLCVideoLayout {
     private void clearPlaybackNotification() {
         NotificationManagerCompat.from(mThemedReactContext).cancel(PLAYBACK_NOTIFICATION_ID);
     }
+
 }
