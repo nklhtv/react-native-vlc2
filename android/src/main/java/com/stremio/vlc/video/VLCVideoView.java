@@ -1,11 +1,20 @@
 package com.stremio.vlc.video;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_SPACE;
+
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
+import android.widget.FrameLayout;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -26,13 +35,7 @@ import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.text.MessageFormat;
 
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
-import static android.view.KeyEvent.KEYCODE_SPACE;
-
-public final class VLCVideoView extends VLCVideoLayout {
+public final class VLCVideoView extends FrameLayout {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
@@ -60,11 +63,22 @@ public final class VLCVideoView extends VLCVideoLayout {
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
+    private final VLCVideoLayout mVLCVideoLayout;
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
     private final ObservableField<RendererItem> mSelectedRenderer;
+    private final Handler mHandlerMainThread;
 
+    private final Runnable mMeasureAndLayout = new Runnable() {
+        @Override
+        public void run() {
+            measure(
+                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+            layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+    };
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
         public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
@@ -221,8 +235,12 @@ public final class VLCVideoView extends VLCVideoLayout {
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
         mSelectedRenderer = selectedRenderer;
+        mVLCVideoLayout = new VLCVideoLayout(themedReactContext.getCurrentActivity());
+        mHandlerMainThread = new Handler(Looper.getMainLooper());
 
+        mVLCVideoLayout.setFitsSystemWindows(false);
         setBackgroundResource(R.drawable.video_view_background);
+        addView(mVLCVideoLayout);
     }
 
     @Override
@@ -259,6 +277,13 @@ public final class VLCVideoView extends VLCVideoLayout {
         mSelectedRenderer.removeOnPropertyChangedCallback(mRendererListener);
     }
 
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        if (mHandlerMainThread != null) {
+            mHandlerMainThread.post(mMeasureAndLayout);
+        }
+    }
 
     public void loadMedia(final String sourceUrl, final long startTime, final boolean autoplay, final int hwDecoderMode, final String title) {
         if (sourceUrl == null || sourceUrl.isEmpty() || mMediaPlayer.isReleased()) {
@@ -390,7 +415,7 @@ public final class VLCVideoView extends VLCVideoLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            mMediaPlayer.attachViews(this, null, true, false);
+            mMediaPlayer.attachViews(mVLCVideoLayout, null, true, false);
             mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
