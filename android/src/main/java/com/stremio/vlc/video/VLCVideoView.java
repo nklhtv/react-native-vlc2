@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.core.app.NotificationCompat;
@@ -60,7 +61,6 @@ public final class VLCVideoView extends VLCVideoLayout {
     private boolean mPlayInBackground;
     private boolean mPlaybackStarted;
     private boolean mIsSeekRequested;
-    private MediaPlayer.ScaleType mCurrentScaleType = MediaPlayer.ScaleType.SURFACE_BEST_FIT;
     private final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
     private final int SCALE_SIZE = SCALE_TYPES.length;
     private final ThemedReactContext mThemedReactContext;
@@ -388,11 +388,11 @@ public final class VLCVideoView extends VLCVideoLayout {
     }
 
     public void nextScaleType() {
-        int nextScaleType = mCurrentScaleType.ordinal() % SCALE_SIZE;
+        int nextScaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_SIZE;
         if(!mMediaPlayer.isReleased())
         {
             mMediaPlayer.setVideoScale(SCALE_TYPES[nextScaleType]);
-            mCurrentScaleType = SCALE_TYPES[nextScaleType];
+            mEventEmitter.emitOnScaleTypeChanged(nextScaleType);
         }
     }
 
@@ -424,7 +424,7 @@ public final class VLCVideoView extends VLCVideoLayout {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
             mMediaPlayer.attachViews(this, null, true, false);
-            mMediaPlayer.setVideoScale(mCurrentScaleType);
+            mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
 
