@@ -60,6 +60,9 @@ public final class VLCVideoView extends VLCVideoLayout {
     private boolean mPlayInBackground;
     private boolean mPlaybackStarted;
     private boolean mIsSeekRequested;
+    private MediaPlayer.ScaleType mCurrentScaleType = MediaPlayer.ScaleType.SURFACE_BEST_FIT;
+    private final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
+    private final int SCALE_SIZE = SCALE_TYPES.length;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
     private final VLCVideoCallbackManager mCallbackManager;
@@ -384,6 +387,15 @@ public final class VLCVideoView extends VLCVideoLayout {
         mPlayInBackground = playInBackground;
     }
 
+    public void nextScaleType() {
+        int nextScaleType = mCurrentScaleType.ordinal() % SCALE_SIZE;
+        if(!mMediaPlayer.isReleased())
+        {
+            mMediaPlayer.setVideoScale(SCALE_TYPES[nextScaleType]);
+            mCurrentScaleType = SCALE_TYPES[nextScaleType];
+        }
+    }
+
     public boolean isPlaying() {
         return mMediaPlayer.isPlaying();
     }
@@ -411,8 +423,8 @@ public final class VLCVideoView extends VLCVideoLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            mMediaPlayer.attachViews(VLCVideoView.this, null, true, false);
-            mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
+            mMediaPlayer.attachViews(this, null, true, false);
+            mMediaPlayer.setVideoScale(mCurrentScaleType);
         }
     }
 

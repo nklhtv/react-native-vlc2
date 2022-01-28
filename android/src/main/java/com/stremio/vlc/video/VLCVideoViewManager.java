@@ -48,6 +48,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         commands.put(VLCVideoProps.SEEK_COMMAND_NAME, VLCVideoProps.SEEK_COMMAND_ID);
         commands.put(VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_NAME, VLCVideoProps.SET_SUBTITLE_TRACK_COMMAND_ID);
         commands.put(VLCVideoProps.SET_AUDIO_TRACK_COMMAND_NAME, VLCVideoProps.SET_AUDIO_TRACK_COMMAND_ID);
+        commands.put(VLCVideoProps.CHANGE_SCALE_TYPE_COMMAND_NAME, VLCVideoProps.CHANGE_SCALE_TYPE_COMMAND_ID);
 
         return commands;
     }
@@ -68,6 +69,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT));
+        events.put(VLCVideoEvents.ON_SCALE_TYPE_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SCALE_TYPE_CHANGED_EVENT));
 
         return events;
     }
@@ -88,6 +90,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_AUDIO_TRACKS_CHANGED", VLCVideoEvents.ON_AUDIO_TRACKS_CHANGED_EVENT);
         constants.put("ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED", VLCVideoEvents.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED_EVENT);
         constants.put("ON_SELECTED_AUDIO_TRACK_ID_CHANGED", VLCVideoEvents.ON_SELECTED_AUDIO_TRACK_ID_CHANGED_EVENT);
+        constants.put("ON_SCALE_TYPE_CHANGED_EVENT", VLCVideoEvents.ON_SCALE_TYPE_CHANGED_EVENT);
 
         return constants;
     }
@@ -132,6 +135,9 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                     final int id = args.getInt(0);
                     videoView.setAudioTrack(id);
                 }
+                break;
+            case VLCVideoProps.CHANGE_SCALE_TYPE_COMMAND_ID:
+                videoView.nextScaleType();
                 break;
         }
     }
