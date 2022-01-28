@@ -1,12 +1,19 @@
 package com.stremio.vlc.video;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
+import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
+import static android.view.KeyEvent.KEYCODE_SPACE;
+
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
-import android.view.SurfaceView;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -23,16 +30,11 @@ import org.videolan.libvlc.MediaPlayer;
 import org.videolan.libvlc.RendererItem;
 import org.videolan.libvlc.interfaces.IMedia;
 import org.videolan.libvlc.interfaces.IVLCVout;
+import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.text.MessageFormat;
 
-import static android.view.KeyEvent.ACTION_DOWN;
-import static android.view.KeyEvent.KEYCODE_MEDIA_FAST_FORWARD;
-import static android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-import static android.view.KeyEvent.KEYCODE_MEDIA_REWIND;
-import static android.view.KeyEvent.KEYCODE_SPACE;
-
-public final class VLCVideoView extends SurfaceView {
+public final class VLCVideoView extends VLCVideoLayout {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
@@ -64,7 +66,17 @@ public final class VLCVideoView extends SurfaceView {
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
     private final ObservableField<RendererItem> mSelectedRenderer;
+    private final Handler mHandlerMainThread;
 
+    private final Runnable mMeasureAndLayout = new Runnable() {
+        @Override
+        public void run() {
+            measure(
+                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+            layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+    };
     private final VLCVideoCallbackManager.OnKeyDownCallback mOnKeyDownCallback = new VLCVideoCallbackManager.OnKeyDownCallback() {
         @Override
         public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
@@ -213,7 +225,7 @@ public final class VLCVideoView extends SurfaceView {
     };
 
     public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
-        super(themedReactContext);
+        super(themedReactContext.getCurrentActivity());
 
         mThemedReactContext = themedReactContext;
         mLibVLC = libVLC;
@@ -221,7 +233,9 @@ public final class VLCVideoView extends SurfaceView {
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
         mSelectedRenderer = selectedRenderer;
+        mHandlerMainThread = new Handler(Looper.getMainLooper());
 
+        setFitsSystemWindows(false);
         setBackgroundResource(R.drawable.video_view_background);
     }
 
@@ -260,17 +274,10 @@ public final class VLCVideoView extends SurfaceView {
     }
 
     @Override
-    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (changed && !mMediaPlayer.isReleased()) {
-            final int width = right - left;
-            final int height = bottom - top;
-            if (width * height == 0) {
-                return;
-            }
-
-            final IVLCVout vout = mMediaPlayer.getVLCVout();
-            vout.setWindowSize(width, height);
+    public void requestLayout() {
+        super.requestLayout();
+        if (mHandlerMainThread != null) {
+            mHandlerMainThread.post(mMeasureAndLayout);
         }
     }
 
@@ -404,15 +411,15 @@ public final class VLCVideoView extends SurfaceView {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            vout.setVideoView(VLCVideoView.this);
-            vout.attachViews();
+            mMediaPlayer.attachViews(VLCVideoView.this, null, true, false);
+            mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
 
     private void detachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (vout.areViewsAttached()) {
-            vout.detachViews();
+            mMediaPlayer.detachViews();
         }
     }
 
