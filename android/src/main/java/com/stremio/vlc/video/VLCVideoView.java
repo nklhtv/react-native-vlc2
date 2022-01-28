@@ -35,7 +35,7 @@ import org.videolan.libvlc.util.VLCVideoLayout;
 
 import java.text.MessageFormat;
 
-public final class VLCVideoView extends FrameLayout {
+public final class VLCVideoView extends VLCVideoLayout {
 
     private static final String MEDIA_ERROR_MESSAGE = "VLC encountered an error with this media.";
 
@@ -63,7 +63,6 @@ public final class VLCVideoView extends FrameLayout {
     private boolean mIsSeekRequested;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
-    private final VLCVideoLayout mVLCVideoLayout;
     private final VLCVideoCallbackManager mCallbackManager;
     private final VLCVideoEventEmitter mEventEmitter;
     private final MediaPlayer mMediaPlayer;
@@ -227,7 +226,7 @@ public final class VLCVideoView extends FrameLayout {
     };
 
     public VLCVideoView(final ThemedReactContext themedReactContext, final LibVLC libVLC, final VLCVideoCallbackManager callbackManager, final ObservableField<RendererItem> selectedRenderer) {
-        super(themedReactContext);
+        super(themedReactContext.getCurrentActivity());
 
         mThemedReactContext = themedReactContext;
         mLibVLC = libVLC;
@@ -235,12 +234,10 @@ public final class VLCVideoView extends FrameLayout {
         mEventEmitter = new VLCVideoEventEmitter(VLCVideoView.this, mThemedReactContext);
         mMediaPlayer = new MediaPlayer(mLibVLC);
         mSelectedRenderer = selectedRenderer;
-        mVLCVideoLayout = new VLCVideoLayout(themedReactContext.getCurrentActivity());
         mHandlerMainThread = new Handler(Looper.getMainLooper());
 
-        mVLCVideoLayout.setFitsSystemWindows(false);
+        this.setFitsSystemWindows(false);
         setBackgroundResource(R.drawable.video_view_background);
-        addView(mVLCVideoLayout);
     }
 
     @Override
@@ -415,7 +412,7 @@ public final class VLCVideoView extends FrameLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            mMediaPlayer.attachViews(mVLCVideoLayout, null, true, false);
+            mMediaPlayer.attachViews(this, null, true, false);
             mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
