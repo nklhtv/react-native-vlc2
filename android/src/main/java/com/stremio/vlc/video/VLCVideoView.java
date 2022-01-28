@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
-import android.widget.FrameLayout;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -236,7 +235,7 @@ public final class VLCVideoView extends VLCVideoLayout {
         mSelectedRenderer = selectedRenderer;
         mHandlerMainThread = new Handler(Looper.getMainLooper());
 
-        this.setFitsSystemWindows(false);
+        setFitsSystemWindows(false);
         setBackgroundResource(R.drawable.video_view_background);
     }
 
@@ -412,7 +411,7 @@ public final class VLCVideoView extends VLCVideoLayout {
     private void attachVLCVoutViews() {
         final IVLCVout vout = mMediaPlayer.getVLCVout();
         if (!vout.areViewsAttached()) {
-            mMediaPlayer.attachViews(this, null, true, false);
+            mMediaPlayer.attachViews(VLCVideoView.this, null, true, false);
             mMediaPlayer.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT);
         }
     }
