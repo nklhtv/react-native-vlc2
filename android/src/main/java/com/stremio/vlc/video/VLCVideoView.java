@@ -388,9 +388,9 @@ public final class VLCVideoView extends VLCVideoLayout {
 
     public void changeScaleType() {
         if (!mMediaPlayer.isReleased()) {
-            final int nextScaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_TYPES.length;
-            mMediaPlayer.setVideoScale(SCALE_TYPES[nextScaleType]);
-            mEventEmitter.emitOnScaleTypeChanged(nextScaleType);
+            final int scaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_TYPES.length;
+            mMediaPlayer.setVideoScale(SCALE_TYPES[scaleType]);
+            mEventEmitter.emitOnScaleTypeChanged(scaleType);
         }
     }
 
