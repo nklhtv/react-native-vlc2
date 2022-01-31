@@ -236,14 +236,13 @@ public final class VLCVideoView extends VLCVideoLayout {
         mMediaPlayer = new MediaPlayer(mLibVLC);
         mSelectedRenderer = selectedRenderer;
         mHandlerMainThread = new Handler(Looper.getMainLooper());
-
-        setFitsSystemWindows(false);
-        setBackgroundResource(R.drawable.video_view_background);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        setFitsSystemWindows(false);
+        setBackgroundResource(R.drawable.video_view_background);
         VLCVideoView.this.attachVLCVoutViews();
         if (mCallbackManager != null) {
             mCallbackManager.addCallback(mIntentCallback);
