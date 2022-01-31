@@ -61,6 +61,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         events.put(VLCVideoEvents.ON_PAUSED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_PAUSED_EVENT));
         events.put(VLCVideoEvents.ON_END_REACHED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_END_REACHED_EVENT));
         events.put(VLCVideoEvents.ON_ERROR_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_ERROR_EVENT));
+        events.put(VLCVideoEvents.ON_AUDIO_DIGITAL_OUTPUT_ERROR_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_AUDIO_DIGITAL_OUTPUT_ERROR_EVENT));
         events.put(VLCVideoEvents.ON_TIME_CHANGED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_TIME_CHANGED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_PERFORMED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_PERFORMED_EVENT));
         events.put(VLCVideoEvents.ON_SEEK_REQUESTED_EVENT, MapBuilder.of(REACT_REGISTRATION_NAME, VLCVideoEvents.ON_SEEK_REQUESTED_EVENT));
@@ -81,6 +82,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
         constants.put("ON_PAUSED", VLCVideoEvents.ON_PAUSED_EVENT);
         constants.put("ON_END_REACHED", VLCVideoEvents.ON_END_REACHED_EVENT);
         constants.put("ON_ERROR", VLCVideoEvents.ON_ERROR_EVENT);
+        constants.put("ON_AUDIO_DIGITAL_OUTPUT_ERROR", VLCVideoEvents.ON_AUDIO_DIGITAL_OUTPUT_ERROR_EVENT);
         constants.put("ON_TIME_CHANGED", VLCVideoEvents.ON_TIME_CHANGED_EVENT);
         constants.put("ON_SEEK_PERFORMED", VLCVideoEvents.ON_SEEK_PERFORMED_EVENT);
         constants.put("ON_SEEK_REQUESTED", VLCVideoEvents.ON_SEEK_REQUESTED_EVENT);
@@ -202,6 +204,11 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
     @ReactProp(name = VLCVideoProps.PLAY_IN_BACKGROUND_PROP, defaultBoolean = VLCVideoProps.PLAY_IN_BACKGROUND_DEFAULT_VALUE)
     public void setPlayInBackground(final VLCVideoView videoView, final boolean playInBackground) {
         videoView.setPlayInBackground(playInBackground);
+    }
+
+    @ReactProp(name = VLCVideoProps.AUDIO_DIGITAL_OUTPUT_PROP, defaultBoolean = VLCVideoProps.AUDIO_DIGITAL_OUTPUT_DEFAULT_VALUE)
+    public void setAudioDigitalOutput(final VLCVideoView videoView, final boolean audioDigitalOutput) {
+        videoView.setAudioDigitalOutputEnabled(audioDigitalOutput);
     }
 
 }
