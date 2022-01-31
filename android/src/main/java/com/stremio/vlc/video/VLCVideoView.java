@@ -61,7 +61,6 @@ public final class VLCVideoView extends VLCVideoLayout {
     private boolean mPlaybackStarted;
     private boolean mIsSeekRequested;
     private final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
-    private final int SCALE_SIZE = SCALE_TYPES.length;
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
     private final VLCVideoCallbackManager mCallbackManager;
@@ -388,7 +387,7 @@ public final class VLCVideoView extends VLCVideoLayout {
 
     public void changeScaleType() {
         if (!mMediaPlayer.isReleased()) {
-            final int nextScaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_SIZE;
+            final int nextScaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_TYPES.length;
             mMediaPlayer.setVideoScale(SCALE_TYPES[nextScaleType]);
             mEventEmitter.emitOnScaleTypeChanged(nextScaleType);
         }
