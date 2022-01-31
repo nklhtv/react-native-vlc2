@@ -54,13 +54,14 @@ public final class VLCVideoView extends VLCVideoLayout {
 
     private static final int D_PAD_SEEK_TIME = 15000;
 
+    private static final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
+
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
 
     private String mTitle;
     private boolean mPlayInBackground;
     private boolean mPlaybackStarted;
     private boolean mIsSeekRequested;
-    private final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
     private final ThemedReactContext mThemedReactContext;
     private final LibVLC mLibVLC;
     private final VLCVideoCallbackManager mCallbackManager;
