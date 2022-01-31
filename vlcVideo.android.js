@@ -13,6 +13,7 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_PAUSED]: this._invokeEventCallback.bind(this, 'onPaused'),
             [RCTVLCVideoViewConstants.ON_END_REACHED]: this._invokeEventCallback.bind(this, 'onEndReached'),
             [RCTVLCVideoViewConstants.ON_ERROR]: this._invokeEventCallback.bind(this, 'onError'),
+            [RCTVLCVideoViewConstants.ON_AUDIO_DIGITAL_OUTPUT_ERROR]: this._invokeEventCallback.bind(this, 'onAudioDigitalOutputError'),
             [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: this._invokeEventCallback.bind(this, 'onTimeChanged'),
             [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: this._invokeEventCallback.bind(this, 'onSeekPerformed'),
             [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onSubtitleTracksChanged'),
@@ -28,6 +29,7 @@ class VLCVideo extends Component {
         return nextProps.sourceUrl !== this.props.sourceUrl ||
             nextProps.keyControlEnabled !== this.props.keyControlEnabled ||
             nextProps.playInBackground !== this.props.playInBackground ||
+            nextProps.audioDigitalOutput !== this.props.audioDigitalOutput ||
             nextProps.style !== this.props.style;
     }
 
@@ -120,6 +122,7 @@ class VLCVideo extends Component {
                 style={this.props.style}
                 keyControlEnabled={this.props.keyControlEnabled}
                 playInBackground={this.props.playInBackground}
+                audioDigitalOutput={this.props.audioDigitalOutput}
                 media={media}
                 {...this.callbacks}
             />
@@ -137,12 +140,14 @@ VLCVideo.propTypes = {
     hwDecoderMode: PropTypes.number.isRequired,
     keyControlEnabled: PropTypes.bool.isRequired,
     playInBackground: PropTypes.bool.isRequired,
+    audioDigitalOutput: PropTypes.bool.isRequired,
     onSeekRequested: PropTypes.func,
     onBuffering: PropTypes.func,
     onPlaying: PropTypes.func,
     onPaused: PropTypes.func,
     onEndReached: PropTypes.func,
     onError: PropTypes.func,
+    onAudioDigitalOutputError: PropTypes.func,
     onTimeChanged: PropTypes.func,
     onSeekPerformed: PropTypes.func,
     onSubtitleTracksChanged: PropTypes.func,
@@ -158,7 +163,8 @@ VLCVideo.defaultProps = {
     title: '',
     hwDecoderMode: 1,
     keyControlEnabled: false,
-    playInBackground: false
+    playInBackground: false,
+    audioDigitalOutput: false
 };
 
 const RCTVLCVideoViewConstants = UIManager.RCTVLCVideoView.Constants;
@@ -170,12 +176,14 @@ const RCTVLCVideoViewInterface = {
         media: PropTypes.object.isRequired,
         keyControlEnabled: PropTypes.bool.isRequired,
         playInBackground: PropTypes.bool.isRequired,
+        audioDigitalOutput: PropTypes.bool.isRequired,
         [RCTVLCVideoViewConstants.ON_SEEK_REQUESTED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_BUFFERING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PLAYING]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_PAUSED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_END_REACHED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_ERROR]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_AUDIO_DIGITAL_OUTPUT_ERROR]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_TIME_CHANGED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_SEEK_PERFORMED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: PropTypes.func,
@@ -190,7 +198,8 @@ const RCTVLCVideoView = requireNativeComponent('RCTVLCVideoView', RCTVLCVideoVie
     nativeOnly: {
         media: true,
         keyControlEnabled: true,
-        playInBackground: true
+        playInBackground: true,
+        audioDigitalOutput: true
     }
 });
 

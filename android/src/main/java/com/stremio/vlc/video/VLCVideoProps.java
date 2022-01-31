@@ -16,6 +16,8 @@ final class VLCVideoProps {
     static final boolean KEY_CONTROL_ENABLED_DEFAULT_VALUE = false;
     static final String PLAY_IN_BACKGROUND_PROP = "playInBackground";
     static final boolean PLAY_IN_BACKGROUND_DEFAULT_VALUE = false;
+    static final String AUDIO_DIGITAL_OUTPUT_PROP = "audioDigitalOutput";
+    static final boolean AUDIO_DIGITAL_OUTPUT_DEFAULT_VALUE = false;
 
     static final String PLAY_COMMAND_NAME = "play";
     static final int PLAY_COMMAND_ID = 1;

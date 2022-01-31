@@ -394,6 +394,14 @@ public final class VLCVideoView extends VLCVideoLayout {
         }
     }
 
+    public void setAudioDigitalOutputEnabled(final boolean enabled) {
+        if (!mMediaPlayer.isReleased()) {
+            if (!mMediaPlayer.setAudioDigitalOutputEnabled(enabled)) {
+                mEventEmitter.emitOnAudioDigitalOutputError();
+            }
+        }
+    }
+
     public boolean isPlaying() {
         return mMediaPlayer.isPlaying();
     }

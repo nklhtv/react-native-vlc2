@@ -51,6 +51,10 @@ final class VLCVideoEventEmitter {
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_ERROR_EVENT, event);
     }
 
+    void emitOnAudioDigitalOutputError() {
+        mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_AUDIO_DIGITAL_OUTPUT_ERROR_EVENT, null);
+    }
+
     void emitOnTimeChanged(final long time) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.TIME_PROP, time);

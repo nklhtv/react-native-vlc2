@@ -9,6 +9,7 @@ final class VLCVideoEvents {
     static final String ON_PAUSED_EVENT = getFullEventName("onPaused");
     static final String ON_END_REACHED_EVENT = getFullEventName("onEndReached");
     static final String ON_ERROR_EVENT = getFullEventName("onError");
+    static final String ON_AUDIO_DIGITAL_OUTPUT_ERROR_EVENT = getFullEventName("onAudioDigitalOutputError");
     static final String ON_TIME_CHANGED_EVENT = getFullEventName("onTimeChanged");
     static final String ON_SEEK_REQUESTED_EVENT = getFullEventName("onSeekRequested");
     static final String ON_SEEK_PERFORMED_EVENT = getFullEventName("onSeekPerformed");
