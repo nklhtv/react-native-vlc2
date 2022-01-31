@@ -19,7 +19,7 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onAudioTracksChanged'),
             [RCTVLCVideoViewConstants.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedSubtitleTrackIdChanged'),
             [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedAudioTrackIdChanged'),
-            [RCTVLCVideoViewConstants.ON_SCALE_TYPE_CHANGED_EVENT]: this._invokeEventCallback.bind(this, 'onScaleTypeChange')
+            [RCTVLCVideoViewConstants.ON_SCALE_TYPE_CHANGED_EVENT]: this._invokeEventCallback.bind(this, 'onScaleTypeChanged')
 
         };
     }
@@ -149,7 +149,7 @@ VLCVideo.propTypes = {
     onAudioTracksChanged: PropTypes.func,
     onSelectedSubtitleTrackIdChanged: PropTypes.func,
     onSelectedAudioTrackIdChanged: PropTypes.func,
-    onScaleTypeChange: PropTypes.func
+    onScaleTypeChanged: PropTypes.func
 };
 
 VLCVideo.defaultProps = {
