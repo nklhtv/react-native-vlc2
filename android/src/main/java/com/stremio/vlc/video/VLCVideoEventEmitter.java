@@ -18,12 +18,12 @@ final class VLCVideoEventEmitter {
         mEventEmitter = themedReactContext.getJSModule(RCTEventEmitter.class);
     }
 
-    void emitOnScaleTypeChanged(final int scaleType)
-    {
+    void emitOnScaleTypeChanged(final int scaleType) {
         final WritableMap event = Arguments.createMap();
         event.putInt(VLCVideoEvents.SCALE_TYPE_PROP, scaleType);
         mEventEmitter.receiveEvent(mVideoView.getId(), VLCVideoEvents.ON_SCALE_TYPE_CHANGED_EVENT, event);
     }
+
     void emitOnBuffering(final long buffering) {
         final WritableMap event = Arguments.createMap();
         event.putDouble(VLCVideoEvents.BUFFERING_PROP, buffering);
