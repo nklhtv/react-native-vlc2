@@ -137,7 +137,7 @@ public final class VLCVideoViewManager extends SimpleViewManager<VLCVideoView> {
                 }
                 break;
             case VLCVideoProps.CHANGE_SCALE_TYPE_COMMAND_ID:
-                videoView.nextScaleType();
+                videoView.changeScaleType();
                 break;
         }
     }

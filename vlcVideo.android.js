@@ -97,7 +97,7 @@ class VLCVideo extends Component {
         );
     }
 
-    nextScaleType = () => {
+    changeScaleType = () => {
         UIManager.dispatchViewManagerCommand(
             this._getViewHandle(),
             UIManager.RCTVLCVideoView.Commands.changeScaleType,

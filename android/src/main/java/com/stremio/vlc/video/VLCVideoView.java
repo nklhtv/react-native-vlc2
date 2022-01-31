@@ -386,7 +386,7 @@ public final class VLCVideoView extends VLCVideoLayout {
         mPlayInBackground = playInBackground;
     }
 
-    public void nextScaleType() {
+    public void changeScaleType() {
         int nextScaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_SIZE;
         if(!mMediaPlayer.isReleased())
         {
