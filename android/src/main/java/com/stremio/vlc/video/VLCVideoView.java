@@ -54,6 +54,8 @@ public final class VLCVideoView extends VLCVideoLayout {
 
     private static final int D_PAD_SEEK_TIME = 15000;
 
+    private static final MediaPlayer.ScaleType[] SCALE_TYPES = MediaPlayer.ScaleType.values();
+
     public static final int PLAYBACK_NOTIFICATION_ID = 11740;
 
     private String mTitle;
@@ -384,7 +386,15 @@ public final class VLCVideoView extends VLCVideoLayout {
         mPlayInBackground = playInBackground;
     }
 
-    public void setAudioDigitalOutputEnabled(boolean enabled) {
+    public void changeScaleType() {
+        if (!mMediaPlayer.isReleased()) {
+            final int scaleType = (mMediaPlayer.getVideoScale().ordinal() + 1) % SCALE_TYPES.length;
+            mMediaPlayer.setVideoScale(SCALE_TYPES[scaleType]);
+            mEventEmitter.emitOnScaleTypeChanged(scaleType);
+        }
+    }
+
+    public void setAudioDigitalOutputEnabled(final boolean enabled) {
         if (!mMediaPlayer.isReleased()) {
             if (!mMediaPlayer.setAudioDigitalOutputEnabled(enabled)) {
                 mEventEmitter.emitOnAudioDigitalOutputError();

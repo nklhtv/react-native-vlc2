@@ -19,7 +19,9 @@ class VLCVideo extends Component {
             [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onSubtitleTracksChanged'),
             [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: this._invokeEventCallback.bind(this, 'onAudioTracksChanged'),
             [RCTVLCVideoViewConstants.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedSubtitleTrackIdChanged'),
-            [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedAudioTrackIdChanged')
+            [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: this._invokeEventCallback.bind(this, 'onSelectedAudioTrackIdChanged'),
+            [RCTVLCVideoViewConstants.ON_SCALE_TYPE_CHANGED_EVENT]: this._invokeEventCallback.bind(this, 'onScaleTypeChanged')
+
         };
     }
 
@@ -97,6 +99,14 @@ class VLCVideo extends Component {
         );
     }
 
+    changeScaleType = () => {
+        UIManager.dispatchViewManagerCommand(
+            this._getViewHandle(),
+            UIManager.RCTVLCVideoView.Commands.changeScaleType,
+            null
+        );
+    }
+
     render() {
         const media = {
             sourceUrl: this.props.sourceUrl,
@@ -143,7 +153,8 @@ VLCVideo.propTypes = {
     onSubtitleTracksChanged: PropTypes.func,
     onAudioTracksChanged: PropTypes.func,
     onSelectedSubtitleTrackIdChanged: PropTypes.func,
-    onSelectedAudioTrackIdChanged: PropTypes.func
+    onSelectedAudioTrackIdChanged: PropTypes.func,
+    onScaleTypeChanged: PropTypes.func
 };
 
 VLCVideo.defaultProps = {
@@ -178,7 +189,8 @@ const RCTVLCVideoViewInterface = {
         [RCTVLCVideoViewConstants.ON_SUBTITLE_TRACKS_CHANGED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_AUDIO_TRACKS_CHANGED]: PropTypes.func,
         [RCTVLCVideoViewConstants.ON_SELECTED_SUBTITLE_TRACK_ID_CHANGED]: PropTypes.func,
-        [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: PropTypes.func
+        [RCTVLCVideoViewConstants.ON_SELECTED_AUDIO_TRACK_ID_CHANGED]: PropTypes.func,
+        [RCTVLCVideoViewConstants.ON_SCALE_TYPE_CHANGED_EVENT]: PropTypes.func
     }
 };
 

@@ -30,5 +30,7 @@ final class VLCVideoProps {
     static final String SET_AUDIO_TRACK_COMMAND_NAME = "setAudioTrack";
     static final int SET_AUDIO_TRACK_COMMAND_ID = 5;
     static final int SEEK_COMMAND_TIME_ARGUMENT_INDEX = 0;
+    static final String CHANGE_SCALE_TYPE_COMMAND_NAME = "changeScaleType";
+    static final int CHANGE_SCALE_TYPE_COMMAND_ID = 6;
 
 }
