@@ -1,5 +1,7 @@
 # react-native-vlc2
 
+Move over to [Stremio/react-native-vlc2](https://github.com/Stremio/react-native-vlc2)
+
 ## iOS is not supported yet
 
 ```JSX
